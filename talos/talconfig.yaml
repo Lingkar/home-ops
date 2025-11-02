@@ -18,7 +18,8 @@ nodes:
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+      mode: nocloud
+      arch: amd64
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -27,11 +28,12 @@ nodes:
         vip:
           ip: "192.168.69.5"
   - hostname: "c-01"
-    ipAddress: "192.168.68.137"
+    ipAddress: "192.168.68.142"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+      mode: nocloud
+      arch: amd64
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -44,7 +46,17 @@ nodes:
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
+      mode: metal
+      arch: arm64
+    schematic:
+      overlay:
+        image: siderolabs/sbc-raspberrypi
+        name: rpi_generic
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/vc4
+    # talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
