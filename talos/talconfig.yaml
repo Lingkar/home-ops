@@ -14,7 +14,7 @@ cniConfig:
   name: none
 nodes:
   - hostname: "c-00"
-    ipAddress: "192.168.68.129"
+    ipAddress: "192.168.68.134"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
@@ -23,54 +23,35 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "bc:24:11:e2:db:01"
-        dhcp: false
-        addresses:
-          - "192.168.68.129/22"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "192.168.68.1"
-        mtu: 1500
+        dhcp: true
         vip:
           ip: "192.168.69.5"
-# - hostname: "c-01"
-#   ipAddress: "192.168.68.137"
-#   installDisk: "/dev/sda"
-#   machineSpec:
-#     secureboot: false
-#   talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
-#   controlPlane: true
-#   networkInterfaces:
-#     - deviceSelector:
-#         hardwareAddr: "bc:24:11:a4:87:bb"
-#       dhcp: false
-#       addresses:
-#         - "192.168.68.137/22"
-#       routes:
-#         - network: "0.0.0.0/0"
-#           gateway: "192.168.68.1"
-#       mtu: 1500
-#       vip:
-#         ip: "192.168.69.5"
-# - hostname: "c-02"
-#   ipAddress: "192.168.68.138"
-#   installDisk: "/dev/sda"
-#   machineSpec:
-#     secureboot: false
-#   talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
-#   controlPlane: true
-#   networkInterfaces:
-#     - deviceSelector:
-#         hardwareAddr: "bc:24:11:dc:c3:98"
-#       dhcp: false
-#       addresses:
-#         - "192.168.68.138/22"
-#       routes:
-#         - network: "0.0.0.0/0"
-#           gateway: "192.168.68.1"
-#       mtu: 1500
-#       vip:
-#         ip: "192.168.69.5"
-
+  - hostname: "c-01"
+    ipAddress: "192.168.68.137"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:a4:87:bb"
+        dhcp: true
+        vip:
+          ip: "192.168.69.5"
+  - hostname: "rpi-00"
+    ipAddress: "192.168.68.110"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "dc:a6:32:eb:ff:81"
+        dhcp: true
+        vip:
+          ip: "192.168.69.5"
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"
