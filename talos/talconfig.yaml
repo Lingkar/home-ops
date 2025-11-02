@@ -50,6 +50,18 @@ nodes:
       arch: arm64
     schematic:
       overlay:
+        options:
+          # https://docs.siderolabs.com/talos/v1.10/platform-specific-installations/single-board-computers/rpi_generic#configure-the-config-txt-file-for-usage-with-the-vc4-system-extension
+          configTxt: |
+            gpu_mem=256
+            kernel=u-boot.bin
+            arm_64bit=1
+            arm_boost=1
+            enable_uart=1
+            dtoverlay=disable-bt
+            dtoverlay=disable-wifi
+            avoid_warnings=2
+            dtoverlay=vc4-kms-v3d,noaudio
         image: siderolabs/sbc-raspberrypi
         name: rpi_generic
       customization:

@@ -29,7 +29,7 @@ tasks:
     cmd: talhelper gencommand upgrade --node {{.IP}} --extra-flags "--image='{{.TALOS_IMAGE}}' --timeout=10m" | bash
     vars:
       TALOS_IMAGE:
-        sh: talhelper genurl installer -c talos/talconfig.yaml -n "{{.IP}}"
+        sh: talhelper genurl installer -c talos/talconfig.yaml --env-file talos/talenv.yaml -n "{{.IP}}"
     requires:
       vars: [IP]
     preconditions:
