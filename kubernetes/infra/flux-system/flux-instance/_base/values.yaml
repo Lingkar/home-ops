@@ -6,6 +6,7 @@ instance:
     networkPolicy: false
   components:
     - source-controller
+    - source-watcher
     - kustomize-controller
     - helm-controller
     - notification-controller
