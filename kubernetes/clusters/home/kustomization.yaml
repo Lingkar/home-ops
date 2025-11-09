@@ -1,0 +1,3 @@
+resources:
+  - artifacts.yaml
+  - ks.yaml
