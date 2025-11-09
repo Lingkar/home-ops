@@ -18,7 +18,7 @@ spec:
       retries: 3
   valuesFrom:
     - kind: ConfigMap
-      name: values-coredns
+      name: values-metrics-server
     - kind: ConfigMap
-      name: values-coredns
+      name: values-metrics-server
       valuesKey: env-values.yaml
