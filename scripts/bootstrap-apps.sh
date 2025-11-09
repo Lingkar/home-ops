@@ -23,35 +23,6 @@ function wait_for_nodes() {
     done
 }
 
-# Namespaces to be applied before the SOPS secrets are installed
-function apply_namespaces() {
-    log debug "Applying namespaces"
-
-    local -r infra_dir="${ROOT_DIR}/kubernetes/infra"
-
-    if [[ ! -d "${infra_dir}" ]]; then
-        log error "Directory does not exist" "directory=${infra_dir}"
-    fi
-
-    for app in "${infra_dir}"/*/; do
-        namespace=$(basename "${app}")
-
-        # Check if the namespace resources are up-to-date
-        if kubectl get namespace "${namespace}" &>/dev/null; then
-            log info "Namespace resource is up-to-date" "resource=${namespace}"
-            continue
-        fi
-
-        # Apply the namespace resources
-        if kubectl create namespace "${namespace}" --dry-run=client --output=yaml |
-            kubectl apply --server-side --filename - &>/dev/null; then
-            log info "Namespace resource applied" "resource=${namespace}"
-        else
-            log error "Failed to apply namespace resource" "resource=${namespace}"
-        fi
-    done
-}
-
 # SOPS secrets to be applied before the helmfile charts are installed
 function apply_sops_secrets() {
     log debug "Applying secrets"
@@ -132,10 +103,14 @@ function main() {
 
     # Apply resources and Helm releases
     wait_for_nodes
-    # apply_namespaces
-    apply_sops_secrets
+    apply_namespaces
     apply_crds
+
+    # sync helm_releases of kube-system and flux-system
     # sync_helm_releases
+
+    # Now flux-system namespace exists
+    apply_sops_secrets
 
     log info "Congrats! The cluster is bootstrapped and Flux is syncing the Git repository"
 }
