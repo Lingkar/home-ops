@@ -19,6 +19,8 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./flux-system/flux-operator/_base
+  components:
+    - ./components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets
