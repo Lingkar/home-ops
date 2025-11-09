@@ -16,7 +16,7 @@ spec:
     - name: flux-operator
       namespace: *namespace
   interval: 1h
-  path: ./flux-system/flux-instance/app
+  path: ./flux-system/flux-instance/_base
   postBuild:
     substituteFrom:
       - name: cluster-secrets
