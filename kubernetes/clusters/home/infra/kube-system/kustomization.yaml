@@ -2,5 +2,4 @@ resources:
   - cilium.yaml
   - coredns.yaml
   - gateway-api-crds.yaml
-  - kustomization.yaml
   - metrics-server.yaml
