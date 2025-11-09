@@ -27,13 +27,13 @@ function wait_for_nodes() {
 function apply_namespaces() {
     log debug "Applying namespaces"
 
-    local -r apps_dir="${ROOT_DIR}/kubernetes/apps"
+    local -r infra_dir="${ROOT_DIR}/kubernetes/infra"
 
-    if [[ ! -d "${apps_dir}" ]]; then
-        log error "Directory does not exist" "directory=${apps_dir}"
+    if [[ ! -d "${infra_dir}" ]]; then
+        log error "Directory does not exist" "directory=${infra_dir}"
     fi
 
-    for app in "${apps_dir}"/*/; do
+    for app in "${infra_dir}"/*/; do
         namespace=$(basename "${app}")
 
         # Check if the namespace resources are up-to-date
@@ -43,9 +43,8 @@ function apply_namespaces() {
         fi
 
         # Apply the namespace resources
-        if kubectl create namespace "${namespace}" --dry-run=client --output=yaml \
-            | kubectl apply --server-side --filename - &>/dev/null;
-        then
+        if kubectl create namespace "${namespace}" --dry-run=client --output=yaml |
+            kubectl apply --server-side --filename - &>/dev/null; then
             log info "Namespace resource applied" "resource=${namespace}"
         else
             log error "Failed to apply namespace resource" "resource=${namespace}"
@@ -133,10 +132,10 @@ function main() {
 
     # Apply resources and Helm releases
     wait_for_nodes
-    apply_namespaces
+    # apply_namespaces
     apply_sops_secrets
     apply_crds
-    sync_helm_releases
+    # sync_helm_releases
 
     log info "Congrats! The cluster is bootstrapped and Flux is syncing the Git repository"
 }
