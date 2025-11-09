@@ -8,3 +8,12 @@ resources:
   - ./secret.sops.yaml
   - ./httproute.yaml
   - ./receiver.yaml
+configMapGenerator:
+  - name: values-flux-instance
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../../utils/helm/kustomizeconfig.yaml
