@@ -13,13 +13,13 @@ spec:
       originRevision: "@monorepo"
       copy:
         - from: "@monorepo/kubernetes/infra/**"
-          to: "@artifact/infra/"
+          to: "@artifact/"
         - from: "@monorepo/kubernetes/components/**"
           to: "@artifact/components/"
     - name: apps
       originRevision: "@monorepo"
       copy:
         - from: "@monorepo/kubernetes/apps/**"
-          to: "@artifact/apps/"
+          to: "@artifact/"
         - from: "@monorepo/kubernetes/components/**"
           to: "@artifact/components/"
