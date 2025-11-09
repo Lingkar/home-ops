@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 # This helmfile is for extracting and installing Custom Resource Definitions (CRDs) from Helm charts.
