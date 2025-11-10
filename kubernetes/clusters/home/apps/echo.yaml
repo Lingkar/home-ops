@@ -3,7 +3,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app echo
-  namespace: &namespace default
+  namespace: flux-system
 spec:
   commonMetadata:
     labels:
@@ -13,7 +13,9 @@ spec:
     secretRef:
       name: sops-age
   interval: 1h
-  path: ./kubernetes/apps/default/echo/app
+  path: ./default/echo/_base
+  components:
+    - ../../../components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets
@@ -21,9 +23,9 @@ spec:
   prune: true
   retryInterval: 2m
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: infra
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: default
   timeout: 5m
   wait: false
