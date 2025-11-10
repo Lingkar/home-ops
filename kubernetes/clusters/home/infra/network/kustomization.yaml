@@ -1,0 +1,5 @@
+resources:
+  - cilium-gateway.yaml
+  - cloudflare-dns.yaml
+  - cloudflare-tunnel.yaml
+  - k8s-gateway.yaml

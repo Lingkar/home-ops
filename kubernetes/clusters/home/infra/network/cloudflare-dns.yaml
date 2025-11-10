@@ -2,8 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cloudflare-tunnel
-  namespace: &namespace network
+  name: &app cloudflare-dns
+  namespace: kube-system
 spec:
   commonMetadata:
     labels:
@@ -13,17 +13,18 @@ spec:
     secretRef:
       name: sops-age
   interval: 1h
-  path: ./kubernetes/apps/network/cloudflare-tunnel
+  path: ./network/cloudflare-dns/_base
+  components:
+    - ../../../components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
   prune: true
-  retryInterval: 2m
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: infra
     namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
-  wait: false
+  targetNamespace: network
+  timeout: 15m
+  wait: true
