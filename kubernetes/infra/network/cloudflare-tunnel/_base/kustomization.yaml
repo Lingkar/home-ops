@@ -11,4 +11,4 @@ configMapGenerator:
     files:
       - config.yaml=./tunnel-config.yaml
 configurations:
-  - ../../../utils/helm/kustomizeconfig.yaml
+  - kustomizeconfig.yaml
