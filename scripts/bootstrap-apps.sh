@@ -103,7 +103,7 @@ function main() {
 
     # Apply resources and Helm releases
     wait_for_nodes
-    apply_namespaces
+
     apply_crds
 
     # sync helm_releases of kube-system and flux-system
