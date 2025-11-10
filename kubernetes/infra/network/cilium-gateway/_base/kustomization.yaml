@@ -3,5 +3,3 @@ resources:
   - ./certificate.yaml
   - ./external.yaml
   - ./internal.yaml
-components:
-  - ../../../components/common
