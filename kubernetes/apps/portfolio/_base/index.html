@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jan Buijnsters — Maintenance</title>
+  <meta name="description" content="Jan Buijnsters' portfolio — temporarily under maintenance." />
+  <link rel="icon" href="data:,"></link>
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0f1724;
+      --accent:#326ce5; /* Kubernetes blue */
+      --muted:#94a3b8;
+      --card: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background: radial-gradient(1200px 800px at 10% 20%, rgba(50,108,229,0.15), transparent 8%),
+                  radial-gradient(1000px 600px at 90% 80%, rgba(0,180,255,0.08), transparent 10%),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:#e6eef8;
+      display:flex;align-items:center;justify-content:center;padding:48px;
+    }
+
+    .card{
+      width:min(860px,96%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:center;
+      backdrop-filter: blur(6px);
+    }
+
+    .left{padding:8px 12px;}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+    .logo{
+      width:64px;height:64px;border-radius:12px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent),#00aaff);
+      box-shadow: 0 6px 18px rgba(50,108,229,0.3);
+      font-weight:700;font-size:20px;color:#061022;
+    }
+    h1{margin:0;font-size:20px;letter-spacing:-0.02em}
+    p.lead{margin:8px 0 18px;color:var(--muted);font-size:15px}
+
+    .hero-illustration{width:100%;height:160px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .k8s{width:120px;height:120px;animation:float 3.5s ease-in-out infinite}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+
+    .right{padding:12px;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;}
+    .status{background:var(--card);padding:12px 14px;border-radius:12px;width:100%;text-align:center;font-weight:600}
+    .muted{color:var(--muted);font-size:13px;text-align:center}
+
+    footer{grid-column:1/-1;margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+
+    @media (max-width:760px){.card{grid-template-columns:1fr;}.hero-illustration{height:140px}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <section class="left">
+      <div class="brand">
+        <div class="logo">JB</div>
+        <div>
+          <h1 id="title">Jan Buijnsters</h1>
+          <div class="muted">jan.buijnsters.com — portfolio & blog</div>
+        </div>
+      </div>
+
+      <p class="lead">Hi! — I'm working hard on my homalab k8s set-up. Will get online with some more content soon, check-out https://github.com/Lingkar/home-ops for some behind the scenes action!</p>
+
+      <div class="hero-illustration" aria-hidden>
+        <!-- Kubernetes Helm logo -->
+        <svg class="k8s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 226 226" fill="none"><circle cx="113" cy="113" r="113" fill="url(#grad)"/><path d="M113 45L170 81V145L113 181L56 145V81L113 45Z" fill="#fff" opacity="0.1"/><path d="M113 63L155 90V136L113 163L71 136V90L113 63Z" fill="#fff" opacity="0.3"/><path d="M113 81L140 98V128L113 145L86 128V98L113 81Z" fill="#fff"/><defs><linearGradient id="grad" x1="0" x2="226" y1="0" y2="226"><stop stop-color="#326ce5"/><stop offset="1" stop-color="#00aaff"/></linearGradient></defs></svg>
+      </div>
+
+      <footer>
+        <div>Working hard, or hardly working... We'll be online soon 🚀</div>
+      </footer>
+    </section>
+
+    <aside class="right">
+      <div class="status">Cluster maintenance in progress</div>
+    </aside>
+  </main>
+</body>
+</html>

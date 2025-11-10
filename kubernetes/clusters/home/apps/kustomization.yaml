@@ -1,2 +1,3 @@
 resources:
   - echo.yaml
+  - portfolio.yaml

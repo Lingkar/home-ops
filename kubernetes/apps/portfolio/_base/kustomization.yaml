@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+resources:
+  - app.yaml
+configMapGenerator:
+  - name: jan-site
+    files:
+      - index.html=./index.html
+configurations:
+  - kustomizeconfig.yaml
