@@ -1,3 +1,4 @@
 resources:
   - kube-system
   - flux-system
+  - rabbitmq-operator.yaml

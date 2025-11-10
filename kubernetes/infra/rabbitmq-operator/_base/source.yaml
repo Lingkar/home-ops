@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: rabbitmq-operator
+spec:
+  interval: 1h
+  url: https://github.com/rabbitmq/cluster-operator
+  ref:
+    tag: v2.17.0
