@@ -2,4 +2,5 @@ resources:
   - kube-system
   - flux-system
   - network
+  - cert-manager.yaml
   - rabbitmq-operator.yaml
