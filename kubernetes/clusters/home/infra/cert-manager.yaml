@@ -3,7 +3,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app cert-manager
-  namespace: &namespace cert-manager
+  namespace: flux-system
 spec:
   commonMetadata:
     labels:
@@ -16,7 +16,7 @@ spec:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: *app
-      namespace: *namespace
+      namespace: &namespace cert-manager
     - apiVersion: cert-manager.io/v1
       kind: ClusterIssuer
       name: letsencrypt-production
@@ -26,7 +26,9 @@ spec:
       failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
       current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
   interval: 1h
-  path: ./kubernetes/infra/cert-manager/cert-manager/app
+  path: ./cert-manager/_base
+  components:
+    - ../../components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets
@@ -34,8 +36,8 @@ spec:
   prune: true
   retryInterval: 2m
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+    kind: ExternalArtifact
+    name: infra
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
