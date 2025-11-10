@@ -26,6 +26,6 @@ spec:
     kind: ExternalArtifact
     name: apps
     namespace: flux-system
-  targetNamespace: default
+  targetNamespace: portfolio
   timeout: 5m
   wait: false
