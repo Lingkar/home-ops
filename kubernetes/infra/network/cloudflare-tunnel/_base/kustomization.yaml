@@ -10,5 +10,5 @@ configMapGenerator:
   - name: cloudflare-tunnel-configmap
     files:
       - config.yaml=./tunnel-config.yaml
-generatorOptions:
-  disableNameSuffixHash: true
+configurations:
+  - ../../../utils/helm/kustomizeconfig.yaml
