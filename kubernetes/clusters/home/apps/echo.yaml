@@ -24,7 +24,7 @@ spec:
   retryInterval: 2m
   sourceRef:
     kind: ExternalArtifact
-    name: infra
+    name: apps
     namespace: flux-system
   targetNamespace: default
   timeout: 5m
