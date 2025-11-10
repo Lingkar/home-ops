@@ -26,6 +26,6 @@ spec:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: rabbitmq-operator
+  targetNamespace: rabbitmq-system
   timeout: 5m
   wait: false
