@@ -21,11 +21,11 @@ spec:
       name: flux-system
     - alias: rbmq
       kind: GitRepository
-      name: flux-system
+      name: rabbitmq-operator
   artifacts:
     - name: rbmq-test
       copy:
-        - from: "@rbmq/"
+        - from: "@rbmq/**"
           to: "@artifact/"
     - name: infra
       originRevision: "@monorepo"
