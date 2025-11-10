@@ -14,8 +14,6 @@ spec:
       name: sops-age
   interval: 1h
   path: ./network/cloudflare-dns/_base
-  components:
-    - ../../../components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets

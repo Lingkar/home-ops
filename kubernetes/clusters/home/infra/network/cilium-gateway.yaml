@@ -17,8 +17,6 @@ spec:
       namespace: cert-manager
   interval: 1h
   path: ./network/cilium-gateway/_base
-  components:
-    - ../../../components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets
