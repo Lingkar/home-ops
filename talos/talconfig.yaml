@@ -27,6 +27,12 @@ nodes:
         dhcp: true
         vip:
           ip: "192.168.69.5"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/drbd
+            # - siderolabs/zfs
   - hostname: "c-01"
     ipAddress: "192.168.68.142"
     installDisk: "/dev/sda"
@@ -41,6 +47,11 @@ nodes:
         dhcp: true
         vip:
           ip: "192.168.69.5"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/drbd
   - hostname: "rpi-00"
     ipAddress: "192.168.68.110"
     installDisk: "/dev/sda"
@@ -51,7 +62,7 @@ nodes:
     schematic:
       overlay:
         options:
-          # https://docs.siderolabs.com/talos/v1.10/platform-specific-installations/single-board-computers/rpi_generic#configure-the-config-txt-file-for-usage-with-the-vc4-system-extension
+          # https://docs.siderolabs.com/talos/v1.10/platform-specific-installations/single-board-computers/rpi_generic#configure-the-config-txt-file-for-usage-with-the-vc4-system  extension
           configTxt: |
             gpu_mem=256
             kernel=u-boot.bin
@@ -68,6 +79,7 @@ nodes:
         systemExtensions:
           officialExtensions:
             - siderolabs/vc4
+            - siderolabs/drbd
     # talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
     controlPlane: true
     networkInterfaces:
@@ -85,6 +97,15 @@ patches:
   - "@./patches/global/machine-time.yaml"
 # Controller patches
 controlPlane:
+  kernelModules:
+    - name: drbd
+      parameters:
+        - usermode_helper=disabled
+    - name: drbd_transport_tcp
+    # LVM_THIN storage pools require this module
+    - name: dm-thin-pool
+    # ZFS storage pools require this module from the ZFS extension
+    # - name: zfs
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"

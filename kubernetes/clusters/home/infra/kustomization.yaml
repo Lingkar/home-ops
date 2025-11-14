@@ -3,5 +3,6 @@ resources:
   - flux-system
   - network
   - cert-manager.yaml
-  - rabbitmq-operator.yaml
+  - piraeus.yaml
+  - rabbitmq.yaml
   - spegel.yaml
