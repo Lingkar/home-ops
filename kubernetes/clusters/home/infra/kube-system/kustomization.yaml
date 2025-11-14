@@ -1,5 +1,6 @@
 resources:
   - cilium.yaml
   - coredns.yaml
+  - external-snapshotter.yaml
   - gateway-api-crds.yaml
   - metrics-server.yaml
