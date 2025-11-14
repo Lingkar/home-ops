@@ -6,7 +6,7 @@ spec:
   storageClassName: piraeus-storage
   resources:
     requests:
-      storage: 1Gi
+      storage: 4Gi
   dataSource:
     apiGroup: snapshot.storage.k8s.io
     kind: VolumeSnapshot
