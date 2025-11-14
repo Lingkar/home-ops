@@ -21,7 +21,7 @@ metadata:
   name: external-snapshotter-app
 spec:
   dependsOn:
-    - name: *app-crd
+    - name: external-snapshotter-crds
   interval: 1h
   path: ./deploy/kubernetes/snapshot-controller
   prune: true
