@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-volume
+spec:
+  storageClassName: piraeus-storage
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,6 +35,8 @@ spec:
             - name: html
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
+            - name: data
+              mountPath: /data
           resources:
             limits:
               cpu: 100m
@@ -37,6 +51,9 @@ spec:
             items:
               - key: index.html
                 path: index.html
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-volume
 ---
 apiVersion: v1
 kind: Service
