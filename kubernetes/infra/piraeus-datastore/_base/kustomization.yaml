@@ -3,6 +3,7 @@ resources:
   - helmrelease.yaml
   - source.yaml
   - storageclass.yaml
+  - volumesnapshotclass.yaml
 configMapGenerator:
   - name: values-piraeus-datastore
     behavior: create
