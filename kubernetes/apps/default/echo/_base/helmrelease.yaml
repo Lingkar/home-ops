@@ -79,3 +79,10 @@ spec:
           - backendRefs:
               - identifier: app
                 port: *port
+    persistence:
+      data:
+        enabled: true
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: piraeus-storage
