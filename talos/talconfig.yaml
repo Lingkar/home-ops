@@ -15,6 +15,8 @@ cniConfig:
 nodes:
   - hostname: "c-00"
     ipAddress: "192.168.68.134"
+    nodeLabels:
+      piraeus.io/storage: "true"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
@@ -36,6 +38,8 @@ nodes:
   - hostname: "c-01"
     ipAddress: "192.168.68.142"
     installDisk: "/dev/sda"
+    nodeLabels:
+      piraeus.io/storage: "true"
     machineSpec:
       secureboot: false
       mode: nocloud

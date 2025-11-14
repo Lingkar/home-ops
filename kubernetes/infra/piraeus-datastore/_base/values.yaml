@@ -34,3 +34,17 @@ linstorSatelliteConfigurations:
             hostPath:
               path: /var/etc/lvm/archive
               type: DirectoryOrCreate
+  - name: storage
+    nodeSelector:
+      piraeus.io/storage: "true"
+    storagePools:
+      - name: lvm-thin
+        properties:
+          - name: StorDriver/LvcreateOptions
+            value: "--compression y"
+        lvmThinPool:
+          volumeGroup: vg1
+          thinPool: thin
+        source:
+          hostDevices:
+            - /dev/sdb
