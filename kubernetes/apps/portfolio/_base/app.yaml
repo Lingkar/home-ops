@@ -18,6 +18,7 @@ metadata:
     app: jan-site
 spec:
   replicas: 1
+  strategy: Recreate
   selector:
     matchLabels:
       app: jan-site
