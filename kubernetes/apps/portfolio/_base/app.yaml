@@ -55,7 +55,7 @@ spec:
                 path: index.html
         - name: data
           persistentVolumeClaim:
-            claimName: data-volume
+            claimName: data-volume-new
 ---
 apiVersion: v1
 kind: Service
