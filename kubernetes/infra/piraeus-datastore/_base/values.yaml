@@ -39,9 +39,6 @@ linstorSatelliteConfigurations:
       piraeus.io/storage: "true"
     storagePools:
       - name: lvm-thin
-        properties:
-          - name: StorDriver/LvcreateOptions
-            value: "--compression y"
         lvmThinPool:
           volumeGroup: vg1
           thinPool: thin
