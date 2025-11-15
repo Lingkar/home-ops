@@ -1,10 +1,23 @@
 grafana:
+  enabled: false
+  forceDeployDatasources: true
+  forceDeployDashboards: true
   operator:
     dashboardsConfigMapRefEnabled: true
     matchLabels:
       dashboards: grafana
     folder: kube-prometheus-stack
-# defaultRules:
-#   rules:
-#     kubeProxy: false
-
+  defaultRules:
+    rules:
+      kubeProxy: false
+  defaultDashboardsTimezone: Europe/Amsterdam
+  defaultDashboardsEditable: false
+kubeProxy:
+  enabled: false
+prometheus:
+  prometheusSpec:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 5Gi
