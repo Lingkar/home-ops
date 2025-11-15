@@ -10,4 +10,4 @@ spec:
     operation: copy
   ref:
     tag: v5.20.0
-  url: oci://ghcr.io/grafana/helm-charts/grafana-operatoroci://ghcr.io/grafana/helm-charts/grafana-operator
+  url: oci://ghcr.io/grafana/helm-charts/grafana-operator
