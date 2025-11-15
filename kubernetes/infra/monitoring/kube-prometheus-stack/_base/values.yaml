@@ -16,8 +16,10 @@ kubeProxy:
   enabled: false
 prometheus:
   prometheusSpec:
-    volumeClaimTemplate:
-      spec:
-        resources:
-          requests:
-            storage: 5Gi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          # storageClassName: piraeus-storage
+          resources:
+            requests:
+              storage: 5Gi
