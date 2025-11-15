@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+resources:
+  - helmrelease.yaml
+  - source.yaml
+configMapGenerator:
+  - name: values-grafana-operator
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../../utils/helm/kustomizeconfig.yaml

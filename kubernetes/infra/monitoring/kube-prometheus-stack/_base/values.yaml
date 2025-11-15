@@ -1,0 +1,10 @@
+grafana:
+  operator:
+    dashboardsConfigMapRefEnabled: true
+    matchLabels:
+      dashboards: grafana
+    folder: kube-prometheus-stack
+# defaultRules:
+#   rules:
+#     kubeProxy: false
+

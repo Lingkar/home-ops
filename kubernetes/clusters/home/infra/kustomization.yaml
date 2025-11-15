@@ -1,7 +1,9 @@
 resources:
-  - kube-system
   - flux-system
+  - kube-system
+  - monitoring
   - network
+  - grafana-system.yaml
   - cert-manager.yaml
   - piraeus.yaml
   - rabbitmq.yaml
