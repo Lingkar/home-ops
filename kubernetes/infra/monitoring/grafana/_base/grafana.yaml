@@ -1,6 +1,10 @@
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafana_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana
+metadata:
+  name: grafana
+  labels:
+    dashboards: grafana
 spec:
   config:
     log:
