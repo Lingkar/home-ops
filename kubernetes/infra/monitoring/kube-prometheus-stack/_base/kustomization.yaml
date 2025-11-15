@@ -3,7 +3,7 @@ resources:
   - helmrelease.yaml
   - source.yaml
 configMapGenerator:
-  - name: values-values-kube-prometheus-stack
+  - name: values-kube-prometheus-stack
     behavior: create
     files:
       - values.yaml=values.yaml
