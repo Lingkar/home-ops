@@ -27,3 +27,15 @@ prometheus:
           resources:
             requests:
               storage: 5Gi
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      memory: 100Mi
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 12m
+    limits:
+      memory: 100Mi
