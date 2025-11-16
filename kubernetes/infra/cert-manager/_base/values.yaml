@@ -1,8 +1,3 @@
-resources:
-  requests:
-    cpu: 10m
-  limits:
-    memory: 100Mi
 crds:
   enabled: true
 replicaCount: 1
@@ -12,3 +7,20 @@ prometheus:
   enabled: true
   servicemonitor:
     enabled: true
+resources:
+  requests:
+    cpu: 10m
+  limits:
+    memory: 100Mi
+webhook:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      memory: 100Mi
+cainjector:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      memory: 100Mi
