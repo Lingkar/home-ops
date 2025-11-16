@@ -1,11 +1,5 @@
-# Enable monitoring via Prometheus Operator
 monitoring:
-  # Set to true to create prometheus monitoring opjects
-  enabled: false
-  # Configuration for the default Grafana dashboard
-  dashboard:
-    # Enable deployment of the Grafana dashboard
-    enabled: true
+  enabled: true
 linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
