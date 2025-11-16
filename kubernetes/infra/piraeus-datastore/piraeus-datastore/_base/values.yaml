@@ -1,16 +1,6 @@
 monitoring:
   enabled: true
 linstorCluster:
-  affinity-controller:
-    podTemplate:
-      spec:
-        containers:
-          - name: linstor-affinity-controller
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 20Mi
   controller:
     podTemplate:
       spec:
@@ -21,6 +11,34 @@ linstorCluster:
                 cpu: 30m
               limits:
                 memory: 586Mi
+  affinityController:
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-affinity-controller
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 20Mi
+  highAvailabilityController:
+    podTemplate:
+      spec:
+        containers:
+          - name: ha-controller
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 32Mi
+  csiController:
+    podTemplate:
+      spec:
+        resources:
+          requests:
+            cpu: 10m
+          limits:
+            memory: 50Mi
 linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
