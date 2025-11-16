@@ -11,7 +11,7 @@ spec:
     type: prometheus
     access: proxy
     basicAuth: false
-    url: http://prometheus-operated.svc.cluster.local:9090
+    url: http://prometheus-operated.monitoring.svc.cluster.local:9090
     isDefault: true
     jsonData:
       "tlsSkipVerify": true
