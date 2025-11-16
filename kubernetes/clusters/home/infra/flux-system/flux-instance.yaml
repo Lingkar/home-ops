@@ -15,7 +15,7 @@ spec:
   dependsOn:
     - name: flux-operator
       namespace: *namespace
-  interval: 1h
+  interval: 30m
   path: ./flux-system/flux-instance/_base
   postBuild:
     substituteFrom:
