@@ -45,12 +45,13 @@ prometheusOperator:
     limits:
       memory: 100Mi
 alertmanager:
-  resources:
-    requests:
-      cpu: 10m
-    limits:
-      memory: 64Mi
-nodeExporter:
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 64Mi
+prometheus-node-exporter:
   resources:
     requests:
       cpu: 10m
