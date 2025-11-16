@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
@@ -9,7 +10,7 @@ spec:
   datasource:
     name: prometheus
     type: prometheus
-    access: proxy
+    editable: false
     basicAuth: false
     url: http://prometheus-operated.monitoring.svc.cluster.local:9090
     isDefault: true
