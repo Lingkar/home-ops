@@ -15,14 +15,9 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  values:
-    fullnameOverride: k8s-gateway
-    domain: "${SECRET_DOMAIN}"
-    ttl: 1
-    service:
-      type: LoadBalancer
-      port: 53
-      annotations:
-        lbipam.cilium.io/ips: "192.168.69.6"
-      externalTrafficPolicy: Cluster
-    watchedResources: ["HTTPRoute", "Service"]
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-k8s-gateway
+    - kind: ConfigMap
+      name: values-k8s-gateway
+      valuesKey: env-values.yaml

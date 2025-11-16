@@ -1,9 +1,26 @@
 monitoring:
   enabled: true
+# linstorCluster:
+#   controller:
+#     podTemplate:
+#       cont
 linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
       spec:
+        containers:
+          - name: linstor-satellite
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 350Mi
+          - name: drbd-reactor
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 100Mi
         initContainers:
           - name: drbd-shutdown-guard
             $patch: delete

@@ -1,0 +1,7 @@
+installCRDs: true
+operator:
+  resources:
+    requests:
+      cpu: 72m
+    limits:
+      memory: 100Mi

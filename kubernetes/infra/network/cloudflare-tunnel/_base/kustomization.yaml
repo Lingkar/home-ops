@@ -10,5 +10,12 @@ configMapGenerator:
   - name: cloudflare-tunnel-configmap
     files:
       - config.yaml=./tunnel-config.yaml
+  - name: values-cloudflare-tunnel
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
 configurations:
   - kustomizeconfig.yaml
+  - ../../../utils/helm/kustomizeconfig.yaml

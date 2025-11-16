@@ -2,3 +2,12 @@
 resources:
   - helmrelease.yaml
   - source.yaml
+configMapGenerator:
+  - name: values-piraeus-operator
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../../utils/helm/kustomizeconfig.yaml

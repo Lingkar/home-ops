@@ -15,5 +15,9 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  values:
-    installCRDs: true
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-piraeus-operator
+    - kind: ConfigMap
+      name: values-piraeus-operator
+      valuesKey: env-values.yaml
