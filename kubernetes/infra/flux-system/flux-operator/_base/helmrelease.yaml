@@ -16,6 +16,9 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  values:
-    serviceMonitor:
-      create: true
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-flux-operator
+    - kind: ConfigMap
+      name: values-flux-operator
+      valuesKey: env-values.yaml

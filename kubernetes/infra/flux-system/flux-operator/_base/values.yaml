@@ -1,0 +1,7 @@
+serviceMonitor:
+  create: true
+resources:
+  limits:
+    memory: 160Mi
+  requests:
+    cpu: 20m
