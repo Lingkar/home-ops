@@ -2,6 +2,6 @@ installCRDs: true
 operator:
   resources:
     requests:
-      cpu: 72m
+      cpu: 20m
     limits:
       memory: 100Mi
