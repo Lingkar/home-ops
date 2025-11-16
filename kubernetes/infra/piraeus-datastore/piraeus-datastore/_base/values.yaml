@@ -1,9 +1,14 @@
 monitoring:
   enabled: true
-# linstorCluster:
-#   controller:
-#     podTemplate:
-#       cont
+linstorCluster:
+  controller:
+    podTemplate:
+      spec:
+        resources:
+          requests:
+            cpu: 30m
+          limits:
+            memory: 586Mi
 linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
