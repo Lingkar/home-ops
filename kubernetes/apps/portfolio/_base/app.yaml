@@ -44,12 +44,12 @@ spec:
             - name: data
               mountPath: /data
           resources:
-            limits:
-              cpu: 100m
-              memory: 64Mi
             requests:
               cpu: 20m
               memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
       volumes:
         - name: html
           configMap:

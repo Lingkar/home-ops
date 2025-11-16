@@ -4,4 +4,13 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./helmrelease.yaml
-  - ./ocirepository.yaml
+  - ./source.yaml
+configMapGenerator:
+  - name: values-cloudflare-dns
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../utils/helm/kustomizeconfig.yaml
