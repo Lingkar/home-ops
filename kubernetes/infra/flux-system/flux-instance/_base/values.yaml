@@ -118,6 +118,7 @@ instance:
                     resources:
                       requests:
                         cpu: 10m
+                        memory: nil
                       limits:
                         memory: 50Mi
         target:
