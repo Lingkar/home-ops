@@ -32,8 +32,8 @@ instance:
         target:
           kind: Deployment
           name: (kustomize-controller|helm-controller|source-controller)
-      - # Increase the memory limits
-        patch: |
+      # Set resources
+      - patch: |
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -44,11 +44,103 @@ instance:
                 containers:
                   - name: manager
                     resources:
+                      requests:
+                        cpu: 70m
                       limits:
-                        memory: 1Gi
+                        memory: 200Mi
         target:
           kind: Deployment
-          name: (kustomize-controller|helm-controller|source-controller)
+          name: helm-controller
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: all
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: manager
+                    resources:
+                      requests:
+                        cpu: 80m
+                      limits:
+                        memory: 150Mi
+        target:
+          kind: Deployment
+          name: kustomize-controller
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: all
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: manager
+                    resources:
+                      requests:
+                        cpu: 10m
+                      limits:
+                        memory: 70Mi
+        target:
+          kind: Deployment
+          name: notification-controller
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: all
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: manager
+                    resources:
+                      requests:
+                        cpu: 100m
+                      limits:
+                        memory: 150Mi
+        target:
+          kind: Deployment
+          name: source-controller
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: all
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: manager
+                    resources:
+                      requests:
+                        cpu: 10m
+                      limits:
+                        memory: 50Mi
+        target:
+          kind: Deployment
+          name: source-watcher
+      # - patch: |
+      #     apiVersion: apps/v1
+      #     kind: Deployment
+      #     metadata:
+      #       name: all
+      #     spec:
+      #       template:
+      #         spec:
+      #           containers:
+      #             - name: manager
+      #               resources:
+      #                 requests:
+      #                   cpu:
+      #                 limits:
+      #                   memory: 1Gi
+      #   target:
+      #     kind: Deployment
+      #     name: (kustomize-controller|helm-controller|source-controller)
       - # Enable in-memory kustomize builds
         patch: |
           - op: add
