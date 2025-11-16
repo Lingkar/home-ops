@@ -15,11 +15,4 @@ grafana:
 kubeProxy:
   enabled: false
 prometheus:
-  prometheusSpec:
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          # storageClassName: piraeus-storage
-          resources:
-            requests:
-              storage: 5Gi
+  enabled: false
