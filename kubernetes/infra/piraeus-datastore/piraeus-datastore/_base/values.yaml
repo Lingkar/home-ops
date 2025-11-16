@@ -1,6 +1,16 @@
 monitoring:
   enabled: true
 linstorCluster:
+  affinity-controller:
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-affinity-controller
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 20Mi
   controller:
     podTemplate:
       spec:
