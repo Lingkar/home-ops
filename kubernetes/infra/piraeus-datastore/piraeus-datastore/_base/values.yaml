@@ -38,7 +38,7 @@ linstorCluster:
           requests:
             cpu: 10m
           limits:
-            memory: 50Mi
+            memory: 100Mi
 linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
