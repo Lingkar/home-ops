@@ -34,11 +34,49 @@ linstorCluster:
   csiController:
     podTemplate:
       spec:
-        resources:
-          requests:
-            cpu: 10m
-          limits:
-            memory: 100Mi
+        containers:
+          - name: linstor-csi
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+          - name: csi-attacher
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+          - name: csi-livenessprobe
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+          - name: csi-provisioner
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+          - name: csi-snapshotter
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+          - name: csi-resizer
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+          - name: csi-health-monitor
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
 linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
