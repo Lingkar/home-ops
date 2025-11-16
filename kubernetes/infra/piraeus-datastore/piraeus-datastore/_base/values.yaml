@@ -31,6 +31,38 @@ linstorCluster:
                 cpu: 10m
               limits:
                 memory: 32Mi
+  nfsServer:
+    podTemplate:
+      spec:
+        containers:
+          - name: nfs-server
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+  csiNode:
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-csi
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+          - name: csi-node-driver-registrar
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 32Mi
+          - name: csi-livenessprobe
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 32Mi
   csiController:
     podTemplate:
       spec:
@@ -93,7 +125,7 @@ linstorSatelliteConfigurations:
               requests:
                 cpu: 10m
               limits:
-                memory: 100Mi
+                memory: 20Mi
         initContainers:
           - name: drbd-shutdown-guard
             $patch: delete
