@@ -40,3 +40,11 @@ releases:
     set:
       - name: crds.enabled
         value: true
+
+  - name: piraeus
+    namespace: piraeus-datastore
+    chart: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
+    version: 2.10.1
+    set:
+      - name: installCRDs
+        value: true

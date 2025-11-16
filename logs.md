@@ -1,8 +1,9 @@
 # TODO:
 - [x] Piraeus - Linstor
 - [x] Via VolumeSnapshot recreate PV in different storageclass
-- [/] Set-up monitoring stack
+- [x] Set-up monitoring stack
 - [ ] Set-up resource requests and limits for all resources
+    - [ ] Analysis to what extent we can automate this, e.g. krr
 - [ ] Velero back-up snapshots to Cloud
 - [ ] FluxCD diffing -> fix pipelines
 

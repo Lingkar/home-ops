@@ -4,5 +4,14 @@ kind: Kustomization
 resources:
   - ./clusterissuer.yaml
   - ./helmrelease.yaml
-  - ./ocirepository.yaml
+  - ./source.yaml
   - ./secret.sops.yaml
+configMapGenerator:
+  - name: values-cert-manager
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../utils/helm/kustomizeconfig.yaml
