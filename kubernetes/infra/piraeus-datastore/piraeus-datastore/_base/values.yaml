@@ -62,19 +62,19 @@ linstorCluster:
           - name: csi-snapshotter
             resources:
               requests:
-                cpu: 10m
+                cpu: 20m
               limits:
                 memory: 50Mi
           - name: csi-resizer
             resources:
               requests:
-                cpu: 10m
+                cpu: 20m
               limits:
                 memory: 50Mi
           - name: csi-health-monitor
             resources:
               requests:
-                cpu: 10m
+                cpu: 20m
               limits:
                 memory: 50Mi
 linstorSatelliteConfigurations:
