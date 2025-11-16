@@ -56,7 +56,6 @@ serviceMonitor:
 persistence:
   config-file:
     type: configMap
-    name: cloudflare-tunnel-configmap
     globalMounts:
       - path: /etc/cloudflared/config.yaml
         subPath: config.yaml
