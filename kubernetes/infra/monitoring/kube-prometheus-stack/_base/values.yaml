@@ -21,6 +21,11 @@ prometheus:
     podMonitorSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
     scrapeConfigSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        cpu: 150m
+      limits:
+        memory: 1200Mi
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -39,3 +44,15 @@ prometheusOperator:
       cpu: 35m
     limits:
       memory: 100Mi
+alertmanager:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      memory: 64Mi
+nodeExporter:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      memory: 32Mi
