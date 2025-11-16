@@ -13,16 +13,16 @@ spec:
     secretRef:
       name: sops-age
   interval: 1h
-  path: ./piraeus-system/_base
+  path: ./piraeus-datastore/piraeus-operator/_base
   components:
-    - ../../components/common
+    - ../../../components/common
   prune: true
   retryInterval: 2m
   sourceRef:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: piraeus-system
+  targetNamespace: piraeus-datastore
   timeout: 5m
   wait: false
 ---
@@ -44,9 +44,9 @@ spec:
     - name: piraeus-system
       namespace: flux-system
   interval: 1h
-  path: ./piraeus-datastore/_base
+  path: ./piraeus-datastore/piraeus-datastore/_base
   components:
-    - ../../components/common
+    - ../../../components/common
   prune: true
   retryInterval: 2m
   sourceRef:
