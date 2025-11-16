@@ -18,4 +18,3 @@ configMapGenerator:
       - env-values.yaml=''
 configurations:
   - kustomizeconfig.yaml
-  - ../../../utils/helm/kustomizeconfig.yaml
