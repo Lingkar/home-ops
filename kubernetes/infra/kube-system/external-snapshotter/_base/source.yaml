@@ -6,4 +6,4 @@ spec:
   interval: 1h
   url: https://github.com/kubernetes-csi/external-snapshotter
   ref:
-    tag: v8.4.0
+    tag: v8.3.0
