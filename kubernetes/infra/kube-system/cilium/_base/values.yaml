@@ -1,3 +1,9 @@
+resources:
+  limits:
+    memory: 440Mi
+  requests:
+    cpu: 150m
+    memory: 440Mi
 autoDirectNodeRoutes: true
 bpf:
   masquerade: true
@@ -17,6 +23,12 @@ dashboards:
 endpointRoutes:
   enabled: true
 envoy:
+  resources:
+    limits:
+      memory: 80Mi
+    requests:
+      cpu: 30m
+      memory: 80Mi
   rollOutPods: true
   prometheus:
     serviceMonitor:
@@ -39,6 +51,12 @@ loadBalancer:
   mode: "dsr"
 localRedirectPolicy: true
 operator:
+  resources:
+    limits:
+      memory: 160Mi
+    requests:
+      cpu: 10m
+      memory: 160Mi
   dashboards:
     enabled: true
   prometheus:

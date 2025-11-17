@@ -31,3 +31,23 @@ spec:
     name: external-snapshotter
   timeout: 5m
   wait: false
+  patches:
+    - patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: all
+        spec:
+          template:
+            spec:
+              containers:
+                - name: snapshot-controller
+                  resources:
+                    requests:
+                      cpu: 10m
+                      memory: 32Mi
+                    limits:
+                      memory: 32Mi
+      target:
+        kind: Deployment
+        name: snapshot-controller
