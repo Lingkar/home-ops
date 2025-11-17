@@ -83,10 +83,10 @@ instance:
                   - name: manager
                     resources:
                       requests:
-                        cpu: 10m
-                        memory: 70Mi
+                        cpu: 300m
+                        memory: 180Mi
                       limits:
-                        memory: 70Mi
+                        memory: 180Mi
         target:
           kind: Deployment
           name: notification-controller
@@ -102,10 +102,10 @@ instance:
                   - name: manager
                     resources:
                       requests:
-                        cpu: 100m
-                        memory: 150Mi
+                        cpu: 300m
+                        memory: 180Mi
                       limits:
-                        memory: 150Mi
+                        memory: 180Mi
         target:
           kind: Deployment
           name: source-controller
