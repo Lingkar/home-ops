@@ -22,6 +22,9 @@ instance:
   kustomize:
     patches:
       - # Increase the number of workers
+        target:
+          kind: Deployment
+          name: (kustomize-controller|helm-controller|source-controller)
         patch: |
           - op: add
             path: /spec/template/spec/containers/0/args/-
@@ -29,11 +32,11 @@ instance:
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --requeue-dependency=5s
-        target:
-          kind: Deployment
-          name: (kustomize-controller|helm-controller|source-controller)
       # Set resources
-      - patch: |
+      - target:
+          kind: Deployment
+          name: helm-controller
+        patch: |
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -49,29 +52,29 @@ instance:
                         memory: 200Mi
                       limits:
                         memory: 200Mi
-        target:
-          kind: Deployment
-          name: helm-controller
-      - patch: |
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: all
-          spec:
-            template:
-              spec:
-                containers:
-                  - name: manager
-                    resources:
-                      requests:
-                        cpu: 300m
-                        memory: 200Mi
-                      limits:
-                        memory: 200Mi
-        target:
+      - target:
           kind: Deployment
           name: kustomize-controller
-      - patch: |
+        patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: all
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: manager
+                    resources:
+                      requests:
+                        cpu: 300m
+                        memory: 200Mi
+                      limits:
+                        memory: 200Mi
+      - target:
+          kind: Deployment
+          name: notification-controller
+        patch: |
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -87,10 +90,10 @@ instance:
                         memory: 70Mi
                       limits:
                         memory: 70Mi
-        target:
+      - target:
           kind: Deployment
-          name: notification-controller
-      - patch: |
+          name: source-controller
+        patch: |
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -106,10 +109,10 @@ instance:
                         memory: 180Mi
                       limits:
                         memory: 180Mi
-        target:
+      - target:
           kind: Deployment
-          name: source-controller
-      - patch: |
+          name: source-watcher
+        patch: |
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -125,10 +128,10 @@ instance:
                         memory: 50Mi
                       limits:
                         memory: 50Mi
-        target:
-          kind: Deployment
-          name: source-watcher
-      # - patch: |
+      # - target:
+      #     kind: Deployment
+      #     name: (kustomize-controller|helm-controller|source-controller)
+      #   patch: |
       #     apiVersion: apps/v1
       #     kind: Deployment
       #     metadata:
@@ -143,10 +146,10 @@ instance:
       #                   cpu:
       #                 limits:
       #                   memory: 1Gi
-      #   target:
-      #     kind: Deployment
-      #     name: (kustomize-controller|helm-controller|source-controller)
       - # Enable in-memory kustomize builds
+        target:
+          kind: Deployment
+          name: kustomize-controller
         patch: |
           - op: add
             path: /spec/template/spec/containers/0/args/-
@@ -157,10 +160,10 @@ instance:
               name: temp
               emptyDir:
                 medium: Memory
+      - # Enable Helm repositories caching
         target:
           kind: Deployment
-          name: kustomize-controller
-      - # Enable Helm repositories caching
+          name: source-controller
         patch: |
           - op: add
             path: /spec/template/spec/containers/0/args/-
@@ -171,10 +174,10 @@ instance:
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --helm-cache-purge-interval=5m
+      - # Flux near OOM detection for Helm
         target:
           kind: Deployment
-          name: source-controller
-      - # Flux near OOM detection for Helm
+          name: helm-controller
         patch: |
           - op: add
             path: /spec/template/spec/containers/0/args/-
@@ -185,14 +188,11 @@ instance:
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --oom-watch-interval=500ms
+      - # Disable chart digest tracking
         target:
           kind: Deployment
           name: helm-controller
-      - # Disable chart digest tracking
         patch: |
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --feature-gates=DisableChartDigestTracking=true
-        target:
-          kind: Deployment
-          name: helm-controller
