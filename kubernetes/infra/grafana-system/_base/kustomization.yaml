@@ -2,6 +2,7 @@
 resources:
   - helmrelease.yaml
   - source.yaml
+  - grafana-dashboard.yaml
 configMapGenerator:
   - name: values-grafana-operator
     behavior: create
