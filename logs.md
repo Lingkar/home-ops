@@ -2,10 +2,11 @@
 - [x] Piraeus - Linstor
 - [x] Via VolumeSnapshot recreate PV in different storageclass
 - [x] Set-up monitoring stack
-- [/] Set-up resource requests and limits for all resources
+- [x] Set-up resource requests and limits for all resources
     - [x] Analysis to what extent we can automate this, e.g. krr -> docker run --net host --rm -t --volume ./kubeconfig:/root/.kube/config us-central1-docker.pkg.dev/genuine-flight-317411/devel/krr:v1.8.3 python krr.py simple --prometheus-url http://localhost:9090 --mem-min 20
-    - [ ] Fix resources in kube-system
+    - [x] Fix resources in kube-system
 - [ ] Remove sops-age from namespaces that don't need it
+- [ ] Fix custom RPI PWM Fan implementation
 - [ ] Velero back-up snapshots to Cloud
 - [ ] FluxCD diffing -> fix pipelines
 
