@@ -28,4 +28,4 @@ patches:
             spec:
               interval: 15m
               driftDetection:
-                mode: enable
+                mode: enabled
