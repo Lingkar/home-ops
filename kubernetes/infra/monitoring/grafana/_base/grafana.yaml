@@ -40,7 +40,7 @@ kind: HTTPRoute
 metadata:
   name: grafana
 spec:
-  hostnames: ["grafana.${SECRET_DOMAIN}"]
+  hostnames: ["grafanah.${SECRET_DOMAIN}"]
   parentRefs:
     - name: internal
       namespace: network
