@@ -26,5 +26,6 @@ patches:
             metadata:
               name: all
             spec:
+              interval: 15m
               driftDetection:
                 mode: warn
