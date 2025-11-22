@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.18.1-standalone-strict/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: linstor-passphrase
+stringData:
+  MASTER_PASSPHRASE: ENC[AES256_GCM,data:q2wCtuzO5UVQYCNS1MwvV3Y5Ebn7YnvR0AoXAgrAy7Um44UZrth3o3X/ucjiL4h2fW4b1SPj5ks=,iv:9Nh6gtji5QdooG09sAWF/3k5QoLFByzEiPUg6Ztf1NM=,tag:XyMDrdxo+rWEiQYUzzK91w==,type:str]
+sops:
+  age:
+    - recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvdDlFdzlmTFhOV2JOZXJE
+        dE1UVzA1alNwbG03VC9kU0Q1TVZUUnpOMmpjCng4UVpDMm8rcVFKUFJ4WnVlTStq
+        cGQ2SHZrSGtWRlZISzlxZ2JnRFc4QUUKLS0tIEwzRU5GdDY5YVprQ0lNSE40bTF2
+        dFFPcHVqeEZ0TnBHRUNZUzBBaEUvd1EKqJ9o7jshi4F2uiWfvUXNYjTQMg66mgKX
+        2jleOXX18b2LJAEkOzr7h7RQfVSV5iXENrLsvwiuAj/JMfjUBBuVUw==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2025-11-22T16:07:30Z"
+  mac: ENC[AES256_GCM,data:CX2ePwJR+PhGH0axNSJ9IfQwKuOiTOeDMJGYDa146tQF9TJmcL7yrz6s7yyDwzOnFUglRH1rowWct1sF64reJZDDmI6hVbcRaUE3pzo9M1+/KrqQZxRWdU9HoHysvxf+vZiF85zV0Og1GovDNxEax1jD5PYUV2LUdN5tW2cCfZw=,iv:9xH7vxQkNnu6uVYNyCgsCbu555suvQhZz6UsTz+nY5o=,tag:wyh240pssy5UnmMGUVHTPQ==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  mac_only_encrypted: true
+  version: 3.11.0

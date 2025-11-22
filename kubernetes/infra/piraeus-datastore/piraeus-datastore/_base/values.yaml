@@ -1,6 +1,7 @@
 monitoring:
   enabled: true
 linstorCluster:
+  linstorPassphraseSecret: linstor-passphrase
   controller:
     podTemplate:
       spec:

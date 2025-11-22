@@ -1,10 +1,40 @@
-kubectl:
-  image:
-    repository: public.ecr.aws/bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
-    tag: latest
+configuration:
+  features: EnableCSI
+  backupStorageLocation:
+    - name: hetzner
+      provider: aws
+      bucket: 52c32d70-5f8d-40b1-87d7-3c1c3cf3dabe
+      prefix: home/velero
+      default: true
+      credentials:
+        name: s3-credentials
+        key: cloud
+      config:
+        region: fsn1
+        s3Url: https://fsn1.your-objectstorage.com
+        s3ForcePathStyle: "true"
+  volumeSnapshotLocation:
+    - name: hetzner
+      provider: aws
+      credentials:
+        name: s3-credentials
+        key: cloud
+      config:
+        region: fsn1
 metrics:
   serviceMonitor:
     enabled: true
   prometheusRule:
     enabled: true
 schedules: {}
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.13.0
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+kubectl:
+  image:
+    repository: public.ecr.aws/bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
+    tag: latest

@@ -17,6 +17,7 @@ nodes:
     ipAddress: "192.168.68.134"
     nodeLabels:
       piraeus.io/storage: "true"
+      linstor.io/storage: "true"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
@@ -40,6 +41,7 @@ nodes:
     installDisk: "/dev/sda"
     nodeLabels:
       piraeus.io/storage: "true"
+      linstor.io/storage: "true"
     machineSpec:
       secureboot: false
       mode: nocloud

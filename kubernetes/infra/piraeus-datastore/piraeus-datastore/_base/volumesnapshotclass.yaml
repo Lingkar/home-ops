@@ -1,8 +1,19 @@
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
-  name: piraeus-snapshots
+  name: linstor
   labels:
     velero.io/csi-volumesnapshot-class: "true"
 driver: linstor.csi.linbit.com
 deletionPolicy: Delete
+parameters:
+  snap.linstor.csi.linbit.com/type: S3
+  snap.linstor.csi.linbit.com/remote-name: hetzner
+  snap.linstor.csi.linbit.com/allow-incremental: "true"
+  snap.linstor.csi.linbit.com/s3-bucket: 52c32d70-5f8d-40b1-87d7-3c1c3cf3dabe
+  snap.linstor.csi.linbit.com/s3-endpoint: fsn1.your-objectstorage.com
+  snap.linstor.csi.linbit.com/s3-use-path-style: "true"
+  snap.linstor.csi.linbit.com/s3-signing-region: fsn1
+  # Refer here to the secret that holds access and secret key for the S3 endpoint.
+  csi.storage.k8s.io/snapshotter-secret-name: s3-credentials
+  csi.storage.k8s.io/snapshotter-secret-namespace: kube-system

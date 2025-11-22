@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
-  - ./helmrelease.yaml
-  - ./source.yaml
+  - helmrelease.yaml
+  - s3-credentials.sops.yaml
+  - source.yaml
 configMapGenerator:
   - name: values-velero
     behavior: create
