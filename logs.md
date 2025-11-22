@@ -82,3 +82,41 @@ sys     0m 0.42s
 real    0m 3.53s
 user    0m 0.01s
 sys     0m 0.34s
+
+## On homelab HDD
+time dd if=/dev/zero bs=1024k of=./testfile count=1024
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 10.8816 s, 98.7 MB/s
+
+real    0m10.886s
+user    0m0.012s
+sys     0m1.514s
+
+time dd if=./testfile bs=1024k of=/dev/null count=1024
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 6.27457 s, 171 MB/s
+
+real    0m6.279s
+user    0m0.003s
+sys     0m0.605s
+
+## On homelab SSD
+time dd if=/dev/zero bs=1024k of=./testfile count=1024
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 2.4214 s, 443 MB/s
+
+real    0m2.424s
+user    0m0.008s
+sys     0m1.407s
+
+time dd if=./testfile bs=1024k of=/dev/null count=1024
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.442469 s, 2.4 GB/s
+
+real    0m0.445s
+user    0m0.001s
+sys     0m0.310s
