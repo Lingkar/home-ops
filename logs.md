@@ -6,7 +6,9 @@
     - [x] Analysis to what extent we can automate this, e.g. krr -> docker run --net host --rm -t --volume ./kubeconfig:/root/.kube/config us-central1-docker.pkg.dev/genuine-flight-317411/devel/krr:v1.8.3 python krr.py simple --prometheus-url http://localhost:9090 --mem-min 20
     - [x] Fix resources in kube-system
 - [x] Remove sops-age from namespaces that don't need it
-- [ ] Velero back-up snapshots to Cloud
+- [x] Velero back-up snapshots to Cloud
+- [ ] Velero perform full cluster restore
+- [ ] Velero set-up scheduled backups
 - [ ] FluxCD diffing -> fix pipelines
 - [ ] Fix ETCD grafana dashboard
 - [b] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
