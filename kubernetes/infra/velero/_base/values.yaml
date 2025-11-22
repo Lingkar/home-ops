@@ -5,8 +5,8 @@ configuration:
   backupStorageLocation:
     - name: hetzner
       provider: aws
-      bucket: 52c32d70-5f8d-40b1-87d7-3c1c3cf3dabe
-      prefix: home/velero
+      bucket: buijnsters-home-backup
+      prefix: velero
       default: true
       config:
         region: fsn1
@@ -25,7 +25,16 @@ metrics:
     enabled: true
   prometheusRule:
     enabled: true
-schedules: {}
+schedules:
+  pv-snapshots:
+    disabled: false
+    schedule: "5 */4 * * *" # Back-up every fourth hour
+    template:
+      ttl: 10h
+      excludedNamespaces: [] # Should exclude certain namespaces in the future
+      includedResources:
+        - pv
+        - pvc
 initContainers:
   - name: velero-plugin-for-aws
     image: velero/velero-plugin-for-aws:v1.13.0

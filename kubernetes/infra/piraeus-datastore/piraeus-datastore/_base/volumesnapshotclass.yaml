@@ -10,7 +10,7 @@ parameters:
   snap.linstor.csi.linbit.com/type: S3
   snap.linstor.csi.linbit.com/remote-name: hetzner
   snap.linstor.csi.linbit.com/allow-incremental: "true"
-  snap.linstor.csi.linbit.com/s3-bucket: 52c32d70-5f8d-40b1-87d7-3c1c3cf3dabe
+  snap.linstor.csi.linbit.com/s3-bucket: buijnsters-home-backup
   snap.linstor.csi.linbit.com/s3-endpoint: fsn1.your-objectstorage.com
   snap.linstor.csi.linbit.com/s3-use-path-style: "true"
   snap.linstor.csi.linbit.com/s3-signing-region: fsn1
