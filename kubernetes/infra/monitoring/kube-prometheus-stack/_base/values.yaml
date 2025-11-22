@@ -32,6 +32,12 @@ prometheus:
           resources:
             requests:
               storage: 8Gi
+nodeExporter:
+  operatingSystems:
+    aix:
+      enabled: false
+    darwin:
+      enabled: false
 kube-state-metrics:
   resources:
     requests:
