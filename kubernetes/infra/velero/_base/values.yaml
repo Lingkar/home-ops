@@ -1,7 +1,6 @@
 kubectl:
   image:
-    repository: bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
-    digest: sha256:ed0797d94893f9c8e0b1537912fe97d2172b28ee05a55158a1abb916399380bc
+    repository: public.ecr.aws/bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
     tag: latest
 metrics:
   serviceMonitor:
