@@ -5,7 +5,7 @@ metadata:
 spec:
   allowCrossNamespaceImport: true
   url: https://grafana.com/api/dashboards/23838/revisions/1/download
-  folder: Velero
+  folder: velero
   instanceSelector:
     matchLabels:
       dashboards: grafana
