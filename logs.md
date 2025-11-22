@@ -7,8 +7,8 @@
     - [x] Fix resources in kube-system
 - [x] Remove sops-age from namespaces that don't need it
 - [x] Velero back-up snapshots to Cloud
-- [ ] Velero perform full cluster restore
-- [ ] Velero set-up scheduled backups
+- [ ] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
+- [x] Velero set-up scheduled backups 
 - [ ] FluxCD diffing -> fix pipelines
 - [ ] Fix ETCD grafana dashboard
 - [b] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
