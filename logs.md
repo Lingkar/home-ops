@@ -8,9 +8,8 @@
 - [x] Remove sops-age from namespaces that don't need it
 - [ ] Velero back-up snapshots to Cloud
 - [ ] FluxCD diffing -> fix pipelines
-
-# Blocked:
-- [ ] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
+- [ ] Fix ETCD grafana dashboard
+- [b] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
 
 # Read write speed-test
 ## rpi-00

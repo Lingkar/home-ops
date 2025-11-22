@@ -8,6 +8,7 @@ resources:
   - piraeus.yaml
   - rabbitmq.yaml
   - spegel.yaml
+  - velero.yaml
 patches:
   - target:
       kind: Kustomization

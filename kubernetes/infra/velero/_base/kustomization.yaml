@@ -3,7 +3,7 @@ resources:
   - ./helmrelease.yaml
   - ./source.yaml
 configMapGenerator:
-  - name: values-spegel
+  - name: values-velero
     behavior: create
     files:
       - values.yaml=values.yaml
