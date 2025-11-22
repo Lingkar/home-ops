@@ -1,3 +1,5 @@
+kubectl:
+  image: bitnami/kubectl:latest #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
 metrics:
   serviceMonitor:
     enabled: true
