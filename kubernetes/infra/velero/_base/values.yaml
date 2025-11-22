@@ -1,3 +1,5 @@
+credentials:
+  existingSecret: s3-credentials
 configuration:
   features: EnableCSI
   backupStorageLocation:
@@ -6,9 +8,6 @@ configuration:
       bucket: 52c32d70-5f8d-40b1-87d7-3c1c3cf3dabe
       prefix: home/velero
       default: true
-      credentials:
-        name: s3-credentials
-        key: cloud
       config:
         region: fsn1
         s3Url: https://fsn1.your-objectstorage.com
