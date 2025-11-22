@@ -44,5 +44,5 @@ initContainers:
         name: plugins
 kubectl:
   image:
-    repository: alpine/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
-    tag: 1.34.2
+    repository: bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
+    tag: latest
