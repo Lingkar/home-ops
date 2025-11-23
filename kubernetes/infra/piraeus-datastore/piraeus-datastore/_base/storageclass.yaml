@@ -7,6 +7,6 @@ metadata:
 provisioner: linstor.csi.linbit.com
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
-parameters:
+parameters: #https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
   linstor.csi.linbit.com/storagePool: lvm-thin
   linstor.csi.linbit.com/placementCount: "2"
