@@ -8,6 +8,8 @@
 - [x] Remove sops-age from namespaces that don't need it
 - [x] Velero back-up snapshots to Cloud
 - [x] Velero set-up scheduled backups 
+- [ ] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
+    - [ ] Build debug container for the linstor-csi image, including extra spew dumps
 - [ ] Set resources Velero, api-server, scheduler, controller manager
 - [ ] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [ ] FluxCD diffing -> fix pipelines
