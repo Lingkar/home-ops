@@ -14,10 +14,6 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kube-system/cilium/_base
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

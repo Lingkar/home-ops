@@ -17,10 +17,6 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./flux-system/flux-instance/_base
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

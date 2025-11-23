@@ -16,10 +16,6 @@ spec:
   path: ./monitoring/grafana/_base
   components:
     - ../../../components/common
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
