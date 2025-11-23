@@ -18,6 +18,10 @@ patches:
       metadata:
         name: all
       spec:
+        postBuild:
+          substituteFrom:
+            - name: cluster-secrets
+              kind: Secret
         patches:
         - target:
             kind: HelmRelease
