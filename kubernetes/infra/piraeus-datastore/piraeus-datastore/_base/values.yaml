@@ -69,6 +69,13 @@ linstorCluster:
       spec:
         containers:
           - name: linstor-csi
+            args:
+              - --log-level=debug
+              - --csi-endpoint=unix://$(ADDRESS)
+              - --property-namespace=$(PROPERTY_NAMESPACE)
+              - --label-by-storage-pool=$(LABEL_BY_STORAGE_POOL)
+              - --enable-rwx=$(ENABLE_RWX)
+              - --nfs-reactor-config-map-name=$(NFS_REACTOR_CONFIG_MAP_NAME)
             resources:
               requests:
                 cpu: 10m
