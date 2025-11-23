@@ -2,6 +2,7 @@ credentials:
   existingSecret: s3-credentials
 configuration:
   features: EnableCSI
+  garbageCollectionFrequency: 15m
   backupStorageLocation:
     - name: hetzner
       provider: aws
