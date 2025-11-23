@@ -1,3 +1,4 @@
 resources:
   - credentials.sops.yaml
   - grafana.yaml
+  - httproute.yaml

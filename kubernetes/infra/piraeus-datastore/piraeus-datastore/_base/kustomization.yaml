@@ -2,6 +2,7 @@
 resources:
   - dashboard.yaml
   - helmrelease.yaml
+  - httproute.yaml
   - passphrase.sops.yaml
   - source.yaml
   - storageclass.yaml
