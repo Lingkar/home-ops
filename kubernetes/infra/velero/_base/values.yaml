@@ -33,9 +33,9 @@ schedules:
   #       - pvc
   pv-snapshots:
     disabled: false
-    schedule: "*/15 * * * *" # Back-up every fourth hour
+    schedule: "*/30 * * * *" # Back-up every fourth hour
     template:
-      ttl: 1h
+      ttl: 2h
       excludedNamespaces: [] # Should exclude certain namespaces in the future
       includedResources:
         - pv
