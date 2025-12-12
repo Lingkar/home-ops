@@ -48,8 +48,12 @@ linstorCluster:
         containers:
           - name: linstor-csi
             image: quay.io/piraeusdatastore/piraeus-csi:v1.10.4
-            # args:
-            #   - --log-level=debug
+            args:
+              - --log-level=debug
+              - --csi-endpoint=unix:///csi/csi.sock
+              - --node=$(KUBE_NODE_NAME)
+              - --property-namespace=Aux/topology
+              - --label-by-storage-pool=false
             resources:
               requests:
                 cpu: 10m
