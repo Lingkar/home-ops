@@ -47,6 +47,7 @@ servers:
       - name: log
         configBlock: |-
           class error
+priorityClassName: system-node-critical
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
