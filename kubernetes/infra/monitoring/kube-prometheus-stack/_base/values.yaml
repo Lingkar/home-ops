@@ -31,7 +31,7 @@ prometheus:
         spec:
           resources:
             requests:
-              storage: 8Gi
+              storage: 16Gi
 nodeExporter:
   operatingSystems:
     aix:
