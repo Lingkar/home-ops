@@ -48,8 +48,8 @@ linstorCluster:
         containers:
           - name: linstor-csi
             image: quay.io/piraeusdatastore/piraeus-csi:v1.10.4
-            args:
-              - --log-level=debug
+            # args:
+            #   - --log-level=debug
             resources:
               requests:
                 cpu: 10m
