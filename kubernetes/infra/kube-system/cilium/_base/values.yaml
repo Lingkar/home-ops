@@ -23,6 +23,7 @@ dashboards:
 endpointRoutes:
   enabled: true
 envoy:
+  enabled: true
   resources:
     limits:
       memory: 80Mi
