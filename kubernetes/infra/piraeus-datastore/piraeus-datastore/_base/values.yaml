@@ -10,8 +10,9 @@ linstorCluster:
             resources:
               requests:
                 cpu: 30m
+                memory: 1Gi
               limits:
-                memory: 586Mi
+                memory: 1Gi
   affinityController:
     podTemplate:
       spec:
@@ -134,8 +135,9 @@ linstorSatelliteConfigurations:
             resources:
               requests:
                 cpu: 10m
+                memory: 512Mi
               limits:
-                memory: 350Mi
+                memory: 512Mi
           - name: drbd-reactor
             resources:
               requests:
