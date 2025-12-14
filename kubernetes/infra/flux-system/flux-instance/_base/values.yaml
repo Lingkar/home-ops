@@ -49,9 +49,9 @@ instance:
                     resources:
                       requests:
                         cpu: 70m
-                        memory: 200Mi
+                        memory: 400Mi
                       limits:
-                        memory: 200Mi
+                        memory: 400Mi
       - target:
           kind: Deployment
           name: kustomize-controller
