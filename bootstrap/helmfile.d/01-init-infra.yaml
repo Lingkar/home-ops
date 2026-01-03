@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
+  args:
+    - --take-ownership
+
+releases:
+  - name: cilium
+    namespace: kube-system
+    chart: oci://ghcr.io/home-operations/charts-mirror/cilium
+    version: 1.18.4
+    values:
+      - "../../kubernetes/infra/kube-system/cilium/_base/values.yaml"
+
+  - name: coredns
+    namespace: kube-system
+    chart: oci://ghcr.io/coredns/charts/coredns
+    version: 1.45.0
+    values:
+      - "../../kubernetes/infra/kube-system/coredns/_base/values.yaml"
+    needs: ["kube-system/cilium"]
+
+  - name: spegel
+    namespace: spegel
+    chart: oci://ghcr.io/spegel-org/helm-charts/spegel
+    version: 0.5.1
+    values:
+      - "../../kubernetes/infra/spegel/_base/values.yaml"
+    needs: ["kube-system/coredns"]
+
+  - name: cert-manager
+    namespace: cert-manager
+    chart: oci://quay.io/jetstack/charts/cert-manager
+    version: v1.19.1
+    values:
+      - "../../kubernetes/infra/cert-manager/_base/values.yaml"
+    needs: ["kube-system/spegel"]
+
+  - name: velero
+    namespace: velero
+    chart: oci://ghcr.io/vmware-tanzu/charts/velero
+    version: 11.2.0
+    values:
+      - "../../kubernetes/infra/velero/_base/values.yaml"
+    needs: ["kube-system/spegel"]
+
+  - name: piraeus-operator
+    namespace: piraeus-datastore
+    chart: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
+    version: 2.10.2
+    values:
+      - "../../kubernetes/infra/piraeus-datastore/piraeus-operator/_base/values.yaml"
+    needs: ["kube-system/spegel"]
+
+  - name: piraeus-datastore
+    namespace: piraeus-datastore
+    chart: oci://ghcr.io/piraeusdatastore/helm-charts/linstor-cluster
+    version: 1.1.1
+    values:
+      - "../../kubernetes/infra/piraeus-datastore/piraeus-datastore/_base/values.yaml"
+    needs: ["piraeus-datastore/piraeus-operator"]

@@ -27,13 +27,41 @@ function wait_for_nodes() {
 function apply_sops_secrets() {
     log debug "Applying secrets"
 
-    local -r secrets=(
+    # Kube-system
+    local -r secrets_kube=(
+        "${ROOT_DIR}/kubernetes/infra/kube-system/external-snapshotter/_base/s3-credentials.sops.yaml"
+    )
+
+    for secret in "${secrets_kube[@]}"; do
+        if [ ! -f "${secret}" ]; then
+            log warn "File does not exist" "file=${secret}"
+            continue
+        fi
+
+        # Check if the secret resources are up-to-date
+        if sops exec-file "${secret}" "kubectl --namespace kube-system diff --filename {}" &>/dev/null; then
+            log info "Secret resource is up-to-date" "resource=$(basename "${secret}" ".sops.yaml")"
+            continue
+        fi
+
+        # Apply secret resources
+        if sops exec-file "${secret}" "kubectl --namespace kube-system apply --server-side --filename {}" &>/dev/null; then
+            log info "Secret resource applied successfully" "resource=$(basename "${secret}" ".sops.yaml")"
+        else
+            log error "Failed to apply secret resource" "resource=$(basename "${secret}" ".sops.yaml")"
+        fi
+    done
+
+    # Flux-system
+    kubectl get ns | grep -q "^flux-system" || kubectl create namespace flux-system
+
+    local -r secrets_flux=(
         "${ROOT_DIR}/bootstrap/github-deploy-key.sops.yaml"
         "${ROOT_DIR}/kubernetes/components/common/sops/cluster-secrets.sops.yaml"
         "${ROOT_DIR}/kubernetes/infra/flux-system/flux-instance/_base/sops-age.sops.yaml"
     )
 
-    for secret in "${secrets[@]}"; do
+    for secret in "${secrets_flux[@]}"; do
         if [ ! -f "${secret}" ]; then
             log warn "File does not exist" "file=${secret}"
             continue
@@ -52,11 +80,93 @@ function apply_sops_secrets() {
             log error "Failed to apply secret resource" "resource=$(basename "${secret}" ".sops.yaml")"
         fi
     done
+
+    # Velero
+    kubectl get ns | grep -q "^velero" || kubectl create namespace velero
+
+    local -r secrets_velero=(
+        "${ROOT_DIR}/kubernetes/infra/velero/_base/s3-credentials.sops.yaml"
+    )
+
+    for secret in "${secrets_velero[@]}"; do
+        if [ ! -f "${secret}" ]; then
+            log warn "File does not exist" "file=${secret}"
+            continue
+        fi
+
+        # Check if the secret resources are up-to-date
+        if sops exec-file "${secret}" "kubectl --namespace velero diff --filename {}" &>/dev/null; then
+            log info "Secret resource is up-to-date" "resource=$(basename "${secret}" ".sops.yaml")"
+            continue
+        fi
+
+        # Apply secret resources
+        if sops exec-file "${secret}" "kubectl --namespace velero apply --server-side --filename {}" &>/dev/null; then
+            log info "Secret resource applied successfully" "resource=$(basename "${secret}" ".sops.yaml")"
+        else
+            log error "Failed to apply secret resource" "resource=$(basename "${secret}" ".sops.yaml")"
+        fi
+    done
+
+    # Piraeus-datastore
+    kubectl get ns | grep -q "^piraeus-datastore" || kubectl create namespace piraeus-datastore
+
+    local -r secrets_pireaus=(
+        "${ROOT_DIR}/kubernetes/infra/piraeus-datastore/piraeus-datastore/_base/passphrase.sops.yaml"
+    )
+
+    for secret in "${secrets_pireaus[@]}"; do
+        if [ ! -f "${secret}" ]; then
+            log warn "File does not exist" "file=${secret}"
+            continue
+        fi
+
+        # Check if the secret resources are up-to-date
+        if sops exec-file "${secret}" "kubectl --namespace piraeus-datastore diff --filename {}" &>/dev/null; then
+            log info "Secret resource is up-to-date" "resource=$(basename "${secret}" ".sops.yaml")"
+            continue
+        fi
+
+        # Apply secret resources
+        if sops exec-file "${secret}" "kubectl --namespace piraeus-datastore apply --server-side --filename {}" &>/dev/null; then
+            log info "Secret resource applied successfully" "resource=$(basename "${secret}" ".sops.yaml")"
+        else
+            log error "Failed to apply secret resource" "resource=$(basename "${secret}" ".sops.yaml")"
+        fi
+    done
+
+    local -r manifests_pireaus=(
+        "${ROOT_DIR}/kubernetes/infra/piraeus-datastore/piraeus-datastore/_base/volumesnapshotclass.yaml"
+        "${ROOT_DIR}/kubernetes/infra/piraeus-datastore/piraeus-datastore/_base/storageclass.yaml"
+    )
+
+    for manifest in "${manifests_pireaus[@]}"; do
+        if [ ! -f "${manifest}" ]; then
+            log warn "File does not exist" "file=${manifest}"
+            continue
+        fi
+
+        # Check if the manifest resources are up-to-date
+        if kubectl --namespace piraeus-datastore diff -f $manifest &>/dev/null; then
+            log info "manifest resource is up-to-date" "resource=$(basename "${manifest}" ".yaml")"
+            continue
+        fi
+
+        # Apply manifest resources
+        if kubectl --namespace piraeus-datastore apply --server-side -f $manifest &>/dev/null; then
+            log info "manifest resource applied successfully" "resource=$(basename "${manifest}" ".yaml")"
+        else
+            log error "Failed to apply manifest resource" "resource=$(basename "${manifest}" ".yaml")"
+        fi
+    done
 }
 
 # CRDs to be applied before the helmfile charts are installed
 function apply_crds() {
     log debug "Applying CRDs"
+
+    # external-snapshotter
+    kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd | kubectl apply -f -
 
     local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile.d/00-crds.yaml"
 
@@ -81,10 +191,10 @@ function apply_crds() {
 }
 
 # Sync Helm releases
-function sync_helm_releases() {
-    log debug "Syncing Helm releases"
+function sync_init_infra() {
+    log debug "Syncing init infra"
 
-    local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile.d/01-apps.yaml"
+    local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile.d/01-init-infra.yaml"
 
     if [[ ! -f "${helmfile_file}" ]]; then
         log error "File does not exist" "file=${helmfile_file}"
@@ -94,7 +204,23 @@ function sync_helm_releases() {
         log error "Failed to sync Helm releases"
     fi
 
-    log info "Helm releases synced successfully"
+    log info "Init infra synced successfully"
+}
+
+function sync_gitops_infra() {
+    log debug "Syncing gitops infra"
+
+    local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile.d/02-gitops-infra.yaml"
+
+    if [[ ! -f "${helmfile_file}" ]]; then
+        log error "File does not exist" "file=${helmfile_file}"
+    fi
+
+    if ! helmfile --file "${helmfile_file}" sync --hide-notes; then
+        log error "Failed to sync Helm releases"
+    fi
+
+    log info "Init infra synced successfully"
 }
 
 function main() {
@@ -105,12 +231,12 @@ function main() {
     wait_for_nodes
 
     apply_crds
-
-    # sync helm_releases of kube-system and flux-system
-    # sync_helm_releases
-
-    # Now flux-system namespace exists
     apply_sops_secrets
+
+    sync_init_infra
+    # TODO:: Create custom Velero logic for restoring of last backup!
+
+    sync_gitops_infra
 
     log info "Congrats! The cluster is bootstrapped and Flux is syncing the Git repository"
 }

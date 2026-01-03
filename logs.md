@@ -8,13 +8,13 @@
 - [x] Remove sops-age from namespaces that don't need it
 - [x] Velero back-up snapshots to Cloud
 - [x] Velero set-up scheduled backups 
-- [ ] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
-    - [ ] Build debug container for the linstor-csi image, including extra spew dumps
+- [x] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
+- [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [ ] Set resources Velero, api-server, scheduler, controller manager
-- [ ] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
-- [ ] FluxCD diffing -> fix pipelines
+- [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Fix ETCD grafana dashboard
-- [b] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
+- [ ] FluxCD diffing -> fix pipelines
+- [ ] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
 
 # Read write speed-test
 ## rpi-00
