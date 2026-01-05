@@ -16,6 +16,7 @@ spec:
   path: ./spegel/_base
   components:
     - ../../components/common
+    - ../../components/privileged
   prune: true
   retryInterval: 2m
   sourceRef:

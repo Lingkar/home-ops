@@ -47,6 +47,7 @@ spec:
   path: ./piraeus-datastore/piraeus-datastore/_base
   components:
     - ../../../components/common
+    - ../../../components/privileged
   prune: true
   retryInterval: 2m
   sourceRef:

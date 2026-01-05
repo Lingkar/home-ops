@@ -16,6 +16,7 @@ spec:
   path: ./monitoring/kube-prometheus-stack/_base
   components:
     - ../../../components/common
+    - ../../../components/privileged
   prune: true
   retryInterval: 2m
   sourceRef:
