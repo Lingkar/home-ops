@@ -14,7 +14,7 @@ spec:
       name: sops-age
   dependsOn:
     - name: kube-prometheus-stack
-      namespace: monitoring
+      namespace: flux-system
   interval: 1h
   path: ./monitoring/grafana/_base
   prune: true
