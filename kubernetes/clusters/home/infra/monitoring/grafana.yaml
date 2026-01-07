@@ -12,10 +12,11 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  dependsOn:
+    - name: kube-prometheus-stack
+      namespace: monitoring
   interval: 1h
   path: ./monitoring/grafana/_base
-  components:
-    - ../../../components/common
   prune: true
   retryInterval: 2m
   sourceRef:
