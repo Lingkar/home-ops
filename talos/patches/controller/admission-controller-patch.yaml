@@ -1,3 +1,21 @@
 cluster:
   apiServer:
-    admissionControl: []
+    admissionControl:
+      - name: PodSecurity
+        configuration:
+          apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+          kind: PodSecurityConfiguration
+          defaults:
+            enforce: baseline
+            enforce-version: latest
+            audit: restricted
+            audit-version: latest
+            warn: restricted
+            warn-version: latest
+          exemptions:
+            namespaces:
+              - piraeus-datastore
+              - monitoring
+              - spegel
+            runtimeClasses: []
+            usernames: []
