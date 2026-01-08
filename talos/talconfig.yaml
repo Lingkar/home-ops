@@ -94,6 +94,37 @@ nodes:
         dhcp: true
         vip:
           ip: "192.168.69.5"
+  # TODO:: add user volume
+  - hostname: "c-02"
+    ipAddress: "192.168.68.137"
+    installDisk: "/dev/nvme0n1"
+    # nodeLabels:
+    #   piraeus.io/storage: "true"
+    #   linstor.io/storage: "true"
+    machineSpec:
+      secureboot: true
+      mode: metal
+      arch: amd64
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:34:67:7e"
+        dhcp: true
+        vip:
+          ip: "192.168.69.5"
+    schematic:
+      customization:
+        extraKernelArgs:
+          - amd_iommu=off
+          - amdgpu.gttsize=126976
+          - ttm.pages_limit=32505856
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/drbd
+            - siderolabs/amdgpu
+            - siderolabs/amd-ucode
+    # patches:
+    #   - "@./patches/c-02/raw-volume-ssd-0.yaml"
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"
@@ -110,8 +141,8 @@ controlPlane:
     - name: drbd_transport_tcp
     # LVM_THIN storage pools require this module
     - name: dm-thin-pool
-    # ZFS storage pools require this module from the ZFS extension
-    # - name: zfs
+      # ZFS storage pools require this module from the ZFS extension
+      # - name: zfs
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
