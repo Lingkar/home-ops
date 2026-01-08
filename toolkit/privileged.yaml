@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: privileged
+  name: privileged
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privileged
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: privileged
+    spec:
+      containers:
+        - image: ubuntu
+          name: ubuntu
+          resources: {}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "tail -f /dev/null"
+          securityContext:
+            privileged: true
+            # allowPrivilegeEscalation: false
+          #   runAsNonRoot: true
+          #   seccompProfile:
+          #     type: RuntimeDefault
+          #   capabilities:
+          #     drop:
+          #       - ALL
+status: {}
