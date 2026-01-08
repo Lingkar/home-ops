@@ -21,7 +21,7 @@ linstorCluster:
               requests:
                 cpu: 10m
               limits:
-                memory: 20Mi
+                memory: 64Mi
   highAvailabilityController:
     podTemplate:
       spec:
@@ -31,7 +31,7 @@ linstorCluster:
               requests:
                 cpu: 10m
               limits:
-                memory: 32Mi
+                memory: 128Mi
   nfsServer:
     podTemplate:
       spec:
@@ -135,13 +135,13 @@ linstorSatelliteConfigurations:
               requests:
                 cpu: 10m
               limits:
-                memory: 350Mi
+                memory: 512Mi
           - name: drbd-reactor
             resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 20Mi
+                memory: 64Mi
         initContainers:
           - name: drbd-shutdown-guard
             $patch: delete
