@@ -187,5 +187,5 @@ linstorSatelliteConfigurations:
           thinPool: thin
         source:
           hostDevices:
-            - /dev/nvme0n1p7
-            - /dev/nvme1n1p5
+            - /dev/disk/by-partlabel/r-ssd-0
+            - /dev/disk/by-partlabel/r-ssd-1
