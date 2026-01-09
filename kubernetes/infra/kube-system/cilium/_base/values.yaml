@@ -26,7 +26,7 @@ envoy:
   enabled: true
   resources:
     limits:
-      memory: 80Mi
+      memory: 256Mi
     requests:
       cpu: 30m
       memory: 256Mi
