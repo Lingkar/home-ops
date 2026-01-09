@@ -9,9 +9,9 @@ linstorCluster:
           - name: linstor-controller
             resources:
               requests:
-                cpu: 30m
+                cpu: 2000m
               limits:
-                memory: 586Mi
+                memory: 20Gi
   affinityController:
     podTemplate:
       spec:

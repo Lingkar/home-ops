@@ -9,7 +9,7 @@ deletionPolicy: Delete
 parameters:
   snap.linstor.csi.linbit.com/type: S3
   snap.linstor.csi.linbit.com/remote-name: hetzner
-  snap.linstor.csi.linbit.com/delete-local: "true"
+  # snap.linstor.csi.linbit.com/delete-local: "true"
   snap.linstor.csi.linbit.com/allow-incremental: "true"
   snap.linstor.csi.linbit.com/s3-bucket: buijnsters-home-backup
   snap.linstor.csi.linbit.com/s3-endpoint: fsn1.your-objectstorage.com
