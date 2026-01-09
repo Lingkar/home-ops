@@ -9,7 +9,8 @@ linstorCluster:
           - name: linstor-controller
             resources:
               requests:
-                cpu: 2000m
+                cpu: 4000m
+                memory: 20Gi
               limits:
                 memory: 20Gi
   affinityController:
