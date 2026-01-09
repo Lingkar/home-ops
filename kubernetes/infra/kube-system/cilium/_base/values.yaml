@@ -29,7 +29,7 @@ envoy:
       memory: 80Mi
     requests:
       cpu: 30m
-      memory: 80Mi
+      memory: 256Mi
   rollOutPods: true
   prometheus:
     serviceMonitor:
