@@ -68,9 +68,9 @@ instance:
                     resources:
                       requests:
                         cpu: 300m
-                        memory: 200Mi
+                        memory: 400Mi
                       limits:
-                        memory: 200Mi
+                        memory: 400Mi
       - target:
           kind: Deployment
           name: notification-controller
