@@ -177,3 +177,15 @@ linstorSatelliteConfigurations:
         source:
           hostDevices:
             - /dev/sdb
+  - name: c-02
+    nodeSelector:
+      kubernetes.io/hostname: c-02
+    storagePools:
+      - name: ssd-lvm-thin
+        lvmThinPool:
+          volumeGroup: vg1
+          thinPool: thin
+        source:
+          hostDevices:
+            - /dev/nvme0n1p7
+            - /dev/nvme1n1p5

@@ -1,0 +1,7 @@
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: ssd-0
+provisioning:
+  diskSelector:
+    match: "!system_disk && disk.wwid == 'eui.0026b73842ac11e5'"
+  minSize: 500GB

@@ -98,9 +98,6 @@ nodes:
   - hostname: "c-02"
     ipAddress: "192.168.68.137"
     installDisk: "/dev/nvme0n1"
-    # nodeLabels:
-    #   piraeus.io/storage: "true"
-    #   linstor.io/storage: "true"
     machineSpec:
       secureboot: true
       mode: metal
@@ -123,8 +120,9 @@ nodes:
             - siderolabs/drbd
             - siderolabs/amdgpu
             - siderolabs/amd-ucode
-    # patches:
-    #   - "@./patches/c-02/raw-volume-ssd-0.yaml"
+    patches:
+      - "@./patches/c-02/system-disk-ssd-1.yaml"
+      - "@./patches/c-02/raw-volume-ssd-0.yaml"
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"

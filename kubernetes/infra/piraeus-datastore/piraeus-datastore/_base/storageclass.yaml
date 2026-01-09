@@ -2,11 +2,22 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: linstor
+provisioner: linstor.csi.linbit.com
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+parameters: #https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
+  linstor.csi.linbit.com/storagePool: lvm-thin
+  linstor.csi.linbit.com/placementCount: "2"
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ssd
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: linstor.csi.linbit.com
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 parameters: #https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
-  linstor.csi.linbit.com/storagePool: lvm-thin
+  linstor.csi.linbit.com/storagePool: ssd-lvm-thin
   linstor.csi.linbit.com/placementCount: "2"
