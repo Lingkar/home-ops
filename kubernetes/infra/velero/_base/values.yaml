@@ -7,7 +7,6 @@ configuration:
     - name: hetzner
       provider: velero.io/aws
       bucket: buijnsters-home-backup
-      prefix: velero
       default: true
       config:
         region: fsn1

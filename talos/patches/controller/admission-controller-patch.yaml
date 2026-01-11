@@ -17,5 +17,6 @@ cluster:
               - piraeus-datastore
               - monitoring
               - spegel
+              - velero
             runtimeClasses: []
             usernames: []
