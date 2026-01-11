@@ -1,4 +1,4 @@
 resources:
   - ks.yaml
-  - s3-credentials.sops.yaml
+  # - s3-credentials.sops.yaml
   - source.yaml
