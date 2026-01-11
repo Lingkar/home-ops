@@ -1,20 +1,26 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
+  name: privileged-0
+  namespace: monitoring
   labels:
     app: privileged
-  name: privileged
 spec:
-  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 100%
   selector:
     matchLabels:
       app: privileged
-  strategy: {}
   template:
     metadata:
       labels:
         app: privileged
     spec:
+      # nodeSelector:
+      #   run-privileged: "true"
       containers:
         - image: ubuntu
           name: ubuntu
@@ -23,13 +29,24 @@ spec:
             - "/bin/sh"
             - "-c"
             - "tail -f /dev/null"
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            # - name: modules
+            #   mountPath: /lib/modules
           securityContext:
             privileged: true
-            # allowPrivilegeEscalation: false
+          # allowPrivilegeEscalation: false
           #   runAsNonRoot: true
           #   seccompProfile:
           #     type: RuntimeDefault
           #   capabilities:
           #     drop:
-          #       - ALL
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        # - name: modules
+        #   hostPath:
+        #     path: /lib/modules
 status: {}

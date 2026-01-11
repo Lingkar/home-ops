@@ -29,7 +29,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: "not-existing"
+          storageClassName: ssd-lvm-thin-1
           resources:
             requests:
               storage: 16Gi
