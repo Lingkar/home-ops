@@ -5,7 +5,7 @@ configuration:
   garbageCollectionFrequency: 15m
   backupStorageLocation:
     - name: hetzner
-      provider: aws
+      provider: velero.io/aws
       bucket: buijnsters-home-backup
       prefix: velero
       default: true
@@ -15,12 +15,14 @@ configuration:
         s3ForcePathStyle: "true"
   volumeSnapshotLocation:
     - name: hetzner
-      provider: aws
-      credentials:
+      provider: velero.io/aws
+      credential:
         name: s3-credentials
         key: cloud
       config:
         region: fsn1
+        s3Url: https://fsn1.your-objectstorage.com
+        s3ForcePathStyle: "true"
 schedules:
   # pv-snapshots:
   #   disabled: false
