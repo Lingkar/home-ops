@@ -42,7 +42,7 @@ releases:
   - name: velero
     namespace: velero
     chart: oci://ghcr.io/vmware-tanzu/charts/velero
-    version: 11.2.0
+    version: 11.3.2
     values:
       - "../../kubernetes/infra/velero/_base/values.yaml"
     needs: ["kube-system/spegel"]
