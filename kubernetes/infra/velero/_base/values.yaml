@@ -32,7 +32,7 @@ schedules:
   pv-snapshots-local:
     schedule: "0 */4 * * *" # Back-up every fourth hour
     template:
-      ttl: 24h
+      ttl: 12h
       snapshotVolumes: true
       snapshotMoveData: false
       excludedNamespaces: [] # Should exclude certain namespaces in the future
@@ -42,7 +42,7 @@ schedules:
   pv-snapshots-remote:
     schedule: "15 2 * * *" # Back-up every fourth hour
     template:
-      ttl: 24h
+      ttl: 48h
       snapshotVolumes: true
       snapshotMoveData: true
       excludedNamespaces: [] # Should exclude certain namespaces in the future

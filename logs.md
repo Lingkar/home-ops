@@ -10,6 +10,7 @@
 - [x] Velero set-up scheduled backups 
 - [x] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
 - [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
+- [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set resources Velero, api-server, scheduler, controller manager
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Fix ETCD grafana dashboard
