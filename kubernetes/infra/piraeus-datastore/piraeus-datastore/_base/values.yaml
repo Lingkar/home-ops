@@ -48,7 +48,7 @@ linstorCluster:
       spec:
         containers:
           - name: linstor-csi
-            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.4
+            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.5
             args:
               - --log-level=debug
               - --csi-endpoint=unix:///csi/csi.sock
@@ -77,7 +77,7 @@ linstorCluster:
       spec:
         containers:
           - name: linstor-csi
-            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.4
+            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.5
             args:
               - --log-level=debug
               - --csi-endpoint=unix://$(ADDRESS)
