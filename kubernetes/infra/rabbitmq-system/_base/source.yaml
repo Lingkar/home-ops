@@ -6,4 +6,4 @@ spec:
   interval: 1h
   url: https://github.com/rabbitmq/cluster-operator
   ref:
-    tag: v2.17.2
+    tag: v2.19.0
