@@ -8,6 +8,7 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           HASS_HTTP_TRUSTED_PROXY_1: 192.168.69.7/32
+          HASS_HTTP_TRUSTED_PROXY_2: 10.42.0.0/16
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
