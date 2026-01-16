@@ -1,0 +1,31 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busy
+  labels:
+    app: busy
+spec:
+  selector:
+    matchLabels:
+      app: busy
+  template:
+    metadata:
+      labels:
+        app: busy
+    spec:
+      containers:
+        - image: ubuntu
+          name: ubuntu
+          resources: {}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "tail -f /dev/null"
+          # volumeMounts:
+          #   - name: data
+          #     mountPath: /data
+      # volumes:
+      #   - name: data
+      #     persistentVolumeClaim:
+      #       claimName: data-volume-zigbee2mqtt-0

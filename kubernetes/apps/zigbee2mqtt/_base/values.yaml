@@ -1,7 +1,7 @@
 zigbee2mqtt:
   timezone: Europe/Amsterdam
   mqtt:
-    server: mqtt://mosquitto.svc.cluster.local:1833
+    server: mqtt://mosquitto.home-assistant.svc.cluster.local:1833
   serial:
     adapter: ember
 service:
