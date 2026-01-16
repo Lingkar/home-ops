@@ -13,31 +13,8 @@ clusterSvcNets: ["10.43.0.0/16"]
 cniConfig:
   name: none
 nodes:
-  - hostname: "c-00"
-    ipAddress: "192.168.68.134"
-    nodeLabels:
-      piraeus.io/storage: "true"
-      linstor.io/storage: "true"
-    installDisk: "/dev/sda"
-    machineSpec:
-      secureboot: false
-      mode: nocloud
-      arch: amd64
-    controlPlane: true
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "bc:24:11:e2:db:01"
-        dhcp: true
-        vip:
-          ip: "192.168.69.5"
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/drbd
-            # - siderolabs/zfs
   - hostname: "rpi-00"
-    ipAddress: "192.168.68.110"
+    ipAddress: "192.168.68.252"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
@@ -72,9 +49,32 @@ nodes:
         dhcp: true
         vip:
           ip: "192.168.69.5"
+  - hostname: "c-00"
+    ipAddress: "192.168.68.253"
+    nodeLabels:
+      piraeus.io/storage: "true"
+      linstor.io/storage: "true"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+      mode: nocloud
+      arch: amd64
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:e2:db:01"
+        dhcp: true
+        vip:
+          ip: "192.168.69.5"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/drbd
+            # - siderolabs/zfs
   # TODO:: add user volume
   - hostname: "c-02"
-    ipAddress: "192.168.68.137"
+    ipAddress: "192.168.68.254"
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: true
