@@ -18,13 +18,13 @@ spec:
     - kind: ConfigMap
       name: values-zigbee2mqtt
       valuesKey: env-values.yaml
-    # - kind: Secret
-    #   name: mqtt-credentials
-    #   optional: false
-    #   valuesKey: user
-    #   targetPath: zigbee2mqtt.mqtt.user
-    # - kind: Secret
-    #   name: mqtt-credentials
-    #   optional: false
-    #   valuesKey: password
-    #   targetPath: zigbee2mqtt.mqtt.password
+    - kind: Secret
+      name: mqtt-credentials
+      optional: false
+      valuesKey: user
+      targetPath: zigbee2mqtt.mqtt.user
+    - kind: Secret
+      name: mqtt-credentials
+      optional: false
+      valuesKey: password
+      targetPath: zigbee2mqtt.mqtt.password

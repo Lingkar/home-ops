@@ -57,8 +57,7 @@ configMaps:
     data:
       mosquitto.conf: |-
         listener 1883
-        allow_anonymous true
-    # password_file /mosquitto/secrets/mosquitto.password_file
+        password_file /mosquitto/secrets/mosquitto.password_file
 persistence:
   mosquitto-credentials-data:
     type: emptyDir
