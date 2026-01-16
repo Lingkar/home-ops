@@ -11,22 +11,22 @@ controllers:
             chown -R nobody:nobody /mosquitto/secrets/;
             ls -laL /mosquitto/secrets/;
             ls -laL /etc/secret-raw/;
-            # find /mosquitto/secrets -type d -exec chmod 700 {} \; ;
-            # find /mosquitto/secrets -type f -exec chmod 600 {} \; ;
+            find /mosquitto/secrets -type d -exec chmod 700 {} \; ;
+            find /mosquitto/secrets -type f -exec chmod 400 {} \; ;
     containers:
       app:
-        # image:
-        #   repository: eclipse-mosquitto
-        #   tag: 2.0.22
         image:
-          repository: ubuntu
-          tag: noble
+          repository: eclipse-mosquitto
+          tag: 2.0.22
+        # image:
+        #   repository: ubuntu
+        #   tag: noble
         env:
           TZ: Europe/Amsterdam
-        command:
-          - "/bin/sh"
-          - "-c"
-          - "tail -f /dev/null"
+        # command:
+        #   - "/bin/sh"
+        #   - "-c"
+        #   - "tail -f /dev/null"
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
