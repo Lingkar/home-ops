@@ -30,7 +30,7 @@ defaultPodOptions:
     runAsUser: 65534
     runAsGroup: 65534
     fsGroup: 65534
-    fsGroupChangePolicy: OnRootMismatch
+    # fsGroupChangePolicy: OnRootMismatch
 service:
   app:
     ports:
