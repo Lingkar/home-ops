@@ -52,15 +52,16 @@ configMaps:
     data:
       mosquitto.conf: |-
         listener 1883
-        password_file /mosquitto/data/mosquitto.password_file
+        password_file /mosquitto/secrets/mosquitto.password_file
 persistence:
   mosquitto-credentials:
     type: secret
     name: mosquitto-credentials
-    defaultMode: 448
+    defaultMode: 384
     globalMounts:
-      - path: /mosquitto/data/mosquitto.password_file
-        subPath: credentials
+      - path: /mosquitto/secrets
+        subPath: mosquitto.password_file
+        readOnly: true
   config:
     type: configMap
     identifier: config
