@@ -11,5 +11,5 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: zigbee-zigbee2mqtt
+        - name: zigbee2mqtt
           port: 8080
