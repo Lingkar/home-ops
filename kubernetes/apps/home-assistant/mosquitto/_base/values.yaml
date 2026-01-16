@@ -1,7 +1,7 @@
 controllers:
   mosquitto:
     initContainers:
-      secret-owner-change:
+      secrets-owner-change:
         image:
           repository: busybox
           tag: latest
@@ -75,7 +75,7 @@ persistence:
     name: mosquitto-credentials
     advancedMounts:
       mosquitto:
-        secret-owner-change:
+        secrets-owner-change:
           - path: /etc/secret-raw/
   config:
     type: configMap
