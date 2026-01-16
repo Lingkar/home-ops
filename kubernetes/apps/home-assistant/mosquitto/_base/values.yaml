@@ -2,8 +2,9 @@ controllers:
   mosquitto:
     initContainers:
       secret-owner-change:
-        name: changeowner
-        image: busybox
+        image:
+          repository: busybox
+          tag: latest
         command: ["sh", "-c"]
         args:
           - cp -RL /etc/secret-raw/* /mosquitto/secrets;
@@ -12,9 +13,6 @@ controllers:
             ls -laL /etc/secret-raw/;
             # find /mosquitto/secrets -type d -exec chmod 700 {} \; ;
             # find /mosquitto/secrets -type f -exec chmod 600 {} \; ;
-        volumeMounts:
-          - name: mosquitto-credentials-secret
-            mountPath: /etc/secret-raw/
     containers:
       app:
         # image:
@@ -70,13 +68,15 @@ configMaps:
 persistence:
   mosquitto-credentials-data:
     type: emptyDir
-    name: mosquitto-secrets
-    defaultMode: 384
     globalMounts:
       - path: /mosquitto/secrets
   mosquitto-credentials-secret:
     type: secret
     name: mosquitto-credentials
+    advancedMounts:
+      mosquitto:
+        secret-owner-change:
+          - path: /etc/secret-raw/
   config:
     type: configMap
     identifier: config
