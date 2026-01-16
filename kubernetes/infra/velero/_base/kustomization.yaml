@@ -4,6 +4,7 @@ resources:
   - helmrelease.yaml
   - s3-credentials.sops.yaml
   - source.yaml
+  - repo-credentials.sops.yaml
 configMapGenerator:
   - name: values-velero
     behavior: create
