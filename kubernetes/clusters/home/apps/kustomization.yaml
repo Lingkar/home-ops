@@ -1,3 +1,3 @@
 resources:
-  - echo.yaml
+  - home-assistant.yaml
   - portfolio.yaml
