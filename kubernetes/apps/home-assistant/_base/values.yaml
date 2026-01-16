@@ -7,8 +7,8 @@ controllers:
           tag: 2026.1.1@sha256:9cd3ab36e0f226915dba281c4867cc6c9d14fd18208234f4a65ddbf8a10bf7e5
         env:
           TZ: Europe/Amsterdam
-          HASS_HTTP_USE_X_FORWARDED_FOR: "true"
-          HASS_HTTP_TRUSTED_PROXY_1: 192.168.69.252/30
+          HASS_HTTP_TRUSTED_PROXY_1: 192.168.69.252/30 # The node IP range
+          HASS_HTTP_TRUSTED_PROXY_2: 10.42.0.0/16 # The pod IP range
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
