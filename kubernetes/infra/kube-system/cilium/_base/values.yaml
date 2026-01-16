@@ -54,10 +54,10 @@ localRedirectPolicy: true
 operator:
   resources:
     limits:
-      memory: 160Mi
+      memory: 512Mi
     requests:
       cpu: 10m
-      memory: 160Mi
+      memory: 512Mi
   dashboards:
     enabled: true
   prometheus:
