@@ -48,6 +48,7 @@ route:
 persistence:
   config:
     type: persistentVolumeClaim
+    storageClass: ssd-lvm-thin-1
     accessMode: ReadWriteOnce
     size: 1Gi
     globalMounts:
