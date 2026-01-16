@@ -1,0 +1,61 @@
+controllers:
+  mosquitto:
+    containers:
+      app:
+        image:
+          repository: eclipse-mosquitto
+          tag: 2.0.22
+        env:
+          TZ: Europe/Amsterdam
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: { drop: ["ALL"] }
+        resources:
+          requests:
+            cpu: 10m
+            memory: 100Mi
+          limits:
+            memory: 100Mi
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    fsGroupChangePolicy: OnRootMismatch
+service:
+  app:
+    ports:
+      mqtt:
+        port: 1883
+# serviceMonitor:
+#   app:
+#     endpoints:
+#       - port: http
+route:
+  app:
+    hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+    parentRefs:
+      - name: internal
+        namespace: network
+        sectionName: https
+configMaps:
+  config:
+    data:
+      mosquitto.conf: |-
+        listener 1883
+        password_file /mosquitto/data/mosquitto.password_file
+persistence:
+  mosquitto-credentials:
+    type: secret
+    name: mosquitto-credentials
+    globalMounts:
+      - path: /mosquitto/data/mosquitto.password_file
+        subPath: credentials
+  config:
+    type: configMap
+    identifier: config
+    globalMounts:
+      - path: /mosquitto/config/mosquitto.conf
+        subPath: mosquitto.conf
