@@ -18,5 +18,6 @@ cluster:
               - monitoring
               - spegel
               - velero
+              - zigbee2mqtt
             runtimeClasses: []
             usernames: []

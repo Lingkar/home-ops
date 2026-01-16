@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
-  - ./certificate.yaml
-  - ./external.yaml
-  - ./internal.yaml
+  - certificate.yaml
+  - external.yaml
+  - internal.yaml

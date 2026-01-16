@@ -52,13 +52,6 @@ service:
 #   app:
 #     endpoints:
 #       - port: http
-# route:
-#   app:
-#     hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
-#     parentRefs:
-#       - name: internal
-#         namespace: network
-#         sectionName: https
 configMaps:
   config:
     data:

@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zigbee2mqtt
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: zigbee2mqtt
+      version: 1.37.1
+      sourceRef:
+        kind: HelmRepository
+        name: zigbee2mqtt
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-zigbee2mqtt
+    - kind: ConfigMap
+      name: values-zigbee2mqtt
+      valuesKey: env-values.yaml
+    - kind: Secret
+      name: mqtt-credentials
+      optional: false
+      valuesKey: user
+      targetPath: zigbee2mqtt.mqtt.user
+    - kind: Secret
+      name: mqtt-credentials
+      optional: false
+      valuesKey: password
+      targetPath: zigbee2mqtt.mqtt.password

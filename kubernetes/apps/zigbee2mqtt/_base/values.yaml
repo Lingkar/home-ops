@@ -1,0 +1,13 @@
+zigbee2mqtt:
+  timezone: Europe/Amsterdam
+  mqtt:
+    server: mqtt://mosquitto.svc.cluster.local:1833
+    user: system
+service:
+  type: ClusterIP
+statefulset:
+  nodeSelector:
+    kubernetes.io/hostname: c-00
+  storage:
+    enabled: true
+    storageClassName: ssd-lvm-thin-1

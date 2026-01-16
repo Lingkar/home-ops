@@ -1,3 +1,4 @@
 resources:
   - home-assistant.yaml
   - portfolio.yaml
+  - zigbee2mqtt.yaml
