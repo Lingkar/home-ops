@@ -2,11 +2,18 @@ controllers:
   mosquitto:
     containers:
       app:
+        # image:
+        #   repository: eclipse-mosquitto
+        #   tag: 2.0.22
         image:
-          repository: eclipse-mosquitto
-          tag: 2.0.22
+          repository: ubuntu
+          tag: stable
         env:
           TZ: Europe/Amsterdam
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "tail -f /dev/null"
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
