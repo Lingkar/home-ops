@@ -50,7 +50,7 @@ persistence:
   mosquitto-credentials:
     type: secret
     name: mosquitto-credentials
-    defaultMode: 384
+    defaultMode: 448
     globalMounts:
       - path: /mosquitto/data/mosquitto.password_file
         subPath: credentials
