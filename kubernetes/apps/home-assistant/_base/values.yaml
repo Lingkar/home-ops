@@ -7,6 +7,7 @@ controllers:
           tag: 2026.1.1@sha256:9cd3ab36e0f226915dba281c4867cc6c9d14fd18208234f4a65ddbf8a10bf7e5
         env:
           TZ: Europe/Amsterdam
+          HASS_HTTP_TRUSTED_PROXY_1: 192.168.69.7/32
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
