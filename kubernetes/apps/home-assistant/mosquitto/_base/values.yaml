@@ -1,19 +1,34 @@
 controllers:
   mosquitto:
+    initContainers:
+      secret-owner-change:
+        name: changeowner
+        image: busybox
+        command: ["sh", "-c"]
+        args:
+          - cp -RL /etc/secret-raw/* /mosquitto/secrets;
+            chown -R nobody:nobody /mosquitto/secrets/;
+            ls -laL /mosquitto/secrets/;
+            ls -laL /etc/secret-raw/;
+            # find /mosquitto/secrets -type d -exec chmod 700 {} \; ;
+            # find /mosquitto/secrets -type f -exec chmod 600 {} \; ;
+        volumeMounts:
+          - name: mosquitto-credentials-secret
+            mountPath: /etc/secret-raw/
     containers:
       app:
-        image:
-          repository: eclipse-mosquitto
-          tag: 2.0.22
         # image:
-        #   repository: ubuntu
-        #   tag: noble
+        #   repository: eclipse-mosquitto
+        #   tag: 2.0.22
+        image:
+          repository: ubuntu
+          tag: noble
         env:
           TZ: Europe/Amsterdam
-        # command:
-        #   - "/bin/sh"
-        #   - "-c"
-        #   - "tail -f /dev/null"
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "tail -f /dev/null"
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -30,7 +45,6 @@ defaultPodOptions:
     runAsUser: 65534
     runAsGroup: 65534
     fsGroup: 65534
-    # fsGroupChangePolicy: OnRootMismatch
 service:
   app:
     ports:
@@ -54,14 +68,15 @@ configMaps:
         listener 1883
         password_file /mosquitto/secrets/mosquitto.password_file
 persistence:
-  mosquitto-credentials:
-    type: secret
-    name: mosquitto-credentials
+  mosquitto-credentials-data:
+    type: emptyDir
+    name: mosquitto-secrets
     defaultMode: 384
     globalMounts:
-      - path: /mosquitto/secrets/mosquitto.password_file
-        subPath: mosquitto.password_file
-        readOnly: true
+      - path: /mosquitto/secrets
+  mosquitto-credentials-secret:
+    type: secret
+    name: mosquitto-credentials
   config:
     type: configMap
     identifier: config
