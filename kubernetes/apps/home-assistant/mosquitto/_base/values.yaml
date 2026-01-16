@@ -7,7 +7,7 @@ controllers:
         #   tag: 2.0.22
         image:
           repository: ubuntu
-          tag: stable
+          tag: noble
         env:
           TZ: Europe/Amsterdam
         command:
