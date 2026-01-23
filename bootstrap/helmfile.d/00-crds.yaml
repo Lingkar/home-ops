@@ -44,7 +44,7 @@ releases:
   - name: piraeus
     namespace: piraeus-datastore
     chart: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
-    version: 2.10.3
+    version: 2.10.4
     set:
       - name: installCRDs
         value: true
