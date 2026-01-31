@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - httproute.yaml
-  # - netpols.yaml
+  - netpols.yaml
   - receiver.yaml
   - secret.sops.yaml
   - sops-age.sops.yaml

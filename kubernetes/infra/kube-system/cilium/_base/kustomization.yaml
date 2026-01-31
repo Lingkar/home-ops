@@ -5,7 +5,7 @@ resources:
   - helmrelease.yaml
   - source.yaml
   - networks.yaml
-  # - cluster-netpols.yaml
+  - cluster-netpols.yaml
 configMapGenerator:
   - name: values-cilium
     behavior: create
