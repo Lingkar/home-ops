@@ -46,7 +46,11 @@ metadata:
 spec:
   description: "Allow Prometheus in monitoring namespace to scrape metrics cluster-wide"
   endpointSelector:
-    matchLabels: {}
+    matchExpressions:
+      - key: io.kubernetes.pod.namespace
+        operator: NotIn
+        values:
+          - kube-system
   ingress:
     - fromEndpoints:
         - matchLabels:
