@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-egress-github
+spec:
+  description: "Allow egress to github.com via DNS-aware FQDN policy"
+  endpointSelector:
+    matchLabels:
+      app: source-controller
+      app.kubernetes.io/component: source-controller
+      app.kubernetes.io/part-of: flux
+  egress:
+    - toFQDNs:
+        - matchName: github.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
