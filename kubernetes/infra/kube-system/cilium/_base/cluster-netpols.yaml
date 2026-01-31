@@ -4,7 +4,7 @@ kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: "default-deny"
 spec:
-  description: "Block all the traffic (except DNS) by default"
+  description: "Block all the traffic except DNS and kube-apiserver by default"
   egress:
     - toEndpoints:
         - matchLabels:
@@ -17,6 +17,8 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
+    - toEntities:
+        - kube-apiserver
   endpointSelector:
     matchExpressions:
       - key: io.kubernetes.pod.namespace
