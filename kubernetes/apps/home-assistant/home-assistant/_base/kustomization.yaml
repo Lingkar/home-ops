@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - source.yaml
-  - netpol-default.yaml
+  - netpols.yaml
 configMapGenerator:
   - name: values-home-assistant
     behavior: create
