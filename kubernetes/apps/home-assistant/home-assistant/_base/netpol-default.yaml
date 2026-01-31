@@ -29,7 +29,12 @@ spec:
         - matchExpressions:
             - key: reserved:ingress
               operator: Exists
+      toPorts:
+        - ports:
+            - port: "8123"
+              protocol: TCP
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/networkpolicy.json
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -52,3 +57,6 @@ spec:
               app: zigbee2mqtt
               app.kubernetes.io/instance: zigbee2mqtt
               app.kubernetes.io/name: zigbee2mqtt
+      ports:
+        - port: 1883
+          protocol: TCP
