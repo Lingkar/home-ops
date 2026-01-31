@@ -49,6 +49,6 @@ spec:
               kubernetes.io/metadata.name: zigbee2mqtt
           podSelector:
             matchLabels:
+              app: zigbee2mqtt
               app.kubernetes.io/instance: zigbee2mqtt
               app.kubernetes.io/name: zigbee2mqtt
-              app.kubernetes.io/app: zigbee2mqtt
