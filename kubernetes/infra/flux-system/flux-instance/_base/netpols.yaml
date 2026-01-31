@@ -6,10 +6,10 @@ metadata:
 spec:
   description: "Allow egress to github.com via DNS-aware FQDN policy"
   endpointSelector:
-    matchLabels:
-      app: source-controller
-      app.kubernetes.io/component: source-controller
-      app.kubernetes.io/part-of: flux
+    matchLabels: {}
+      # app: source-controller
+      # app.kubernetes.io/component: source-controller
+      # app.kubernetes.io/part-of: flux
   egress:
     - toFQDNs:
         - matchName: github.com
