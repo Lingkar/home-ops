@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-egress-cloudlflare
+  name: allow-egress-cloudflare
 spec:
   description: "Allow egress to cloudflare via DNS-aware FQDN policy"
   endpointSelector:
