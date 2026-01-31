@@ -39,10 +39,11 @@ spec:
     - toEntities:
         - cluster
 ---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: allow-prometheus-metrics-scrape
+  name: allow-prometheus-scrape-ingress
 spec:
   description: "Allow Prometheus in monitoring namespace to scrape metrics cluster-wide"
   endpointSelector:
@@ -56,3 +57,19 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: monitoring
             app.kubernetes.io/name: prometheus
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-prometheus-scrape-egress
+spec:
+  description: "Allow Prometheus to scrape metrics cluster-wide"
+
+  endpointSelector:
+    matchLabels:
+      k8s:io.kubernetes.pod.namespace: monitoring
+      app.kubernetes.io/name: prometheus
+  egress:
+    - toEntities:
+        - cluster
