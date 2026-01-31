@@ -29,3 +29,26 @@ spec:
         - matchExpressions:
             - key: reserved:ingress
               operator: Exists
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mosquitto-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/controller: mosquitto
+      app.kubernetes.io/instance: mosquitto
+      app.kubernetes.io/name: mosquitto
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: zigbee2mqtt
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: zigbee2mqtt
+              app.kubernetes.io/name: zigbee2mqtt
+              app.kubernetes.io/app: zigbee2mqtt
