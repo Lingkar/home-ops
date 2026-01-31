@@ -23,6 +23,7 @@ nodes:
     schematic:
       overlay:
         options:
+          # dtoverlay=pwm-gpio-fan,gpiopin=18
           # https://docs.siderolabs.com/talos/v1.10/platform-specific-installations/single-board-computers/rpi_generic#configure-the-config-txt-file-for-usage-with-the-vc4-system  extension
           configTxt: |
             gpu_mem=256
@@ -34,6 +35,7 @@ nodes:
             dtoverlay=disable-wifi
             avoid_warnings=2
             dtoverlay=vc4-kms-v3d,noaudio
+            dtoverlay=gpio-fan,gpiopin=12
         image: siderolabs/sbc-raspberrypi
         name: rpi_generic
       customization:

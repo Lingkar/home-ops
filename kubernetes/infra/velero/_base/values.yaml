@@ -42,7 +42,7 @@ schedules:
         - pv
         - pvc
   pv-snapshots-remote:
-    schedule: "15 2 * * *" # Back-up every fourth hour
+    schedule: "15 2 * * *" # Back-up every day at 02:15
     template:
       ttl: 48h
       snapshotVolumes: true

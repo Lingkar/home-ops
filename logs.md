@@ -12,10 +12,12 @@
 - [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set resources Velero, api-server, scheduler, controller manager
-- [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Fix ETCD grafana dashboard
 - [ ] FluxCD diffing -> fix pipelines
 - [ ] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
+- [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
+- [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
+- [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 
 # Read write speed-test
 ## rpi-00
