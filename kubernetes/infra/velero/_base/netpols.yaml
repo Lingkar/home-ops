@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-egress-hetzner
+spec:
+  description: "Allow egress to hetzner via DNS-aware FQDN policy"
+  endpointSelector:
+    matchLabels: {}
+  egress:
+    - toFQDNs:
+        - matchName: fsn1.your-objectstorage.com
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

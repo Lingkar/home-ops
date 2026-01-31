@@ -2,6 +2,7 @@
 resources:
   - grafana-dashboard.yaml
   - helmrelease.yaml
+  - netpols.yaml
   - s3-credentials.sops.yaml
   - source.yaml
   - repo-credentials.sops.yaml
