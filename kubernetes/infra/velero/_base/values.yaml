@@ -20,6 +20,7 @@ configuration:
         region: fsn1
         s3Url: https://fsn1.your-objectstorage.com
         s3ForcePathStyle: "true"
+  defaultRepoMaintainFrequency: 12h
 schedules:
   # pv-snapshots:
   #   disabled: false
