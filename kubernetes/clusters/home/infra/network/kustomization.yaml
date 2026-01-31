@@ -3,4 +3,3 @@ resources:
   - cloudflare-dns.yaml
   - cloudflare-tunnel.yaml
   - k8s-gateway.yaml
-  - netpols.yaml
