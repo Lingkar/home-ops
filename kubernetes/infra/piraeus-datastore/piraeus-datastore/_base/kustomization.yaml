@@ -3,7 +3,7 @@ resources:
   - dashboard.yaml
   - helmrelease.yaml
   - httproute.yaml
-  - netpols.yaml
+  #   - netpols.yaml
   - passphrase.sops.yaml
   - source.yaml
   - storageclass.yaml

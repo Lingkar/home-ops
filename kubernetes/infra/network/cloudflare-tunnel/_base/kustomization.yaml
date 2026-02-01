@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - dnsendpoint.yaml
   - helmrelease.yaml
-  - netpols.yaml
+  #   - netpols.yaml
   - secret.sops.yaml
   - source.yaml
 configMapGenerator:
