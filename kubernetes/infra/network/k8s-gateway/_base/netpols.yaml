@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ingress-world
+spec:
+  description: "Allow ingress from world for DNS UDP"
+  endpointSelector:
+    matchLabels:
+      instance: k8s-gateway
+      name: k8s-gateway
+  ingress:
+    - fromEntities:
+        - world
