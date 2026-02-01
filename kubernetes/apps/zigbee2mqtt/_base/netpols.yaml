@@ -8,7 +8,7 @@ spec:
     matchLabels:
       name: zigbee2mqtt
   policyTypes:
-    - egress
+    - Egress
   egress:
     - to:
         - namespaceSelector:
