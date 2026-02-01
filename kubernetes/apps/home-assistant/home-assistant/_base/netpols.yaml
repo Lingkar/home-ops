@@ -24,3 +24,16 @@ spec:
       ports:
         - port: 1883
           protocol: TCP
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-egress-meteo
+spec:
+  description: "Allow egress to YR meteo via DNS-aware FQDN policy"
+  endpointSelector:
+    matchLabels: {}
+  egress:
+    - toFQDNs:
+        - matchName: met.no
