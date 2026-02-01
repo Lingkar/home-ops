@@ -1,30 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/networkpolicy.json
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: mosquitto-ingress
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/controller: mosquitto
-      app.kubernetes.io/instance: mosquitto
-      app.kubernetes.io/name: mosquitto
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: zigbee2mqtt
-          podSelector:
-            matchLabels:
-              app: zigbee2mqtt
-              app.kubernetes.io/instance: zigbee2mqtt
-              app.kubernetes.io/name: zigbee2mqtt
-      ports:
-        - port: 1883
-          protocol: TCP
----
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
