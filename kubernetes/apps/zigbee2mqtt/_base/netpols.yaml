@@ -6,7 +6,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      name: zigbee2mqtt
+      app.kubernetes.io/name: zigbee2mqtt
   policyTypes:
     - Egress
   egress:
