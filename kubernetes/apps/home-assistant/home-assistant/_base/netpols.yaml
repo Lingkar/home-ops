@@ -33,7 +33,8 @@ metadata:
 spec:
   description: "Allow egress to YR meteo via DNS-aware FQDN policy"
   endpointSelector:
-    matchLabels: {}
+    matchLabels:
+      name: home-assistant
   egress:
     - toFQDNs:
         - matchName: met.no
