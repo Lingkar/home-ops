@@ -3,7 +3,7 @@
 controllers:
   mysql:
     containers:
-      mysql:
+      db:
         image:
           repository: mysql
           tag: 8.0.45-debian
@@ -46,9 +46,19 @@ service:
       http:
         port: 80
         protocol: TCP
+  db:
+    controller: mysql
+    ports:
+      http:
+        port: 3306
+        protocol: TCP
 route:
-  app:
+  wordpress:
     hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+    rules:
+      - name: main
+        backendRefs:
+          - name: wordpress
     parentRefs:
       - name: internal
         namespace: network
