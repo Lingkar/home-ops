@@ -15,7 +15,7 @@ spec:
   interval: 1h
   path: ./phela/_base
   components:
-    - ../..components/common
+    - ../../components/common
   postBuild:
     substituteFrom:
       - name: cluster-secrets
