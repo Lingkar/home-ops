@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - database.yaml
   - helmrelease.yaml
+  - mysql-credentials.sops.yaml
   - source.yaml
 configMapGenerator:
   - name: values-phela

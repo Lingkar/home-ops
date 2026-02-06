@@ -13,13 +13,14 @@ metadata:
   name: phela
 spec:
   forProvider:
+    passwordSecretRef:
+      name: mysql-credentials
+      key: password
+      namespace: phela
     resourceOptions:
       maxQueriesPerHour: 50000
       maxUpdatesPerHour: 10000
       maxConnectionsPerHour: 1000
       maxUserConnections: 25
-  publishConnectionDetailsTo:
-    name: msyql-credentials
-    configRef: {}
   providerConfigRef:
     name: mysql
