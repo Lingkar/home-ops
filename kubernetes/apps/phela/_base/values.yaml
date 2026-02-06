@@ -28,13 +28,13 @@ route:
     parentRefs:
       - name: internal
         namespace: network
-        sectionName: https
+        sectionName: http
     hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
   second:
     parentRefs:
       - name: internal
         namespace: network
-        sectionName: http
+        sectionName: http-phela
     hostnames: ["phela-intelligence.com"]
 persistence:
   wordpress-data:
