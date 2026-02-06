@@ -20,5 +20,6 @@ spec:
       maxUserConnections: 25
   publishConnectionDetailsTo:
     name: msyql-credentials
+    configRef: {}
   providerConfigRef:
     name: mysql
