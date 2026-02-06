@@ -1,5 +1,4 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-4.6.2/charts/library/common/values.schema.json
-#TODO:: Change the password to sensitive secret
 controllers:
   mysql:
     containers:
@@ -13,11 +12,11 @@ controllers:
           - name: MYSQL_RANDOM_ROOT_PASSWORD
             value: "1"
         ports:
-          - containerPort: 3306
+          - containerPort: &mysql-port 3306
             name: mysql
   wordpress:
     containers:
-      wordpress:
+      main:
         image:
           repository: wordpress
           tag: php8.4
@@ -52,22 +51,26 @@ service:
     controller: wordpress
     ports:
       http:
-        port: 80
+        port: &wordpress-port 80
         protocol: TCP
   db:
     controller: mysql
     ports:
       http:
-        port: 3306
+        port: *mysql-port
         protocol: TCP
 route:
   wordpress:
-    hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
-    rules:
-      - name: main
-        backendRefs:
-          - name: wordpress
     parentRefs:
       - name: internal
         namespace: network
         sectionName: https
+    hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
+        backendRefs:
+          - name: wordpress
+            port: *wordpress-port
