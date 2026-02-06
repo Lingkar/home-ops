@@ -5,6 +5,7 @@ resources:
   - network
   - grafana-system.yaml
   - cert-manager.yaml
+  - mysql-system.yaml
   - piraeus.yaml
   - rabbitmq.yaml
   - spegel.yaml
