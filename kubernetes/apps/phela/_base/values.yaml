@@ -30,6 +30,12 @@ route:
         namespace: network
         sectionName: https
     hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+  second:
+    parentRefs:
+      - name: internal
+        namespace: network
+        sectionName: http
+    hostnames: ["phela-intelligence.com"]
 persistence:
   wordpress-data:
     type: persistentVolumeClaim
