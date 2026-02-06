@@ -28,5 +28,5 @@ route:
     parentRefs:
       - name: internal
         namespace: network
-        sectionName: http
-    hostnames: ["phela-intelligence.com"]
+        sectionName: https
+    hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
