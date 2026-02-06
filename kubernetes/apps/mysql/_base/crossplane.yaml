@@ -7,5 +7,6 @@ spec:
     source: MySQLConnectionSecret
     connectionSecretRef:
       name: db-conn
+      namespace: mysql
   # tls one of preferred(default), skip-verify, true, or custom
   tls: preferred
