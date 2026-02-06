@@ -5,5 +5,4 @@ metadata:
 spec:
   forProvider: {}
   providerConfigRef:
-    kind: ProviderConfig
     name: mysql
