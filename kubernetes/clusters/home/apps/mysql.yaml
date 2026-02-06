@@ -26,6 +26,6 @@ spec:
     kind: ExternalArtifact
     name: apps
     namespace: flux-system
-  targetNamespace: mysql
+  targetNamespace: mysql-system
   timeout: 5m
   wait: false
