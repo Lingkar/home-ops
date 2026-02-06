@@ -30,3 +30,14 @@ route:
         namespace: network
         sectionName: https
     hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+persistence:
+  wordpress-data:
+    type: persistentVolumeClaim
+    storageClass: ssd-lvm-thin-1
+    accessMode: ReadWriteOnce
+    size: 4Gi
+    advancedMounts:
+      main:
+        main:
+          - path: /var/www/html
+            readOnly: false
