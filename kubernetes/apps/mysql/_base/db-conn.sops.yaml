@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-conn
+stringData:
+  rootHost: ENC[AES256_GCM,data:wQ==,iv:UqOxED3s4pD/US96Voy5cPHBVhd8Bdq4iCQo0MXUse4=,tag:tAqZpZPFDHwbSNeBzW0BqA==,type:str]
+  username: ENC[AES256_GCM,data:yhHHpA==,iv:0BZ7jPsLAmWPk2k7u3r/L7pHhk0TGA3ZUmdz33Cpx1U=,tag:eSbTHa2JwrKADcGQpWB8xg==,type:str]
+  password: ENC[AES256_GCM,data:h+F8spmFfUMz+TrNR7ZpG+8KCg1QHJL4TIxbIngYMNsXq2lTt1wZWQVkJChmhA==,iv:QcDn0MB8zK3WPKwa7qfsnqCMCJOOFdiQJuj0SZIGUTk=,tag:kfBpAP4uBbkbgUPje3uMXw==,type:str]
+  endpoint: ENC[AES256_GCM,data:Y7fa5TM=,iv:y39K6Un/9XRqRC/noSnqc6LfRYgU6SByzGJ46dpjyAM=,tag:CnGiqO5dppoTyQ64gEj4Qw==,type:str]
+  port: ENC[AES256_GCM,data:lquSFw==,iv:2r8canQwluOa9ByLewjS//GtNq3Dm3pNtwf56/W0dRs=,tag:HJqUQfqjLaA/3frVFDnkxw==,type:str]
+sops:
+  age:
+    - recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBobjJyZHJkYmJtUFZLQTJw
+        VU91WlZyRW1ZdHMyaGVKOWtJM29POFR5LzFBCksrZnRGbGRjTXIzMkZ1VHN5WnBy
+        NzlPaVI0L0V4N2xLOXlOdGdCQzdaY3MKLS0tIHJNeFdRZnJwQzFhOWxaaVBTdTY1
+        RDVxek5Jb1NHdGwxTVdVWE5oS2RTblUKMyaa1BBLjSU55b4OMn65dMHeBW8Hgxmx
+        yd99eVk8OmEFAb+HUhJ/GQ6650BI1pqG84PMwNkL6oFPYIPCADa9qQ==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2026-02-06T15:47:03Z"
+  mac: ENC[AES256_GCM,data:kBKCFp1Q3UO2KFf1VzViat+GpR4rcHiSX+m6zXdJWJ+X8Br4f5Q6JqKpVwShot/WuZH4k3NkxMDB0bkrG/7ZVc5zse+JJrXIPG5hCbGVHcgosmDuivV6CahQI829k2/LXKzFjyAnnPBtXM64o48UlPg2GWGRLkjzCGkBErrbTEA=,iv:/uFkANX7dlkNvxkXQ6eu7a6EHZCrvbWt9M7KbLyzjns=,tag:sXXXpn8L1FPCV3bQHR9E6Q==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  mac_only_encrypted: true
+  version: 3.11.0
