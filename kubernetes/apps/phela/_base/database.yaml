@@ -6,3 +6,19 @@ spec:
   forProvider: {}
   providerConfigRef:
     name: mysql
+---
+apiVersion: mysql.sql.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: phela
+spec:
+  forProvider:
+    resourceOptions:
+      maxQueriesPerHour: 50000
+      maxUpdatesPerHour: 10000
+      maxConnectionsPerHour: 1000
+      maxUserConnections: 25
+  publishConnectionDetailsTo:
+    name: msyql-credentials
+  providerConfigRef:
+    name: mysql
