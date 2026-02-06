@@ -7,9 +7,11 @@ controllers:
         image:
           repository: mysql
           tag: 8.0.45-debian
+        envFrom:
+          - secret: mysql-credentials
         env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: password
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: "1"
         ports:
           - containerPort: 3306
             name: mysql
@@ -21,19 +23,25 @@ controllers:
           tag: php8.4
         env:
           - name: WORDPRESS_DB_HOST
-            value: mysql
+            value: phela-db
           - name: WORDPRESS_DB_USER
-            value: root
+            secretKeyRef:
+              name: mysql-credentials
+              key: MYSQL_USER
           - name: WORDPRESS_DB_PASSWORD
-            value: password
+            secretKeyRef:
+              name: mysql-credentials
+              key: MYSQL_PASSWORD
           - name: WORDPRESS_DB_NAME
-            value: wordpress
+            secretKeyRef:
+              name: mysql-credentials
+              key: MYSQL_DATABASE
 persistence:
   mysql-data:
     type: persistentVolumeClaim
     storageClass: ssd-lvm-thin-1
     accessMode: ReadWriteOnce
-    size: 512Mi
+    size: 2Gi
     advancedMounts:
       mysql:
         mysql:
