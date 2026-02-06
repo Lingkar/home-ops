@@ -25,7 +25,7 @@ spec:
   providerConfigRef:
     name: mysql
 ---
-apiVersion: mysql.sql.m.crossplane.io/v1alpha1
+apiVersion: mysql.sql.crossplane.io/v1alpha1
 kind: Grant
 metadata:
   name: phela
