@@ -32,3 +32,10 @@ spec:
         certificateRefs:
           - kind: Secret
             name: ${SECRET_DOMAIN/./-}-production-tls
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "phela-intelligence.com"
+      allowedRoutes:
+        namespaces:
+          from: Same
