@@ -1,20 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-4.6.2/charts/library/common/values.schema.json
 controllers:
-  mysql:
-    containers:
-      db:
-        image:
-          repository: mysql
-          tag: 8.0.45-debian
-        envFrom:
-          - secret: mysql-credentials
-        env:
-          - name: MYSQL_RANDOM_ROOT_PASSWORD
-            value: "1"
-        ports:
-          - containerPort: &mysql-port 3306
-            name: mysql
-  wordpress:
+  main:
     containers:
       main:
         image:
@@ -23,54 +9,28 @@ controllers:
         env:
           - name: WORDPRESS_DB_HOST
             value: phela-db
-          - name: WORDPRESS_DB_USER
-            secretKeyRef:
-              name: mysql-credentials
-              key: MYSQL_USER
-          - name: WORDPRESS_DB_PASSWORD
-            secretKeyRef:
-              name: mysql-credentials
-              key: MYSQL_PASSWORD
-          - name: WORDPRESS_DB_NAME
-            secretKeyRef:
-              name: mysql-credentials
-              key: MYSQL_DATABASE
-persistence:
-  mysql-data:
-    type: persistentVolumeClaim
-    storageClass: ssd-lvm-thin-1
-    accessMode: ReadWriteOnce
-    size: 2Gi
-    advancedMounts:
-      mysql:
-        mysql:
-          - path: /var/lib/mysql
-            readOnly: false
+          # - name: WORDPRESS_DB_USER
+          #   secretKeyRef:
+          #     name: mysql-credentials
+          #     key: MYSQL_USER
+          # - name: WORDPRESS_DB_PASSWORD
+          #   secretKeyRef:
+          #     name: mysql-credentials
+          #     key: MYSQL_PASSWORD
+          # - name: WORDPRESS_DB_NAME
+          #   secretKeyRef:
+          #     name: mysql-credentials
+          #     key: MYSQL_DATABASE
 service:
-  wordpress:
-    controller: wordpress
+  main:
     ports:
       http:
-        port: &wordpress-port 80
-        protocol: TCP
-  db:
-    controller: mysql
-    ports:
-      http:
-        port: *mysql-port
+        port: 80
         protocol: TCP
 route:
-  wordpress:
+  main:
     parentRefs:
       - name: internal
         namespace: network
         sectionName: https
     hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
-    rules:
-      - matches:
-          - path:
-              type: PathPrefix
-              value: /
-        backendRefs:
-          - name: wordpress
-            port: *wordpress-port

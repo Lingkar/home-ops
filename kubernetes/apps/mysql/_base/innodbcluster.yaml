@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/mysql.oracle.com/innodbcluster_v2.json
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mysql
+spec:
+  secretName: mysql-credentials
+  tlsUseSelfSigned: true
+  version: 8.0.45
+  instances: 2
+  router:
+    instances: 1
+  edition: community
+  datadirVolumeClaimTemplate:
+    storageClassName: ssd-lvm-thin-1 # Should stay on single replica backed PVC
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
