@@ -24,3 +24,25 @@ spec:
       maxUserConnections: 25
   providerConfigRef:
     name: mysql
+---
+apiVersion: mysql.sql.m.crossplane.io/v1alpha1
+kind: Grant
+metadata:
+  name: phela
+spec:
+  forProvider:
+    privileges:
+      - SELECT
+      - INSERT
+      - UPDATE
+      - DELETE
+      - CREATE
+      - DROP
+      - ALTER
+      - INDEX
+    userRef:
+      name: phela
+    databaseRef:
+      name: phela
+  providerConfigRef:
+    name: mysql
