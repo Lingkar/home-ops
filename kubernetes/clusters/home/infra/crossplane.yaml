@@ -13,7 +13,7 @@ spec:
     secretRef:
       name: sops-age
   interval: 1h
-  path: ./crossplane/_base
+  path: ./crossplane-system/_base
   components:
     - ../../components/common
   prune: true
