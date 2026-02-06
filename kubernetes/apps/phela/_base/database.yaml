@@ -15,7 +15,7 @@ spec:
   forProvider:
     passwordSecretRef:
       name: mysql-credentials
-      key: password
+      key: PASSWORD
       namespace: phela
     resourceOptions:
       maxQueriesPerHour: 50000

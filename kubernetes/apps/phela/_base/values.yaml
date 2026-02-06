@@ -8,19 +8,15 @@ controllers:
           tag: php8.4
         env:
           - name: WORDPRESS_DB_HOST
-            value: phela-db
-          # - name: WORDPRESS_DB_USER
-          #   secretKeyRef:
-          #     name: mysql-credentials
-          #     key: MYSQL_USER
-          # - name: WORDPRESS_DB_PASSWORD
-          #   secretKeyRef:
-          #     name: mysql-credentials
-          #     key: MYSQL_PASSWORD
-          # - name: WORDPRESS_DB_NAME
-          #   secretKeyRef:
-          #     name: mysql-credentials
-          #     key: MYSQL_DATABASE
+            value: mysql.mysql.svc.cluster.local
+          - name: WORDPRESS_DB_NAME
+            value: phela
+          - name: WORDPRESS_DB_USER
+            value: phela
+          - name: WORDPRESS_DB_PASSWORD
+            secretKeyRef:
+              name: mysql-credentials
+              key: PASSWORD
 service:
   main:
     ports:
