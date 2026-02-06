@@ -38,4 +38,4 @@ spec:
       hostname: "phela-intelligence.com"
       allowedRoutes:
         namespaces:
-          from: Same
+          from: All
