@@ -15,5 +15,5 @@ spec:
     - filters:
         - type: RequestRedirect
           requestRedirect:
-            port: 443
             statusCode: 301 # optional; default is 302
+            scheme: https
