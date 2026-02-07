@@ -35,14 +35,14 @@ spec:
     - name: http-phela
       protocol: HTTP
       port: 80
-      hostname: "phela-intelligence.com"
+      hostname: "*.phela-intelligence.com"
       allowedRoutes:
         namespaces:
           from: Same
     - name: https-phela
       protocol: HTTPS
       port: 443
-      hostname: "phela-intelligence.com"
+      hostname: "*.phela-intelligence.com"
       allowedRoutes:
         namespaces:
           from: All
