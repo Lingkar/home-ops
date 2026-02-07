@@ -15,11 +15,11 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "phela-staging"
+  name: "phela-production"
 spec:
-  secretName: "phela-staging-tls"
+  secretName: "phela-production-tls"
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-production
     kind: ClusterIssuer
   commonName: "phela-intelligence.com"
   dnsNames: ["phela-intelligence.com", "*.phela-intelligence.com"]

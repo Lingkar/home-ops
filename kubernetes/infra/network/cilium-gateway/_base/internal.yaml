@@ -41,7 +41,7 @@ spec:
       tls:
         certificateRefs:
           - kind: Secret
-            name: phela-staging-tls
+            name: phela-production-tls
     - name: https-phela-wildcard
       protocol: HTTPS
       port: 443
@@ -52,4 +52,4 @@ spec:
       tls:
         certificateRefs:
           - kind: Secret
-            name: phela-staging-tls
+            name: phela-production-tls

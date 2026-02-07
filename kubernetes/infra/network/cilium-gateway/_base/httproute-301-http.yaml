@@ -4,9 +4,6 @@ kind: HTTPRoute
 metadata:
   name: tls-redirect
 spec:
-  # hostnames:
-  #   - "phela-intelligence.com"
-  #   - "*.phela-intelligence.com"
   parentRefs:
     - name: internal
       sectionName: http
@@ -17,4 +14,4 @@ spec:
         - type: RequestRedirect
           requestRedirect:
             scheme: https
-            statusCode: 301 # optional; default is 302
+            statusCode: 301
