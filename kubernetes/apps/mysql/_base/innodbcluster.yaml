@@ -19,4 +19,4 @@ spec:
       requests:
         storage: 5Gi
   service:
-    type: NodePort
+    type: LoadBalancer
