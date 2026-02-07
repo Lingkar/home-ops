@@ -17,7 +17,7 @@ policy: sync
 sources: ["crd", "gateway-httproute"]
 txtPrefix: k8s.
 txtOwnerId: default
-domainFilters: ["${SECRET_DOMAIN}"]
+domainFilters: ["${SECRET_DOMAIN}", "phela-intelligence.com"]
 serviceMonitor:
   enabled: true
 podAnnotations:
