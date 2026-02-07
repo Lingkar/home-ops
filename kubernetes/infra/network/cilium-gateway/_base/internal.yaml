@@ -42,21 +42,14 @@ spec:
         certificateRefs:
           - kind: Secret
             name: phela-staging-tls
-    # - name: http-phela-wildcard
-    #   protocol: HTTP
-    #   port: 80
-    #   hostname: "*.phela-intelligence.com"
-    #   allowedRoutes:
-    #     namespaces:
-    #       from: Same
-    # - name: https-phela-wildcard
-    #   protocol: HTTPS
-    #   port: 443
-    #   hostname: "*.phela-intelligence.com"
-    #   allowedRoutes:
-    #     namespaces:
-    #       from: All
-    #   tls:
-    #     certificateRefs:
-    #       - kind: Secret
-    #         name: phela-staging-tls
+    - name: https-phela-wildcard
+      protocol: HTTPS
+      port: 443
+      hostname: "*.phela-intelligence.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: phela-staging-tls

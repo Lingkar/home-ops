@@ -11,7 +11,7 @@ controllers:
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
-          capabilities: {drop: ["ALL"]}
+          capabilities: { drop: ["ALL"] }
         resources:
           requests:
             cpu: 10m
@@ -41,7 +41,6 @@ route:
     parentRefs:
       - name: external
         namespace: network
-        sectionName: https
         # rules:
         #   - backendRefs:
         #       - identifier: app
