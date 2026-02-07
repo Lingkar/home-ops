@@ -18,3 +18,5 @@ spec:
     resources:
       requests:
         storage: 5Gi
+  service:
+    type: LoadBalancer
