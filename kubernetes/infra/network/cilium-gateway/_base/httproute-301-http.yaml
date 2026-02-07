@@ -4,16 +4,15 @@ kind: HTTPRoute
 metadata:
   name: redirect-phela-http-to-https
 spec:
-  hostnames:
-    - "phela-intelligence.com"
-    - "*.phela-intelligence.com"
+  # hostnames:
+  #   - "phela-intelligence.com"
+  #   - "*.phela-intelligence.com"
   parentRefs:
-    # Must attach to your HTTP listener on the Gateway
     - name: internal
-      sectionName: http-phela
+      sectionName: http
   rules:
     - filters:
         - type: RequestRedirect
           requestRedirect:
-            statusCode: 301 # optional; default is 302
             scheme: https
+            statusCode: 301 # optional; default is 302
