@@ -4,6 +4,9 @@ kind: HTTPRoute
 metadata:
   name: redirect-phela-http-to-https
 spec:
+  hostnames:
+    - "phela-intelligence.com"
+    - "*.phela-intelligence.com"
   parentRefs:
     # Must attach to your HTTP listener on the Gateway
     - name: internal
