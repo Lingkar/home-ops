@@ -4,15 +4,17 @@ controllers:
     containers:
       main:
         image:
-          repository: wordpress
-          tag: 6
+          # repository: wordpress
+          # tag: 6
+          repository: nginx
+          tag: latest
         env:
           - name: WORDPRESS_DB_HOST
             value: mysql.mysql.svc.cluster.local
           - name: WORDPRESS_DB_NAME
             value: phela
           - name: WORDPRESS_DB_USER
-            value: phela
+            value: phelamistake
           - name: WORDPRESS_DB_PASSWORD
             secretKeyRef:
               name: mysql-credentials
