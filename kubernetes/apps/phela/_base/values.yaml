@@ -26,7 +26,7 @@ service:
 route:
   main:
     parentRefs:
-      - name: external
+      - name: internal
         namespace: network
     hostnames: ["phela-intelligence.com"]
 persistence:
