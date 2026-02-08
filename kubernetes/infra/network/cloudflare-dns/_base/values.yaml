@@ -17,9 +17,7 @@ policy: sync
 sources: ["crd", "gateway-httproute"]
 txtPrefix: k8s.
 txtOwnerId: default
-#TODO:: add phela again
-domainFilters: ["${SECRET_DOMAIN}"]
-# domainFilters: ["${SECRET_DOMAIN}", "phela-intelligence.com"]
+domainFilters: ["${SECRET_DOMAIN}", "phela-intelligence.com"]
 serviceMonitor:
   enabled: true
 podAnnotations:
