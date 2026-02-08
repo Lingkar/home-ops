@@ -35,6 +35,7 @@ persistence:
     storageClass: ssd-lvm-thin-1
     accessMode: ReadWriteOnce
     size: 4Gi
+    retain: true
     advancedMounts:
       main:
         main:
