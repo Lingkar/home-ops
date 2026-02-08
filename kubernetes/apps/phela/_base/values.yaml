@@ -29,11 +29,6 @@ route:
       - name: external
         namespace: network
     hostnames: ["phela-intelligence.com"]
-  second:
-    parentRefs:
-      - name: external
-        namespace: network
-    hostnames: ["test.phela-intelligence.com"]
 persistence:
   wordpress-data:
     type: persistentVolumeClaim
