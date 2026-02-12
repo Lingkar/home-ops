@@ -44,7 +44,7 @@ schedules:
   pv-snapshots-remote:
     schedule: "15 2 * * *" # Back-up every day at 02:15
     template:
-      ttl: 48h
+      ttl: 168h
       snapshotVolumes: true
       snapshotMoveData: true
       excludedNamespaces: [] # Should exclude certain namespaces in the future
