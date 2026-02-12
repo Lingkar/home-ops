@@ -52,7 +52,7 @@ schedules:
         - pv
         - pvc
   pv-snapshots-remote-weekly:
-    schedule: "15 2 * * mon" # Back-up every Monday at 02:15
+    schedule: "15 3 * * mon" # Back-up every Monday at 02:15
     template:
       ttl: 1344h # 2 months
       snapshotVolumes: true
