@@ -41,10 +41,20 @@ schedules:
       includedResources:
         - pv
         - pvc
-  pv-snapshots-remote:
+  pv-snapshots-remote-daily:
     schedule: "15 2 * * *" # Back-up every day at 02:15
     template:
-      ttl: 168h
+      ttl: 168h # 1 week
+      snapshotVolumes: true
+      snapshotMoveData: true
+      excludedNamespaces: [] # Should exclude certain namespaces in the future
+      includedResources:
+        - pv
+        - pvc
+  pv-snapshots-remote-weekly:
+    schedule: "15 2 * * mon" # Back-up every Monday at 02:15
+    template:
+      ttl: 1344h # 2 months
       snapshotVolumes: true
       snapshotMoveData: true
       excludedNamespaces: [] # Should exclude certain namespaces in the future
