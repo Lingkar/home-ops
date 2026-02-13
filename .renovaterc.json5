@@ -15,6 +15,12 @@
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
+  helm: {
+    managerFilePatterns: [
+      "/(^|/)values\\.ya?ml$/"
+    ],
+    pinDigests: true
+  },
   helmfile: {
     managerFilePatterns: [
       "/(^|/)helmfile\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
