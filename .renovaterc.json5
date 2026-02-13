@@ -10,7 +10,6 @@
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
-  schedule: ["every weekend"],
   ignorePaths: ["**/*.sops.*"],
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
@@ -28,8 +27,7 @@
     ],
   },
   kubernetes: {
-    managerFilePatterns: ["/(^|/)kubernetes/.+/(?:[^v].*|v[^a].*|va[^l].*|val[^u].*|valu[^e].*|value[^s].*|values[^/].*)\\.ya?ml(?:\\.j2)?$/"],
-  },
+    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   kustomize: {
     managerFilePatterns: ["/^kustomization\\.ya?ml(?:\\.j2)?$/"],
   },
