@@ -5,11 +5,12 @@
     "docker:enableMajor",
     ":automergeBranch",
     ":dependencyDashboard",
-    ":disableRateLimiting",
     ":semanticCommits",
   ],
   dependencyDashboard: true,
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
+  prConcurrentLimit: 0,
+  prHourlyLimit: 0
   ignorePaths: ["**/*.sops.*"],
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
