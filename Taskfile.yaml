@@ -7,15 +7,17 @@ shopt: [globstar]
 vars:
   BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
-  SECRETS_DIR: "{{.ROOT_DIR}}/home-ops-secrets"
+  SECRETS_DIR: "{{.ROOT_DIR}}/../home-ops-secrets"
+  KUBECONFIG: "{{.SECRETS_DIR}}/kubeconfig"
+  SOPS_AGE_KEY_FILE: "{{.SECRETS_DIR}}/age.key"
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   TALOS_DIR: "{{.ROOT_DIR}}/talos"
   TALOS_DIR_OUT: "{{.SECRETS_DIR}}/clusterconfig"
   TALOSCONFIG: "{{.SECRETS_DIR}}/clusterconfig/talsoconfig"
 
 env:
-  KUBECONFIG: "{{.SECRETS_DIR}}/../kubeconfig"
-  SOPS_AGE_KEY_FILE: "{{.SECRETS_DIR}}/../age.key"
+  KUBECONFIG: "{{.SECRETS_DIR}}/kubeconfig"
+  SOPS_AGE_KEY_FILE: "{{.SECRETS_DIR}}/age.key"
   TALOSCONFIG: "{{.TALOSCONFIG}}"
 
 includes:
