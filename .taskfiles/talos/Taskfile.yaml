@@ -4,7 +4,7 @@ tasks:
   generate-config:
     desc: Generate Talos configuration
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper genconfig
+    cmd: talhelper genconfig -o {{.TALOS_DIR_OUT}}
     preconditions:
       - test -f {{.TALOS_DIR}}/talconfig.yaml
       - test -f {{.ROOT_DIR}}/.sops.yaml
