@@ -15,7 +15,7 @@
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
-  helm: {
+  "helm-values": {
     managerFilePatterns: [
       "/(^|/)values\\.ya?ml$/"
     ],
