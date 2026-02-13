@@ -37,7 +37,7 @@ releases:
     version: v1.19.3
     values:
       - "../../kubernetes/infra/cert-manager/_base/values.yaml"
-    needs: ["kube-system/spegel"]
+    needs: ["spegel/spegel"]
 
   - name: velero
     namespace: velero
@@ -45,7 +45,7 @@ releases:
     version: 11.3.2
     values:
       - "../../kubernetes/infra/velero/_base/values.yaml"
-    needs: ["kube-system/spegel"]
+    needs: ["spegel/spegel"]
 
   - name: piraeus-operator
     namespace: piraeus-datastore
@@ -53,7 +53,7 @@ releases:
     version: 2.10.4
     values:
       - "../../kubernetes/infra/piraeus-datastore/piraeus-operator/_base/values.yaml"
-    needs: ["kube-system/spegel"]
+    needs: ["spegel/spegel"]
 
   - name: piraeus-datastore
     namespace: piraeus-datastore
