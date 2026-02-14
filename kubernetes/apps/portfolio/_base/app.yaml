@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: docker.io/nginx:alpine
+          image: docker.io/nginx:1.28.1-alpine
           ports:
             - containerPort: 80
           volumeMounts:
