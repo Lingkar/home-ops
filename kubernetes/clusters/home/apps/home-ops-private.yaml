@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
-  url: https://github.com/lingkar/home-ops-private.git
+  url: https://github.com/Lingkar/home-ops-private.git
   ref:
     branch: main
 ---
