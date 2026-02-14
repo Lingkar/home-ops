@@ -12,7 +12,6 @@
   prConcurrentLimit: 0,
   prHourlyLimit: 0,
   ignorePaths: ["**/*.sops.*"],
-  pinDigests: false,
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
@@ -42,18 +41,9 @@
       overrideDepName: "{{packageName}}",
     },
     {
-      description: "Pin digests only for helm-values",
-      matchManagers: ["helm-values"],
-      pinDigests: true,
-    },
-    {
-      description: "Disable digest pinning for regex manager",
+      description: "Disable digest pinning for talenv",
       matchManagers: ["regex"],
-      pinDigests: false,
-    },
-    {
-      description: "Disable digest pinning for selected managers",
-      matchManagers: ["helmfile", "flux", "kubernetes", "github-actions"],
+      matchPackageFiles: ["talos/talenv.yaml"],
       pinDigests: false,
     },
     {
