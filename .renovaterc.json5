@@ -56,7 +56,7 @@
       matchManagers: [
         'regex'
       ],
-      matchPackageFiles: [
+      matchFileNames: [
         'talos/talenv.yaml'
       ],
       pinDigests: false,
