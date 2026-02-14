@@ -5,7 +5,7 @@ metadata:
   name: home-ops-private
 spec:
   interval: 1m
-  url: https://https://github.com/lingkar/home-ops-private
+  url: https://github.com/lingkar/home-ops-private.git
   ref:
     branch: main
 ---
