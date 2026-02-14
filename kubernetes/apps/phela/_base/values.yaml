@@ -4,8 +4,8 @@ controllers:
     containers:
       main:
         image:
-          repository: wordpress
-          tag: "6"
+          repository: docker.io/wordpress
+          tag: 6.9.1
         env:
           - name: WORDPRESS_DB_HOST
             value: mysql.mysql.svc.cluster.local
