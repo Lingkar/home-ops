@@ -19,7 +19,6 @@
     managerFilePatterns: [
       "/(^|/)values\\.ya?ml$/"
     ],
-    pinDigests: true
   },
   helmfile: {
     managerFilePatterns: [
