@@ -84,7 +84,7 @@
       minimumGroupSize: 2,
     },
     {
-      description: 'Disable docker datasource for Flux sources',
+      description: 'Disable docker datasource for Flux sources', //TODO: https://github.com/renovatebot/renovate/issues/29768
       matchManagers: [
         'kubernetes',
       ],
