@@ -84,6 +84,20 @@
       minimumGroupSize: 2,
     },
     {
+      description: 'Disable docker datasource for Flux sources',
+      matchManagers: [
+        'kubernetes',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        '**/kubernetes/**/source.yaml',
+        '**/kubernetes/**/source.yml',
+      ],
+      enabled: false,
+    },
+    {
       description: 'Auto-merge GitHub Actions',
       matchManagers: [
         'github-actions',
