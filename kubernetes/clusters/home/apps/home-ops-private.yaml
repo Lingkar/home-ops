@@ -23,5 +23,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-ops-private
-  path: ./base
+  path: ./envs/_base
   prune: true
