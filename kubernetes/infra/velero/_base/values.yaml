@@ -63,7 +63,7 @@ schedules:
         - pvc
 initContainers:
   - name: velero-plugin-for-aws
-    image: velero/velero-plugin-for-aws:v1.13.2
+    image: velero/velero-plugin-for-aws:v1.13.2@sha256:25c3a0a043fc396a0593a3da0aa16ed1f39df74883bda42c4588fc8877b72bde
     imagePullPolicy: IfNotPresent
     volumeMounts:
       - mountPath: /target
@@ -115,7 +115,7 @@ metrics:
 kubectl:
   image:
     repository: public.ecr.aws/bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
-    tag: latest
+    tag: latest@sha256:186227d92b6fff07d7406c8421d0eec743acf0af9ea6bd467203b86cdee887da
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
