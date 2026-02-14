@@ -84,9 +84,9 @@
       minimumGroupSize: 2,
     },
     {
-      description: 'Disable docker datasource for Flux sources', //TODO: https://github.com/renovatebot/renovate/issues/29768
+      description: 'Disable digest for Flux sources', //TODO: https://github.com/renovatebot/renovate/issues/29768
       matchManagers: [
-        'kubernetes',
+        'flux',
       ],
       matchDatasources: [
         'docker',
@@ -95,7 +95,7 @@
         '**/kubernetes/**/source.yaml',
         '**/kubernetes/**/source.yml',
       ],
-      enabled: false,
+      pinDigests: false
     },
     {
       description: 'Auto-merge GitHub Actions',
