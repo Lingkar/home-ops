@@ -62,6 +62,13 @@
       pinDigests: false,
     },
     {
+      description: 'Disable digest pinning for helmfile',
+      matchManagers: [
+        'helmfile'
+      ],
+      pinDigests: false,
+    },
+    {
       description: 'Flux Operator Group',
       groupName: 'flux-operator',
       matchDatasources: [
