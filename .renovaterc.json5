@@ -47,6 +47,11 @@
       pinDigests: true,
     },
     {
+      description: "Disable digest pinning for regex manager",
+      matchManagers: ["regex"],
+      pinDigests: false,
+    },
+    {
       description: "Disable digest pinning for selected managers",
       matchManagers: ["helmfile", "flux", "kubernetes", "github-actions"],
       pinDigests: false,
