@@ -54,10 +54,10 @@
     {
       description: 'Disable digest pinning for talenv',
       matchManagers: [
-        'regex'
+        'custom.regex',
       ],
       matchFileNames: [
-        'talos/talenv.yaml'
+        'talos/talenv.yaml',
       ],
       pinDigests: false,
     },
