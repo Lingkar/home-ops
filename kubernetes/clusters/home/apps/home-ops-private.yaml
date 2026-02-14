@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m
-  url: ssh://git@github.com:Lingkar/home-ops-private.git
+  url: ssh://git@github.com/Lingkar/home-ops-private.git
   secretRef:
     name: github-deploy-key
   ref:
