@@ -9,5 +9,6 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.1.1@sha256:42d59cd2490473b94a408f8e6dca5abadaed7d94f445bd1c2e40ef07f8ec6711
+    tag: 1.1.1
+    digest: sha256:42d59cd2490473b94a408f8e6dca5abadaed7d94f445bd1c2e40ef07f8ec6711
   url: oci://ghcr.io/piraeusdatastore/helm-charts/linstor-cluster
