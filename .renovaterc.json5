@@ -12,6 +12,7 @@
   prConcurrentLimit: 0,
   prHourlyLimit: 0,
   ignorePaths: ["**/*.sops.*"],
+  pinDigests: false,
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
@@ -39,6 +40,16 @@
       matchDatasources: ["docker"],
       matchManagers: ["helmfile"],
       overrideDepName: "{{packageName}}",
+    },
+    {
+      description: "Pin digests only for helm-values",
+      matchManagers: ["helm-values"],
+      pinDigests: true,
+    },
+    {
+      description: "Disable digest pinning for selected managers",
+      matchManagers: ["helmfile", "flux", "kubernetes", "github-actions"],
+      pinDigests: false,
     },
     {
       description: "Flux Operator Group",
