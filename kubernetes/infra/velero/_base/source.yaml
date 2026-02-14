@@ -10,5 +10,4 @@ spec:
     operation: copy
   ref:
     tag: 11.3.2
-    digest: sha256:49bccb0d4d4d9167fcaad5a9f0e66f88d2120f824002db8c05810dd310819c5f
   url: oci://ghcr.io/vmware-tanzu/charts/velero
