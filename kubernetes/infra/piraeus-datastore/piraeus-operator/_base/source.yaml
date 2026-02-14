@@ -9,5 +9,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 2.10.4
+    tag: 2.10.4@sha256:60f47f322041dc8aeaa3c00c70adf64c98a49502b4741ef13617a4bb57341be1
   url: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
