@@ -2,6 +2,7 @@
 resources:
   - grafana-datasource.yaml
   - helmrelease.yaml
+  - prometheus-rules.yaml
   - source.yaml
 configMapGenerator:
   - name: values-kube-prometheus-stack
