@@ -14,7 +14,7 @@ spec:
           expr: |
             kube_persistentvolume_status_phase{phase="Released"} == 1
             and on (persistentvolume)
-            kube_persistentvolume_reclaim_policy{reclaim_policy="Retain"} == 1
+            kube_persistentvolume_info{reclaim_policy="Retain"} == 1
           for: 10m
           labels:
             severity: warning
