@@ -7,7 +7,7 @@ spec:
   secretName: mysql-credentials
   tlsUseSelfSigned: true
   version: 8.0.45
-  instances: 2
+  instances: 1
   router:
     instances: 1
   edition: community
