@@ -11,7 +11,7 @@
 - [x] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
 - [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [x] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
-- [ ] Create Velero logic such that specific PV's / PVC's are not included in the (remote) back-up.
+- [ ] Create Velero logic such that specific PV's / PVC's are not included in the (remote) back-up. -> Label PVC: velero.io/exclude-from-backup=true
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
 - [ ] Set resources Velero, api-server, scheduler, controller manager
