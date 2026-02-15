@@ -19,6 +19,7 @@ metadata:
 provisioner: linstor.csi.linbit.com
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
 parameters: #https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
   linstor.csi.linbit.com/storagePool: ssd-lvm-thin
   linstor.csi.linbit.com/placementCount: "2"
