@@ -42,6 +42,17 @@ gatewayAPI:
   enabled: true
 hubble:
   enabled: true
+  metrics:
+    enabled: []
+    serviceMonitor:
+      enabled: true
+    dashboards:
+      enabled: true
+    enableOpenMetrics: true
+    dynamic:
+      config:
+        configMapName: cilium-dynamic-metrics-config
+        createConfigMap: false
   relay:
     enabled: true
   ui:

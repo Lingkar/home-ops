@@ -21,6 +21,8 @@ prometheus:
     podMonitorSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
     scrapeConfigSelectorNilUsesHelmValues: false
+    enableFeatures:
+      - exemplar-storage
     resources:
       requests:
         cpu: 150m
