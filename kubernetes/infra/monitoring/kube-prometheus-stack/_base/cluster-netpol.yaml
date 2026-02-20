@@ -5,9 +5,6 @@ metadata:
   name: allow-prometheus-scrape-ingress
 spec:
   description: "Allow Prometheus in monitoring namespace to scrape metrics cluster-wide"
-  enableDefaultDeny:
-    egress: false
-    ingress: false
   endpointSelector:
     matchExpressions:
       - key: io.kubernetes.pod.namespace
@@ -27,9 +24,6 @@ metadata:
   name: allow-prometheus-scrape-egress
 spec:
   description: "Allow Prometheus to scrape metrics cluster-wide"
-  enableDefaultDeny:
-    egress: false
-    ingress: false
   endpointSelector:
     matchLabels:
       k8s:io.kubernetes.pod.namespace: monitoring
