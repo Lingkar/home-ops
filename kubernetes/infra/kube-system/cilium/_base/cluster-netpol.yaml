@@ -5,6 +5,9 @@ metadata:
   name: "default-deny"
 spec:
   description: "Block all the traffic except DNS and kube-apiserver by default"
+  enableDefaultDeny:
+    egress: false
+    ingress: false
   egress:
     - toEndpoints:
         - matchLabels:
@@ -33,6 +36,9 @@ metadata:
   name: allow-ingress-egress
 spec:
   description: "Allow all the egress traffic from reserved ingress identity to any endpoint in the cluster"
+  enableDefaultDeny:
+    egress: false
+    ingress: false
   endpointSelector:
     matchExpressions:
       - key: reserved:ingress
