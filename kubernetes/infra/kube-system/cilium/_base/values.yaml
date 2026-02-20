@@ -50,6 +50,7 @@ hubble:
       enabled: true
     enableOpenMetrics: true
     dynamic:
+      enabled: true
       config:
         configMapName: cilium-dynamic-metrics-config
         createConfigMap: false
