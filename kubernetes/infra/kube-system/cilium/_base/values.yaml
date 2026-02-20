@@ -6,8 +6,6 @@ resources:
     cpu: 150m
     memory: 440Mi
 autoDirectNodeRoutes: true
-extraArgs:
-  - --policy-audit-mode: "true"
 bpf:
   masquerade: true
   # Ref: https://github.com/siderolabs/talos/issues/10002
