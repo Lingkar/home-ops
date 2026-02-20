@@ -20,6 +20,8 @@
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
+- [ ] Set-up intusion detection with Falco
+- [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
 
 # Read write speed-test
 ## rpi-00

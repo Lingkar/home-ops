@@ -1,0 +1,29 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-dashboard
+spec:
+  allowCrossNamespaceImport: true
+  configMapRef:
+    key: cilium-dashboard.json
+    name: cilium-dashboard
+  folder: cilium
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 10m
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cilium-operator-dashboard
+spec:
+  allowCrossNamespaceImport: true
+  configMapRef:
+    key: cilium-operator-dashboard.json
+    name: cilium-operator-dashboard
+  folder: cilium
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 10m
