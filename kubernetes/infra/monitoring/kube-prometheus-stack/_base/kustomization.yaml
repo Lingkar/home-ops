@@ -1,8 +1,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
+  - cluster-netpol.yaml
   - grafana-datasource.yaml
   - helmrelease.yaml
-  - prometheus-rules.yaml
+  - prometheus-rule.yaml
   - source.yaml
 configMapGenerator:
   - name: values-kube-prometheus-stack

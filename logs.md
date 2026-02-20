@@ -23,6 +23,17 @@
 - [ ] Set-up intusion detection with Falco
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
 
+
+# Network policy approach:
+Start in auditing mode:
+- egress allow cluster DNS
+- egress allow to world (not including 192.168.68.1/23)
+- ingress allow from gateway
+- egress deny cross-namespace
+- ingress deny cross-namespace
+
+Monitor for 
+
 # Read write speed-test
 ## rpi-00
 ### On PV:
