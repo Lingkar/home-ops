@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cilium/cilium/refs/heads/main/install/kubernetes/cilium/values.schema.json
 resources:
   limits:
     memory: 440Mi
@@ -20,6 +21,9 @@ cgroup:
 # devices: eno+ eth+
 dashboards:
   enabled: true
+encryption:
+  enabled: true
+  type: wireguard
 endpointRoutes:
   enabled: true
 envoy:
