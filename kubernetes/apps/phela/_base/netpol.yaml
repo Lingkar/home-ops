@@ -19,7 +19,7 @@ spec:
         - cidr: "0.0.0.0/0"
           except: ["192.168.68.0/23"]
       toFQDNs:
-        - matchPattern: "*"
+        - matchPattern: "**"
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: mysql
