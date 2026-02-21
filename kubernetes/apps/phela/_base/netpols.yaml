@@ -7,7 +7,7 @@ spec:
   description: "Allow the ingress traffic from reserved ingress identity"
   endpointSelector:
     matchLabels:
-      name: phela
+      app.kubernetes.io/name: phela
   ingress:
     - fromEntities:
         - ingress
