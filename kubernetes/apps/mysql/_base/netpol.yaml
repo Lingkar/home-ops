@@ -13,6 +13,9 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: phela
             k8s:app.kubernetes.io/name: phela
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: crossplane-system
+            k8s:pkg.crossplane.io/provider: crossplane-contrib-provider-sql
       toPorts:
         - ports:
             - port: "6446"
