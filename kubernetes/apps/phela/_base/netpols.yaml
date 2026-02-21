@@ -21,4 +21,4 @@ spec:
             serviceName: mysql
       toPorts:
         - ports:
-            - port: "6445"
+            - port: "6446"
