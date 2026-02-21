@@ -5,7 +5,9 @@ metadata:
   name: allow-ingress
 spec:
   description: "Allow the ingress traffic from reserved ingress identity"
-  endpointSelector: {}
+  endpointSelector:
+    matchLabels:
+      name: phela
   ingress:
     - fromEntities:
         - ingress
