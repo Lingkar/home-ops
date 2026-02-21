@@ -13,3 +13,6 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: phela
             k8s:app.kubernetes.io/name: phela
+      toPorts:
+        - ports:
+            - port: "6446"

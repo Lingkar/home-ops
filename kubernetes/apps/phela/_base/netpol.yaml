@@ -15,11 +15,10 @@ spec:
         - ports:
             - port: "80"
   egress:
-    # - toEndpoints:
-    #     - matchLabels:
-    #         k8s:io.kubernetes.pod.namespace: mysql
-    #         k8s:app.kubernetes.io/name: mysql-router
-    - toServices:
-        - k8sService:
-            namespace: mysql
-            serviceName: mysql
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: mysql
+            k8s:app.kubernetes.io/name: mysql-router
+      toPorts:
+        - ports:
+            - port: "6446"
