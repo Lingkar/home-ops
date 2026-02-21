@@ -18,4 +18,6 @@ spec:
             k8s:pkg.crossplane.io/provider: crossplane-contrib-provider-sql
       toPorts:
         - ports:
-            - port: "6446"
+            - port: "6446" # MySQL Router primary (RW) classic protocol
+            - port: "6447" # MySQL Router read-only classic protocol
+            - port: "6450" # MySQL Router read/write split
