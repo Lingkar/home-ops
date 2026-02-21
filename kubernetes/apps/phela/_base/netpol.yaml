@@ -19,6 +19,3 @@ spec:
         - k8sService:
             namespace: mysql
             serviceName: mysql
-      toPorts:
-        - ports:
-            - port: "6446"
