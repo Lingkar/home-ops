@@ -15,17 +15,17 @@ spec:
         - ports:
             - port: "80"
   egress:
-    - toCIDRSet:
-        - cidr: "0.0.0.0/0"
-          except: ["192.168.68.0/23"]
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
-            - port: "443"
-              protocol: TCP
-          rules:
-            http: [{}]
+    # - toCIDRSet:
+    #     - cidr: "0.0.0.0/0"
+    #       except: ["192.168.68.0/23"]
+    #   toPorts:
+    #     - ports:
+    #         - port: "80"
+    #           protocol: TCP
+    #         - port: "443"
+    #           protocol: TCP
+    #       rules:
+    #         http: [{}]
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: mysql
