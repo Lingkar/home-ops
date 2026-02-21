@@ -6,3 +6,4 @@ resources:
   - db-conn.sops.yaml
   - innodbcluster.yaml
   - mysql-credentials.sops.yaml
+  - netpol.yaml
