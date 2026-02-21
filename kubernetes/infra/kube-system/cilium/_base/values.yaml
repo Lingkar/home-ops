@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/cilium/cilium/refs/heads/main/install/kubernetes/cilium/values.schema.json
 upgradeCompatibility: "1.18"
-policyAuditMode: false
+policyAuditMode: true
 resources:
   limits:
     memory: 440Mi
