@@ -15,11 +15,11 @@ spec:
         - ports:
             - port: "80"
   egress:
-    - toCIDRSet:
-        - cidr: "0.0.0.0/0"
-          except: ["192.168.68.0/23"]
-      toFQDNs:
-        - matchPattern: "**"
+    # - toCIDRSet:
+    #     - cidr: "0.0.0.0/0"
+    #       except: ["192.168.68.0/23"]
+    #   toFQDNs:
+    #     - matchPattern: "**"
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: mysql
