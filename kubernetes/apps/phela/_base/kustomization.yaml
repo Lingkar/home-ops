@@ -5,6 +5,7 @@ resources:
   - database.yaml
   - helmrelease.yaml
   - mysql-credentials.sops.yaml
+  - netpols.yaml
   - source.yaml
 configMapGenerator:
   - name: values-phela

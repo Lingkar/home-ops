@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ingress
+spec:
+  description: "Allow the ingress traffic from reserved ingress identity"
+  endpointSelector:
+    matchLabels:
+      name: phela
+  ingress:
+    - fromEntities:
+        - ingress

@@ -34,8 +34,6 @@ Start in auditing mode:
 - egress deny cross-namespace
 - ingress deny cross-namespace
 
-Monitor for 
-
 # Read write speed-test
 ## rpi-00
 ### On PV:

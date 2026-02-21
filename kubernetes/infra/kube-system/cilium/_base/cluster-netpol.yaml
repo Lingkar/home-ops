@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: "default-deny"
+  name: default-deny
 spec:
   description: "Block all the traffic except DNS and kube-apiserver by default"
   enableDefaultDeny:
