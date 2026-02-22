@@ -12,6 +12,8 @@ bpf:
   masquerade: true
   # Ref: https://github.com/siderolabs/talos/issues/10002
   hostLegacyRouting: true
+extraArgs:
+  - --enable-extended-ip-protocols
 cni:
   # Required for pairing with Multus CNI
   exclusive: false
