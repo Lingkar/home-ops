@@ -25,6 +25,10 @@ dashboards:
   enabled: true
 dnsProxy:
   enabled: true
+  proxyPort: 10094
+standaloneDnsProxy:
+  enabled: true
+  serverPort: 10094
 encryption:
   enabled: true
   type: wireguard
