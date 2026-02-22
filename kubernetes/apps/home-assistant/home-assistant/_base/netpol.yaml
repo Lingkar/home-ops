@@ -18,18 +18,19 @@ spec:
     - toCIDR:
         - "192.168.68.0/23"
     - toCIDR:
-        - "224.0.0.251/32" # IPv4 multicast discovery
+        - "224.0.0.251/32" # IPv4 multicast
       toPorts:
         - ports:
             - port: "5353"
-
     - toCIDR:
-        - "239.255.255.250/32" # SSDP/UPnP multicast discovery
+        - "224.0.0.22/32" # IGMPv3 multicast
+    - toCIDR:
+        - "239.255.255.250/32" # SSDP/UPnP multicast
       toPorts:
         - ports:
             - port: "1900"
     - toCIDR:
-        - "255.255.255.255/32" # UDP broadcast for SSDP/UPnP discovery
+        - "255.255.255.255/32" # UDP broadcast for SSDP/UPnP
       toPorts:
         - ports:
             - port: "1900"
