@@ -15,10 +15,13 @@ spec:
         - ports:
             - port: "8123"
   egress:
-    - toServices:
-        - k8sService:
-            namespace: home-assistant
-            serviceName: mosquitto
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: home-assistant
+            k8s:app.kubernetes.io/name: mosquitto
+      toPorts:
+        - ports:
+            - port: "1883"
     # - toCIDRSet:
     #     - cidr: "0.0.0.0/0"
     #       except: ["192.168.68.0/23"]
