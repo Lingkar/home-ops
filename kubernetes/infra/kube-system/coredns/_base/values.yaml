@@ -31,9 +31,8 @@ servers:
         configBlock: |-
           pods verified
           fallthrough in-addr.arpa ip6.arpa
-      # TODO: Enable again after Cilium fix: https://github.com/cilium/cilium/issues/20191
-      # - name: autopath
-      #   parameters: "@kubernetes"
+      - name: autopath
+        parameters: "@kubernetes"
       - name: forward
         parameters: . /etc/resolv.conf
       - name: cache
