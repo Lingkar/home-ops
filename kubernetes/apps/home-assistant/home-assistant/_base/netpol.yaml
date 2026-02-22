@@ -17,18 +17,18 @@ spec:
   egress:
     - toCIDR:
         - "192.168.68.0/23"
-    - toServices:
-        - k8sService:
-            namespace: home-assistant
-            serviceName: mosquitto
-    # - toEndpoints:
-    #     - matchLabels:
-    #         k8s:io.kubernetes.pod.namespace: home-assistant
-    #         k8s:app.kubernetes.io/name: mosquitto
-    #   toPorts:
-    #     - ports:
-    #         - port: "1883"
-    #           protocol: TCP
+    # - toServices:
+    #     - k8sService:
+    #         namespace: home-assistant
+    #         serviceName: mosquitto
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: home-assistant
+            k8s:app.kubernetes.io/name: mosquitto
+      toPorts:
+        - ports:
+            - port: "1883"
+              protocol: TCP
     - toFQDNs:
         - matchPattern: "*.api.met.no"
         - matchName: www.googleapis.com
