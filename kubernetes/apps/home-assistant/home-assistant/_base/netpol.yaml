@@ -22,10 +22,16 @@ spec:
     #         namespace: home-assistant
     #         serviceName: mosquitto
     - toCIDR:
-        - "224.0.0.251/32" # IPv4 multicast
+        - "224.0.0.251/32" # IPv4 multicast discovery
       toPorts:
         - ports:
             - port: "5353"
+
+    - toCIDR:
+        - "239.255.255.250/32" # SSDP/UPnP multicast discovery
+      toPorts:
+        - ports:
+            - port: "1900"
     - toCIDR:
         - "255.255.255.255/32" # UDP broadcast for SSDP/UPnP discovery
       toPorts:
