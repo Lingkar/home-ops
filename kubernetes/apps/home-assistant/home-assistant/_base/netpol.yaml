@@ -21,10 +21,14 @@ spec:
         - k8sService:
             namespace: home-assistant
             serviceName: mosquitto
-      toPorts:
-        - ports:
-            - port: "1883"
-              protocol: TCP
+    # - toEndpoints:
+    #     - matchLabels:
+    #         k8s:io.kubernetes.pod.namespace: home-assistant
+    #         k8s:app.kubernetes.io/name: mosquitto
+    #   toPorts:
+    #     - ports:
+    #         - port: "1883"
+    #           protocol: TCP
     - toFQDNs:
         - matchPattern: "*.api.met.no"
         - matchName: www.googleapis.com
