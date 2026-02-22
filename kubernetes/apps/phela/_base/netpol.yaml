@@ -4,7 +4,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: phela
 spec:
-  description: "Allow the ingress traffic from reserved ingress identity"
+  description: "Network policies for the phela website"
   endpointSelector:
     matchLabels:
       k8s:app.kubernetes.io/name: phela
@@ -47,5 +47,3 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    - toEntities:
-        - kube-apiserver
