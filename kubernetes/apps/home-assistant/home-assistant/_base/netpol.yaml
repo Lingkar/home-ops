@@ -21,6 +21,16 @@ spec:
     #     - k8sService:
     #         namespace: home-assistant
     #         serviceName: mosquitto
+    - toCIDR:
+        - "224.0.0.251/32" # IPv4 multicast
+      toPorts:
+        - ports:
+            - port: "5353"
+    - toCIDR:
+        - "255.255.255.255/32" # UDP broadcast for SSDP/UPnP discovery
+      toPorts:
+        - ports:
+            - port: "1900"
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: home-assistant
