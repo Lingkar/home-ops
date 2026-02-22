@@ -15,21 +15,21 @@ spec:
         - ports:
             - port: "8123"
   egress:
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: home-assistant
-            k8s:app.kubernetes.io/name: mosquitto
+    - toCIDR:
+        - "192.168.68.0/23"
+    - toServices:
+        - k8sService:
+            namespace: home-assistant
+            serviceName: mosquitto
       toPorts:
         - ports:
             - port: "1883"
               protocol: TCP
-    # - toCIDRSet:
-    #     - cidr: "0.0.0.0/0"
-    #       except: ["192.168.68.0/23"]
     - toFQDNs:
         - matchPattern: "*.api.met.no"
-    - toFQDNs:
-        - matchName: "google.com"
+        - matchName: www.googleapis.com
+        - matchName: data-v2.hacs.xyz
+        - matchName: alerts.home-assistant.io
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
