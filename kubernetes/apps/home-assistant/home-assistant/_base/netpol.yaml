@@ -7,7 +7,7 @@ spec:
   description: "Network policies for home-assistant"
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: home-assistant
+      k8s:app.kubernetes.io/name: home-assistant
   ingress:
     - fromEntities:
         - ingress
