@@ -31,7 +31,7 @@ spec:
               protocol: TCP
     - toFQDNs:
         - matchPattern: "*.api.met.no"
-        - matchName: www.googleapis.com
+        - matchPattern: "*.googleapis.com"
         - matchName: data-v2.hacs.xyz
         - matchName: alerts.home-assistant.io
     - toEndpoints:
