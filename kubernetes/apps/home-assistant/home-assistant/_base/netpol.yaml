@@ -28,6 +28,8 @@ spec:
     #       except: ["192.168.68.0/23"]
     - toFQDNs:
         - matchPattern: "*.api.met.no"
+    - toFQDNs:
+        - matchName: "google.com"
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
