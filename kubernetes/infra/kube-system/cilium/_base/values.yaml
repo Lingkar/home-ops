@@ -23,6 +23,8 @@ cgroup:
 # devices: eno+ eth+
 dashboards:
   enabled: true
+dnsProxy:
+  enabled: true
 encryption:
   enabled: true
   type: wireguard
