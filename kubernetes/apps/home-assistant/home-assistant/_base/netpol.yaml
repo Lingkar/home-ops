@@ -46,10 +46,10 @@ spec:
             - port: "1883"
               protocol: TCP
     - toFQDNs:
-        - matchPattern: "*.api.met.no"
-        - matchPattern: "*.googleapis.com"
-        - matchName: data-v2.hacs.xyz
-        - matchName: alerts.home-assistant.io
+        - matchPattern: "*.api.met.no.svc.cluster.local"
+        - matchPattern: "*.googleapis.com.svc.cluster.local"
+        - matchName: data-v2.hacs.xyz.svc.cluster.local
+        - matchName: alerts.home-assistant.io.svc.cluster.local
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
