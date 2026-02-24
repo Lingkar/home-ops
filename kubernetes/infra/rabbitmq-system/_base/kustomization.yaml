@@ -1,3 +1,4 @@
 resources:
   - source.yaml
   - ks.yaml
+  - messaging-topology-operator-with-certmanager.yaml
