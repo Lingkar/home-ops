@@ -28,7 +28,7 @@ dashboards:
 dnsProxy:
   enabled: true
 encryption:
-  enabled: true
+  enabled: false
   type: wireguard
 endpointRoutes:
   enabled: true
