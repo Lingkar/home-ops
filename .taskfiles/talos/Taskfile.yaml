@@ -4,16 +4,20 @@ tasks:
   generate-config:
     desc: Generate Talos configuration
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper genconfig -o {{.TALOS_DIR_OUT}}
+    cmds:
+      - talhelper genconfig -o {{.TALOS_DIR_OUT}} -c {{.TALOSCONFIGYAML}} -e {{.TALOSCONFIGENV}} -s {{.TALOSCONFIGSECRET}}
+      - cp {{.TALOSCONFIGYAML}} {{.TALOS_DIR}}
+      - cp {{.TALOSCONFIGENV}} {{.TALOS_DIR}}
     preconditions:
-      - test -f {{.TALOS_DIR}}/talconfig.yaml
+      - test -f {{.TALOSCONFIGYAML}}
       - test -f {{.ROOT_DIR}}/.sops.yaml
       - test -f {{.SOPS_AGE_KEY_FILE}}
+      - test -f {{.TALOSCONFIGSECRET}}
       - which talhelper
   apply-node:
     desc: Apply Talos config to a node [IP=required]
     dir: "{{.TALOS_DIR}}"
-    cmd: talhelper gencommand apply -c {{.TALOSCONFIGYAML}} -e {{.TALOSCONFIGENV}} --node {{.IP}} --extra-flags '--mode={{.MODE}}' | bash
+    cmd: talhelper gencommand apply --node {{.IP}} --extra-flags '--mode={{.MODE}}' | bash
     vars:
       MODE: '{{.MODE | default "auto"}}'
     requires:
@@ -29,7 +33,7 @@ tasks:
     cmd: talhelper gencommand upgrade --node {{.IP}} --extra-flags "--image='{{.TALOS_IMAGE}}' --timeout=10m" | bash
     vars:
       TALOS_IMAGE:
-        sh: talhelper genurl installer -c talos/talconfig.yaml --env-file talos/talenv.yaml -n "{{.IP}}"
+        sh: talhelper genurl installer -c {{.TALOSCONFIGYAML}} --env-file {{.TALOSCONFIGENV}} -n "{{.IP}}"
     requires:
       vars: [IP]
     preconditions:

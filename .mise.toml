@@ -2,7 +2,7 @@
 _.python.venv = { path = "{{config_root}}/.venv", create = true }
 KUBECONFIG = "{{config_root}}/../home-ops-secrets/kubeconfig"
 SOPS_AGE_KEY_FILE = "{{config_root}}/../home-ops-secrets/age.key"
-TALOSCONFIG = "{{config_root}}/../home-ops-secrets/clusterconfig/talosconfig"
+TALOSCONFIG = "{{config_root}}/../home-ops-secrets/talos/clusterconfig/talosconfig"
 
 [tools]
 "python" = "3.14.3"

@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: privileged-0
-  namespace: monitoring
   labels:
     app: privileged
 spec:

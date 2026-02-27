@@ -19,6 +19,6 @@ cluster:
               - spegel
               - velero
               - zigbee2mqtt
-              - apps-privileged
+              - scroop
             runtimeClasses: []
             usernames: []
