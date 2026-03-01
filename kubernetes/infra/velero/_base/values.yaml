@@ -1,8 +1,10 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/vmware-tanzu/helm-charts/refs/heads/main/charts/velero/values.schema.json
 credentials:
   existingSecret: s3-credentials
 configuration:
   features: EnableCSI
   garbageCollectionFrequency: 15m
+  terminatingResourceTimeout: 30m
   backupStorageLocation:
     - name: hetzner
       provider: velero.io/aws
