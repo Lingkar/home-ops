@@ -20,7 +20,7 @@ configuration:
         region: fsn1
         s3Url: https://fsn1.your-objectstorage.com
         s3ForcePathStyle: "true"
-  defaultRepoMaintainFrequency: 12h
+  defaultRepoMaintainFrequency: 24h # Set equal to minimal backup frequency https://kopia.discourse.group/t/default-schedule-for-maintaince-seem-too-agressive/2299/7
 schedules:
   # pv-snapshots:
   #   disabled: false
@@ -54,7 +54,7 @@ schedules:
   pv-snapshots-remote-weekly:
     schedule: "15 3 * * mon" # Back-up every Monday at 02:15
     template:
-      ttl: 1344h # 2 months
+      ttl: 850h # 35 days
       snapshotVolumes: true
       snapshotMoveData: true
       excludedNamespaces: [] # Should exclude certain namespaces in the future

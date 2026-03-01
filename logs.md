@@ -23,7 +23,7 @@
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Set-up intrusion detection with Falco
-- [ ] Set-up proper MySLQ server back-ups
+- [ ] Set-up proper MySQL server back-ups
 - [ ] Run wordpress as non-root
 
 # Network policy approach:
