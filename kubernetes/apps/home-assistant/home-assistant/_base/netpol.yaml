@@ -36,7 +36,6 @@ spec:
             - port: "1900"
     - toEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: home-assistant
             k8s:app.kubernetes.io/name: mosquitto
       toPorts:
         - ports:
