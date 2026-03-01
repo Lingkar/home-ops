@@ -115,7 +115,7 @@ metrics:
 kubectl:
   image:
     repository: public.ecr.aws/bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
-    tag: latest@sha256:186227d92b6fff07d7406c8421d0eec743acf0af9ea6bd467203b86cdee887da
+    tag: latest@sha256:890db7b922895e2449e4452eaaabf09e0da2fddfbe1f1a4d9810a66800a59b41
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
