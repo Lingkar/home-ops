@@ -5,6 +5,7 @@ configuration:
   features: EnableCSI
   garbageCollectionFrequency: 15m
   terminatingResourceTimeout: 30m
+  defaultItemOperationTimeout: 30m
   backupStorageLocation:
     - name: hetzner
       provider: velero.io/aws
