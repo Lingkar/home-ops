@@ -21,7 +21,7 @@ spec:
       maxQueriesPerHour: 0
       maxUpdatesPerHour: 0
       maxConnectionsPerHour: 0
-      maxUserConnections: 25
+      maxUserConnections: 0
   providerConfigRef:
     name: mysql
 ---
