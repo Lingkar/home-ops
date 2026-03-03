@@ -18,3 +18,15 @@ spec:
     resources:
       requests:
         storage: 5Gi
+  backupProfiles:
+    - name: default
+      dumpInstance:
+        storage:
+          persistentVolumeClaim:
+            claimName: mysql-backup
+  backupSchedules:
+    - name: daily
+      enabled: true
+      backupProfileName: default
+      deleteBackupData: false
+      schedule: "45 1 * * *"

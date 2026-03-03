@@ -7,3 +7,4 @@ resources:
   - innodbcluster.yaml
   - mysql-credentials.sops.yaml
   - netpol.yaml
+  - pvc.yaml
