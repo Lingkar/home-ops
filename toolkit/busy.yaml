@@ -22,10 +22,10 @@ spec:
             - "/bin/sh"
             - "-c"
             - "tail -f /dev/null"
-          # volumeMounts:
-          #   - name: data
-          #     mountPath: /data
-      # volumes:
-      #   - name: data
-      #     persistentVolumeClaim:
-      #       claimName: data-volume-zigbee2mqtt-0
+          volumeMounts:
+            - name: volume
+              mountPath: /volume
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: volume
