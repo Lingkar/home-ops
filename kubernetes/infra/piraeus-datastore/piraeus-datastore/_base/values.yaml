@@ -43,7 +43,7 @@ linstorCluster:
               requests:
                 cpu: 10m
               limits:
-                memory: 2Gi
+                memory: 4Gi
   csiNode:
     podTemplate:
       spec:
