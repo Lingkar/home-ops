@@ -11,10 +11,10 @@
 - [x] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
 - [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [x] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
-- [ ] Create Velero logic such that specific PV's / PVC's are not included in the (remote) back-up. -> Label PVC: velero.io/exclude-from-backup: "true"
+- [x] Create Velero logic such that specific PV's / PVC's are not included in the (remote) back-up. -> Label PVC: velero.io/exclude-from-backup=true
+- [x] Set-up proper MySQL server back-ups
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
-- [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
 - [ ] Set resources Velero, api-server, scheduler, controller manager
 - [ ] Fix ETCD grafana dashboard
@@ -23,8 +23,8 @@
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Set-up intrusion detection with Falco
-- [ ] Set-up proper MySQL server back-ups
 - [ ] Run wordpress as non-root
+- [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 
 # Network policy approach:
 Start in auditing mode:
