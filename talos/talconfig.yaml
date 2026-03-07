@@ -55,7 +55,6 @@ nodes:
     ipAddress: "192.168.68.253"
     nodeLabels:
       piraeus.io/storage: "true"
-      linstor.io/storage: "true"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
@@ -77,6 +76,8 @@ nodes:
   # TODO:: add user volume
   - hostname: "c-02"
     ipAddress: "192.168.68.254"
+    nodeLabels:
+      piraeus.io/storage: "true"
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: true

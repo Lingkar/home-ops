@@ -3,6 +3,8 @@ monitoring:
   enabled: true
 linstorCluster:
   linstorPassphraseSecret: linstor-passphrase
+  nodeSelector:
+    piraeus.io/storage: "true"
   controller:
     podTemplate:
       spec:
