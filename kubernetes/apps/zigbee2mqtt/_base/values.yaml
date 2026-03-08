@@ -8,7 +8,7 @@ service:
   type: ClusterIP
 statefulset:
   nodeSelector:
-    kubernetes.io/hostname: c-00
+    kubernetes.io/hostname: c-01
   storage:
     enabled: true
     storageClassName: ssd-lvm-thin-1
