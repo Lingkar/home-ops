@@ -4,6 +4,7 @@ zigbee2mqtt:
     server: mqtt://mosquitto.home-assistant.svc.cluster.local:1883
   serial:
     adapter: ember
+    port: /dev/ttyACM0
 service:
   type: ClusterIP
 statefulset:
