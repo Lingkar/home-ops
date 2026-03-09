@@ -172,7 +172,7 @@ linstorSatelliteConfigurations:
               type: DirectoryOrCreate
   - name: c-01
     nodeSelector:
-      kubernetes.io/hostname: c-02
+      kubernetes.io/hostname: c-01
     storagePools:
       - name: ssd-lvm-thin
         lvmThinPool:
