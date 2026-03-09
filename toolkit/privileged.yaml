@@ -1,15 +1,13 @@
-# https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/deployment.json
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
-  name: privileged-0
+  name: privileged
+  namespace: piraeus-datastore
   labels:
     app: privileged
 spec:
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 100%
+  replicas: 1
   selector:
     matchLabels:
       app: privileged
@@ -18,10 +16,13 @@ spec:
       labels:
         app: privileged
     spec:
-      # nodeSelector:
-      #   run-privileged: "true"
+      # hostIPC: true
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/hostname: c-01
       containers:
-        - image: ubuntu
+        - image: ubuntu:noble
           name: ubuntu
           resources: {}
           command:
@@ -31,8 +32,8 @@ spec:
           volumeMounts:
             - name: dev
               mountPath: /dev
-            # - name: modules
-            #   mountPath: /lib/modules
+            - name: host-root
+              mountPath: /host
           securityContext:
             privileged: true
           # allowPrivilegeEscalation: false
@@ -45,7 +46,7 @@ spec:
         - name: dev
           hostPath:
             path: /dev
-        # - name: modules
-        #   hostPath:
-        #     path: /lib/modules
+        - name: host-root
+          hostPath:
+            path: /
 status: {}

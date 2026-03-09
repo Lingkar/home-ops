@@ -1,0 +1,15 @@
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: hdd-0
+provisioning:
+  diskSelector:
+    match: "!system_disk && disk.wwid == 'naa.5000c500fadfb805'"
+  minSize: 500GB
+---
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: hdd-1
+provisioning:
+  diskSelector:
+    match: "!system_disk && disk.model == 'My Book 1110'"
+  minSize: 500GB

@@ -51,19 +51,19 @@ nodes:
         dhcp: true
         vip:
           ip: "192.168.69.5"
-  - hostname: "c-00"
+  - hostname: "c-01"
     ipAddress: "192.168.68.253"
     nodeLabels:
       piraeus.io/storage: "true"
     installDisk: "/dev/sda"
     machineSpec:
-      secureboot: false
-      mode: nocloud
+      secureboot: true
+      mode: metal
       arch: amd64
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:e2:db:01"
+          hardwareAddr: "e8:ff:1e:d2:90:ed"
         dhcp: true
         vip:
           ip: "192.168.69.5"
@@ -72,7 +72,10 @@ nodes:
         systemExtensions:
           officialExtensions:
             - siderolabs/drbd
-            # - siderolabs/zfs
+            - siderolabs/zfs
+    patches:
+      - "@./patches/c-01/system-disk-ssd.yaml"
+      - "@./patches/c-01/raw-volume-hdd.yaml"
   # TODO:: add user volume
   - hostname: "c-02"
     ipAddress: "192.168.68.254"
@@ -120,8 +123,8 @@ controlPlane:
     - name: drbd_transport_tcp
     # LVM_THIN storage pools require this module
     - name: dm-thin-pool
-      # ZFS storage pools require this module from the ZFS extension
-      # - name: zfs
+    # ZFS storage pools require this module from the ZFS extension
+    - name: zfs
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"

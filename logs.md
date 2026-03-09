@@ -26,6 +26,9 @@
 - [ ] Run wordpress as non-root
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 
+# ZFS storage pool
+https://oneuptime.com/blog/post/2026-03-03-add-zfs-support-to-talos-linux/view
+
 # Network policy approach:
 Start in auditing mode:
 - egress allow cluster DNS
