@@ -20,6 +20,8 @@
 - [ ] Fix ETCD grafana dashboard
 - [ ] FluxCD diffing -> fix pipelines
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
+- [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus)
+- [ ] Set-up a notification channel https://ntfy.sh/ looks promising
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Set-up intrusion detection with Falco
