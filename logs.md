@@ -76,7 +76,7 @@ real    0m 31.09s
 user    0m 0.02s
 sys     0m 2.96s
 
-## c-01
+## c-01 (old proxmox, not current c-01)
 ### On PV:
 /data # time dd if=/dev/zero bs=1024k of=./testfile count=1024
 1024+0 records in
