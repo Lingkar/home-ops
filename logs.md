@@ -27,6 +27,7 @@
 - [ ] Set-up intrusion detection with Falco
 - [ ] Run wordpress as non-root
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
+- [ ] Set application priorities and evictions in case MS-S1 Max shuts down
 
 # ZFS storage pool
 https://oneuptime.com/blog/post/2026-03-03-add-zfs-support-to-talos-linux/view
