@@ -51,7 +51,7 @@ linstorCluster:
       spec:
         containers:
           - name: linstor-csi
-            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.5@sha256:6ca502c3a569b3841b314fb844dbb9e07a75f8cb176fdc7059b42afe93dc90f8
+            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.6@sha256:8f87c6a62a4f49b45e847c03de113906737d75ea8ab8e11630a6bf17f4192e5e
             args:
               - --log-level=debug
               - --csi-endpoint=unix:///csi/csi.sock
@@ -80,7 +80,7 @@ linstorCluster:
       spec:
         containers:
           - name: linstor-csi
-            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.5@sha256:6ca502c3a569b3841b314fb844dbb9e07a75f8cb176fdc7059b42afe93dc90f8
+            image: quay.io/piraeusdatastore/piraeus-csi:v1.10.6@sha256:8f87c6a62a4f49b45e847c03de113906737d75ea8ab8e11630a6bf17f4192e5e
             args:
               - --log-level=debug
               - --csi-endpoint=unix://$(ADDRESS)
