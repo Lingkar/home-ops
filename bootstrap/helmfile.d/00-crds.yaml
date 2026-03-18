@@ -27,7 +27,7 @@ releases:
   - name: grafana-operator
     namespace: grafana-system
     chart: oci://ghcr.io/grafana/helm-charts/grafana-operator
-    version: 5.22.0
+    version: 5.22.1
 
   - name: cert-manager
     namespace: cert-manager
