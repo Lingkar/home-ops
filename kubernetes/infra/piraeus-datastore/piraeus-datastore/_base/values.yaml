@@ -170,19 +170,19 @@ linstorSatelliteConfigurations:
             hostPath:
               path: /var/etc/lvm/archive
               type: DirectoryOrCreate
-  - name: c-01
-    nodeSelector:
-      kubernetes.io/hostname: c-01
-    storagePools:
-      - name: ssd-lvm-thin
-        lvmThinPool:
-          volumeGroup: vg1
-          thinPool: thin
-        source:
-          hostDevices:
-            - /dev/disk/by-partlabel/r-ssd-0
-      - name: hdd-zfs-mirror-thin
-        zfsThinPool: {}
+  # - name: c-01
+  #   nodeSelector:
+  #     kubernetes.io/hostname: c-01
+  #   storagePools:
+  #     - name: ssd-lvm-thin
+  #       lvmThinPool:
+  #         volumeGroup: vg1
+  #         thinPool: thin
+  #       source:
+  #         hostDevices:
+  #           - /dev/disk/by-partlabel/r-ssd-0
+  #     - name: hdd-zfs-mirror-thin
+  #       zfsThinPool: {}
   - name: c-02
     nodeSelector:
       kubernetes.io/hostname: c-02
