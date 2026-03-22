@@ -21,6 +21,14 @@ instance:
       app.kubernetes.io/name: flux
   kustomize:
     patches:
+      - # Set priorityClass of the flux components
+        target:
+          kind: Deployment
+          name: (kustomize-controller|helm-controller|source-controller|source-watcher|notification-controller)
+        patch: |
+          - op: add
+            path: /spec/template/spec/priorityClassName
+            value: platform-critical
       - # Increase the number of workers
         target:
           kind: Deployment
