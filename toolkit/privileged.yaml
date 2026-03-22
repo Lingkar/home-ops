@@ -2,25 +2,78 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: privileged
+  name: privileged-c-01
   namespace: piraeus-datastore
   labels:
-    app: privileged
+    app: privileged-c-01
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: privileged
+      app: privileged-c-01
   template:
     metadata:
       labels:
-        app: privileged
+        app: privileged-c-01
     spec:
       # hostIPC: true
       hostNetwork: true
       hostPID: true
       nodeSelector:
         kubernetes.io/hostname: c-01
+      containers:
+        - image: ubuntu:noble
+          name: ubuntu
+          resources: {}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "tail -f /dev/null"
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-root
+              mountPath: /host
+          securityContext:
+            privileged: true
+          # allowPrivilegeEscalation: false
+          #   runAsNonRoot: true
+          #   seccompProfile:
+          #     type: RuntimeDefault
+          #   capabilities:
+          #     drop:
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: host-root
+          hostPath:
+            path: /
+status: {}
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/deployment.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privileged-c-02
+  namespace: piraeus-datastore
+  labels:
+    app: privileged-c-02
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privileged-c-02
+  template:
+    metadata:
+      labels:
+        app: privileged-c-02
+    spec:
+      # hostIPC: true
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/hostname: c-02
       containers:
         - image: ubuntu:noble
           name: ubuntu
