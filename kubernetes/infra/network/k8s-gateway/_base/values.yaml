@@ -2,6 +2,7 @@ fullnameOverride: k8s-gateway
 # TODO:: Remove phela again after it has been moved to the external gateway
 domain: "${SECRET_DOMAIN} phela-intelligence.com"
 ttl: 1
+priorityClassName: platform-critical
 service:
   type: LoadBalancer
   port: 53

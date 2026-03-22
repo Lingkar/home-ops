@@ -11,6 +11,8 @@ spec:
   router:
     instances: 1
   edition: community
+  podSpec:
+    priorityClassName: platform-high
   datadirVolumeClaimTemplate:
     storageClassName: ssd-lvm-thin-1 # Should stay on single replica backed PVC
     accessModes:
