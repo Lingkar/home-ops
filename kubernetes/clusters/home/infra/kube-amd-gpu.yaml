@@ -22,6 +22,6 @@ spec:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: kube-system
+  targetNamespace: kube-amd-gpu
   timeout: 15m
   wait: false
