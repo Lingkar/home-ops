@@ -29,18 +29,18 @@ releases:
     chart: oci://ghcr.io/grafana/helm-charts/grafana-operator
     version: 5.22.2
 
-  - name: cert-manager
-    namespace: cert-manager
-    chart: oci://quay.io/jetstack/charts/cert-manager
-    version: v1.19.4
-    set:
-      - name: crds.enabled
-        value: true
+  # - name: cert-manager
+  #   namespace: cert-manager
+  #   chart: oci://quay.io/jetstack/charts/cert-manager
+  #   version: v1.19.4
+  #   set:
+  #     - name: crds.enabled
+  #       value: true
 
-  - name: piraeus
-    namespace: piraeus-datastore
-    chart: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
-    version: 2.10.5
-    set:
-      - name: installCRDs
-        value: true
+  # - name: piraeus
+  #   namespace: piraeus-datastore
+  #   chart: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
+  #   version: 2.10.5
+  #   set:
+  #     - name: installCRDs
+  #       value: true

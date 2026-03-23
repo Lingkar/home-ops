@@ -271,9 +271,9 @@ function apply_crds() {
         fi
     fi
 
-    if ! echo "${crds}" | kubectl apply --server-side=true --filename - &>/dev/null; then
-        log fatal "Failed to apply crds from Helmfile" "file" "${helmfile_file}"
-        exit 1
+    local apply_output
+    if ! apply_output=$(echo "${crds}" | kubectl apply --server-side=true --filename - 2>&1); then
+        log fatal "Failed to apply crds from Helmfile" "file=${helmfile_file}" "output=${apply_output}"
     fi
 
     log info "CRDs applied successfully"
