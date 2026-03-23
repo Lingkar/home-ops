@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: zigbee2mqtt
+  name: netbirdio
 spec:
   interval: 15m
-  url: https://charts.zigbee2mqtt.io
+  url: https://netbirdio.github.io/helms
