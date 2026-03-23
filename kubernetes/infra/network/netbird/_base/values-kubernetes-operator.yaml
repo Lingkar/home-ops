@@ -1,7 +1,7 @@
 # by default the managementURL points to the NetBird cloud service: https://api.netbird.io:443
 # managementURL: "https://netbird.example.io:443"
-# ingress:
-#   enabled: true
+ingress:
+  enabled: true
 netbirdAPI:
   keyFromSecret:
     name: "netbird-mgmt-api-key"
