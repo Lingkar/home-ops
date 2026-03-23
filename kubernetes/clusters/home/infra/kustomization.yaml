@@ -4,7 +4,7 @@ resources:
   - monitoring
   - network
   - grafana-system.yaml
-  # - kube-amd-gpu.yaml
+  - kube-amd-gpu.yaml
   - cert-manager.yaml
   - crossplane.yaml
   - mysql-system.yaml
