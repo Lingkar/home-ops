@@ -4,8 +4,8 @@ ingress:
   enabled: true
   kubernetesAPI:
     enabled: true
-  router:
-    enabled: true
+  # router:
+  #   enabled: true
   policies:
     default:
       name: Kubernetes Default Policy
