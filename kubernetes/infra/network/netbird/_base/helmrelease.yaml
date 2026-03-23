@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: netbird
+  name: netbird-kubernetes-operator
 spec:
   interval: 1h
   chart:
@@ -21,7 +21,35 @@ spec:
       retries: 3
   valuesFrom:
     - kind: ConfigMap
-      name: values-netbird
+      name: values-netbird-kubernetes-operator
     - kind: ConfigMap
-      name: values-netbird
+      name: values-netbird-kubernetes-operator
+      valuesKey: env-values.yaml
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbird-operator-config
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: netbird-operator-config
+      version: 0.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: netbirdio
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-netbird-operator-config
+    - kind: ConfigMap
+      name: values-netbird-operator-config
       valuesKey: env-values.yaml
