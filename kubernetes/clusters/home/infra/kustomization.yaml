@@ -8,6 +8,7 @@ resources:
   - cert-manager.yaml
   - crossplane.yaml
   - mysql-system.yaml
+  - netbird.yaml
   - piraeus.yaml
   - rabbitmq.yaml
   - spegel.yaml

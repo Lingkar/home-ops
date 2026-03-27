@@ -1,0 +1,53 @@
+# docker run --rm -d \
+# --cap-add=NET_ADMIN \
+# -e NB_SETUP_KEY=SETUP_KEY \
+# -v netbird-client:/var/lib/netbird \
+#
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/deployment.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: netbird
+  name: netbird
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netbird
+  template:
+    metadata:
+      labels:
+        app: netbird
+    spec:
+      containers:
+        - image: netbirdio/netbird:0.67.1
+          name: netbird
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          envFrom:
+            - secretRef:
+                name: netbird-setup-key
+          volumeMounts:
+            - name: netbird-var
+              mountPath: /var/lib/netbird
+      volumes:
+        - name: netbird-var
+          persistentVolumeClaim:
+            claimName: netbird-var
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/persistentvolumeclaim-v1.json
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netbird-var
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  storageClassName: ssd-lvm-thin-2
+  volumeMode: Filesystem

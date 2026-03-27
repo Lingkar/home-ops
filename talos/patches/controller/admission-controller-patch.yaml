@@ -16,6 +16,7 @@ cluster:
             namespaces:
               - piraeus-datastore
               - kube-amd-gpu
+              - netbird
               - monitoring
               - spegel
               - velero

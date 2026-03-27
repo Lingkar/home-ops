@@ -13,14 +13,14 @@ spec:
     secretRef:
       name: sops-age
   interval: 1h
-  path: ./network/netbird/_base
+  path: ./netbird/_base
   components:
-    - ../../../components/common
+    - ../../components/common
   prune: true
   sourceRef:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: network
+  targetNamespace: netbird
   timeout: 15m
   wait: true
