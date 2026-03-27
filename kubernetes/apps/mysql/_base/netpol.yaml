@@ -4,7 +4,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: mysql
 spec:
-  description: "Allow the ingress traffic from applicaton namespaces"
+  description: "Allow the ingress traffic from application namespaces"
   endpointSelector:
     matchLabels:
       k8s:app.kubernetes.io/name: mysql-router

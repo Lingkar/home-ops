@@ -108,7 +108,7 @@ metrics:
           severity: critical
       - alert: VeleroBackupPartialFailures
         annotations:
-          message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} partialy failed backups
+          message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} partially failed backups
         expr: |-
           rate(velero_backup_partial_failure_total{schedule!=""}[25m])
             / rate(velero_backup_attempt_total{schedule!=""}[25m]) > 0.5

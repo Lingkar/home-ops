@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0 # Use the latest stable version
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: ["--multi"]
+        exclude: ^charts/.*/templates/.*\.yaml|\.gitlab-ci\.yml$
+      - id: check-added-large-files
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        args: ["--ignore-words-list", "NotIn"]
+        exclude: ^.*\.secret\.yaml$
+  - repo: https://github.com/semgrep/pre-commit
+    rev: "v1.156.0"
+    hooks:
+      - id: semgrep
+        entry: semgrep
+        args:
+          [
+            ".",
+            "--config",
+            "p/secrets",
+            "--config",
+            "p/gitleaks",
+            "--error",
+            "--metrics=off",
+          ]

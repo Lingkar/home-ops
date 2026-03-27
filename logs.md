@@ -7,7 +7,7 @@
     - [x] Fix resources in kube-system
 - [x] Remove sops-age from namespaces that don't need it
 - [x] Velero back-up snapshots to Cloud
-- [x] Velero set-up scheduled backups 
+- [x] Velero set-up scheduled backups
 - [x] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
 - [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [x] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
