@@ -21,7 +21,7 @@ spec:
         app: netbird
     spec:
       containers:
-        - image: netbirdio/netbird:0.67.1
+        - image: netbirdio/netbird:0.67.3@sha256:395dc348c15d124bc5e48d1d60eeda9d001d6db241aceaa7a65ecf664b2c8432
           name: netbird
           securityContext:
             capabilities:
