@@ -115,10 +115,6 @@ metrics:
         for: 15m
         labels:
           severity: warning
-kubectl:
-  image:
-    repository: public.ecr.aws/bitnami/kubectl #TODO:: Remove after https://github.com/vmware-tanzu/helm-charts/issues/698
-    tag: latest@sha256:df2aade7ae6848903ebecef5e0e6ae1c944b27be63069799041472d3c8113a3f
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
