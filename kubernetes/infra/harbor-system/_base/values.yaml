@@ -1,0 +1,8 @@
+expose:
+  type: route
+  route:
+    hosts:
+      - "harbor.buijnsters.com"
+    parentRefs:
+      - name: internal
+        namespace: network
