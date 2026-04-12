@@ -15,14 +15,16 @@
 - [x] Set-up proper MySQL server back-ups
 - [ ] Set-up Harbor OCI registry, public access?
 - [ ] Set-up PSQL operator for Postgres databases
-- [ ] Set-up redis operator
+- [ ] Set-up valkey operator
 - [ ] Set-up S3 compatible object storage
-- [ ] Set-up netbird
+- [/] Set-up netbird
+    - [x] tmp set-up with direct deployment
     - [ ] fix the kubernetes-operator + netbird-operator-config charts
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
 - [ ] Set resources Velero, api-server, scheduler, controller manager
+- [ ] Switch from ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds to official gateway-api-crd (if possible)
 - [ ] Fix ETCD grafana dashboard
 - [ ] FluxCD diffing -> fix pipelines
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
