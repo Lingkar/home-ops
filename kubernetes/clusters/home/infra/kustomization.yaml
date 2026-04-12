@@ -3,10 +3,11 @@ resources:
   - kube-system
   - monitoring
   - network
+  - cert-manager.yaml
+  - cnpg-system.yaml
+  - crossplane.yaml
   - grafana-system.yaml
   - kube-amd-gpu.yaml
-  - cert-manager.yaml
-  - crossplane.yaml
   - mysql-system.yaml
   - netbird.yaml
   - piraeus.yaml
