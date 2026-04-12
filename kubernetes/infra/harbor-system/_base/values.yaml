@@ -1,8 +1,11 @@
 expose:
+  tls:
+    auto:
+      commonName: harbor.buijnsters.com
   type: route
   route:
     hosts:
-      - "harbor.buijnsters.com"
+      - harbor.buijnsters.com
     parentRefs:
       - name: internal
         namespace: network
