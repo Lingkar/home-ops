@@ -2,6 +2,7 @@ resources:
   - home-assistant.yaml
   - home-ops-private.yaml
   - mysql.yaml
+  - ntfy.yaml
   - portfolio.yaml
   - phela.yaml
   - zigbee2mqtt.yaml
