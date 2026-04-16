@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
         - name: ntfy
-          image: binwiederhier/ntfy:v1.31.0@sha256:f5aaff2f497a8054276fae2236dccfd7f2871907d9fccbe8f327993f7804fee2 # set deployed version
+          image: binwiederhier/ntfy:v2.21.0@sha256:2b9e12d56a538f4402da51328eeca02696c4b207ab7fbe031c27e51a22ca9b86 # set deployed version
           args: ["serve"]
           env: #example of adjustments made in environmental variables
             - name: TZ # set timezone
