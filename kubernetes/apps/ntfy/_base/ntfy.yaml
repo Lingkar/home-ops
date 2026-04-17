@@ -61,6 +61,8 @@ spec:
           env:
             - name: NTFY_BASE_URL
               value: "https://ntfy.${SECRET_DOMAIN}"
+            - name: NTFY_UPSTREAM_BASE_URL
+              value: "https://ntfy.sh"
             - name: NTFY_LOG_LEVEL
               value: INFO
             - name: NTFY_CACHE-FILE
