@@ -1,6 +1,2 @@
 resources:
   - ntfy.yaml
-configMapGenerator:
-  - name: server-config
-    files:
-      - config.yaml

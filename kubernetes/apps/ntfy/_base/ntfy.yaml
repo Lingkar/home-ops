@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -57,17 +56,19 @@ spec:
     spec:
       containers:
         - name: ntfy
-          image: binwiederhier/ntfy:v2.21.0@sha256:2b9e12d56a538f4402da51328eeca02696c4b207ab7fbe031c27e51a22ca9b86 # set deployed version
+          image: binwiederhier/ntfy:v2.21.0@sha256:2b9e12d56a538f4402da51328eeca02696c4b207ab7fbe031c27e51a22ca9b86
           args: ["serve"]
-          env: #example of adjustments made in environmental variables
-            - name: TZ # set timezone
-              value: Europe/Amsterdam
-            - name: NTFY_DEBUG # enable/disable debug
-              value: "false"
-            - name: NTFY_LOG_LEVEL # adjust log level
-              value: INFO
-            - name: NTFY_BASE_URL # add base url
+          env:
+            - name: NTFY_BASE_URL
               value: "https://ntfy.${SECRET_DOMAIN}"
+            - name: NTFY_LOG_LEVEL
+              value: INFO
+            - name: NTFY_CACHE-FILE
+              value: "/var/cache/ntfy/cache.db"
+            - name: NTFY_ATTACHMENT-CACHE-DIR
+              value: "/var/cache/ntfy/attachments"
+            - name: TZ
+              value: Europe/Amsterdam
           ports:
             - containerPort: 80
               name: http
@@ -79,15 +80,9 @@ spec:
               cpu: 150m
               memory: 150Mi
           volumeMounts:
-            - mountPath: /etc/ntfy/server.yml
-              subPath: config.yaml
-              name: config-volume
             - mountPath: /var/cache/ntfy
               name: cache-volume
       volumes:
-        - name: config-volume
-          configMap:
-            name: server-config
         - name: cache-volume
           persistentVolumeClaim:
             claimName: ntfy
