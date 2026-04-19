@@ -15,7 +15,7 @@ kind: Database
 metadata:
   name: cnpg-keycloak
 spec:
-  name: keycloak
+  name: app
   owner: app
   cluster:
     name: keycloak
@@ -29,6 +29,8 @@ spec:
   instances: 1
   db:
     vendor: postgres
+    database: postgresql
+    schema: app
     host: cnpg-keycloak-rw
     usernameSecret:
       name: cnpg-keycloak-app
