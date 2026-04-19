@@ -19,3 +19,24 @@ spec:
   owner: app
   cluster:
     name: keycloak
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/k8s.keycloak.org/keycloak_v2alpha1.json
+apiVersion: k8s.keycloak.org/v2beta1
+kind: Keycloak
+metadata:
+  name: main
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: cnpg-keycloak-rw
+    usernameSecret:
+      name: cnpg-keycloak-app
+      key: username
+    passwordSecret:
+      name: cnpg-keycloak-app
+      key: password
+  ingress:
+    enabled: false
+  # hostname:
+  #   hostname: keycloak.buijnsters.com
