@@ -29,8 +29,7 @@ spec:
   instances: 1
   db:
     vendor: postgres
-    database: postgres
-    schema: app
+    database: app
     host: cnpg-keycloak-rw
     usernameSecret:
       name: cnpg-keycloak-app
