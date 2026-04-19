@@ -14,7 +14,7 @@ spec:
       name: sops-age
   dependsOn:
     - name: keycloak-operator
-      namespace: &namespace keycloak-system
+      namespace: flux-system
   interval: 1h
   path: ./keycloak-system/keycloak-instance/_base
   prune: true
@@ -23,6 +23,6 @@ spec:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: keycloak-system
   timeout: 5m
   wait: false
