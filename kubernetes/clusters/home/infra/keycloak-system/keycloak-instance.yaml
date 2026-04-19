@@ -3,7 +3,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app keycloak-instance
-  namespace: &namespace keycloak-system
+  namespace: flux-system
 spec:
   commonMetadata:
     labels:
@@ -14,7 +14,7 @@ spec:
       name: sops-age
   dependsOn:
     - name: keycloak-operator
-      namespace: *namespace
+      namespace: &namespace keycloak-system
   interval: 1h
   path: ./keycloak-system/keycloak-instance/_base
   prune: true
@@ -22,7 +22,7 @@ spec:
   sourceRef:
     kind: ExternalArtifact
     name: infra
-    namespace: keycloak-system
+    namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
   wait: false
