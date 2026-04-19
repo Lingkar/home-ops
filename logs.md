@@ -15,6 +15,9 @@
 - [x] Set-up proper MySQL server back-ups
 - [x] Set-up PSQL operator for Postgres databases
 - [ ] Set-up KeyCloak as OIDC issuer
+    - [x] Set-up KeyCloak operator
+    - [ ] https://www.keycloak.org/operator/basic-deployment
+        - [ ] Set-up PSQL database
 - [/] Set-up Harbor OCI registry, public access?
     - [x] first version running
     - [ ] Connect to OIDC for authentication and authorization.
@@ -31,19 +34,21 @@
 - [ ] Set resources Velero, api-server, scheduler, controller manager
 - [ ] Switch from ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds to official gateway-api-crd (if possible)
 - [ ] Fix ETCD grafana dashboard
-- [ ] FluxCD diffing -> fix pipelines
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
+- [ ] FluxCD diffing -> fix pipelines
 - [/] Set-up a notification channel https://ntfy.sh/ looks promising
     - [ ] Set-up basic credentials
-- [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Wordpress updates
     - [ ] Run wordpress as non-root
     - [ ] Migrate from MySQL to MariaDB
+- [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set application priorities and evictions in case MS-S1 Max shuts down
-- [ ] https://github.com/miniflux/v2/tree/main
+    - [/] Set-up priority classes
+    - [ ] Test if it actually works
+- [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
 - [ ] Schlink, link shortener
 - [ ] Posties, social media posting
 - [ ] it-tools
