@@ -17,7 +17,7 @@
 - [ ] Set-up KeyCloak as OIDC issuer
     - [x] Set-up KeyCloak operator
     - [ ] https://www.keycloak.org/operator/basic-deployment
-        - [ ] Set-up PSQL database
+        - [x] Set-up PSQL database
 - [/] Set-up Harbor OCI registry, public access?
     - [x] first version running
     - [ ] Connect to OIDC for authentication and authorization.
@@ -45,6 +45,7 @@
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
+- [ ] Set-up barmancloud cnpg backup/restore pluging (needs S3 object storage)
 - [ ] Set application priorities and evictions in case MS-S1 Max shuts down
     - [/] Set-up priority classes
     - [ ] Test if it actually works

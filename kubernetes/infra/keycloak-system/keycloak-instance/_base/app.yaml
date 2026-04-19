@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: keycloak
+  name: cnpg-keycloak
 spec:
   instances: 2
   storage:
@@ -13,7 +13,7 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: keycloak
+  name: cnpg-keycloak
 spec:
   name: app
   owner: app
