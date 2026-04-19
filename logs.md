@@ -43,6 +43,7 @@
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set application priorities and evictions in case MS-S1 Max shuts down
+- [ ] https://github.com/miniflux/v2/tree/main
 - [ ] Schlink, link shortener
 - [ ] Posties, social media posting
 - [ ] it-tools

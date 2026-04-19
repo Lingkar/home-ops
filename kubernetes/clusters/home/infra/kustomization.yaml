@@ -1,5 +1,6 @@
 resources:
   - flux-system
+  - keycloak-system
   - kube-system
   - monitoring
   - network
