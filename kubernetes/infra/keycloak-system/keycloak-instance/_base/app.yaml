@@ -58,6 +58,7 @@ spec:
     hostname: keycloak.buijnsters.com
   http:
     tlsSecret: kc-server-self-signed-cert
+    httpEnabled: true
   proxy:
     headers: xforwarded
 ---
