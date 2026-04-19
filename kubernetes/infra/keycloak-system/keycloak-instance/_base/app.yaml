@@ -24,7 +24,7 @@ spec:
 apiVersion: k8s.keycloak.org/v2beta1
 kind: Keycloak
 metadata:
-  name: main
+  name: kc-infra
 spec:
   instances: 1
   db:
@@ -38,5 +38,7 @@ spec:
       key: password
   ingress:
     enabled: false
-  # hostname:
-  #   hostname: keycloak.buijnsters.com
+  hostname:
+    hostname: keycloak.buijnsters.com
+  proxy:
+    headers: xforwarded
