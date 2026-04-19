@@ -47,14 +47,6 @@ spec:
   proxy:
     headers: xforwarded
 ---
-# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cert-manager.io/issuer_v1.json
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: selfsigned-issuer
-spec:
-  selfSigned: {}
----
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cert-manager.io/certificate_v1.json
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -64,6 +56,6 @@ spec:
   dnsNames:
     - keycloak.buijnsters.com
   issuerRef:
-    kind: Issuer
-    name: selfsigned-issuer
+    kind: ClusterIssuer
+    name: letsencrypt-staging
   secretName: kc-server-cert
