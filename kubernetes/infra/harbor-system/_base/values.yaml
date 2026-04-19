@@ -1,7 +1,6 @@
 expose:
   tls:
-    auto:
-      commonName: harbor.buijnsters.com
+    enabled: false
   type: route
   route:
     hosts:
