@@ -32,7 +32,7 @@ spec:
       namespace: network
   rules:
     - backendRefs:
-        - name: keycloak
+        - name: kc-infra-service
           port: 8443
 ---
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/k8s.keycloak.org/keycloak_v2alpha1.json
