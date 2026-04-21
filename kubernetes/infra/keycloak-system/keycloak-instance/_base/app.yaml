@@ -29,7 +29,7 @@ spec:
   hostnames:
     - keycloak.${SECRET_DOMAIN}
   parentRefs:
-    - name: internal
+    - name: external
       namespace: network
   rules:
     - backendRefs:
