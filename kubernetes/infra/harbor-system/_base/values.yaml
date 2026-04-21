@@ -4,7 +4,8 @@ expose:
   type: route
   route:
     hosts:
-      - harbor.buijnsters.com
+      - &domain harbor.buijnsters.com
     parentRefs:
       - name: internal
         namespace: network
+externalURL: *domain
