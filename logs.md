@@ -16,11 +16,12 @@
 - [x] Set-up PSQL operator for Postgres databases
 - [ ] Set-up KeyCloak as OIDC issuer
     - [x] Set-up KeyCloak operator
-    - [ ] https://www.keycloak.org/operator/basic-deployment
+    - [x] https://www.keycloak.org/operator/basic-deployment
         - [x] Set-up PSQL database
 - [/] Set-up Harbor OCI registry, public access?
     - [x] first version running
-    - [ ] Connect to OIDC for authentication and authorization.
+    - [/] Connect to OIDC for authentication and authorization.
+        - [ ] Add some other groups next to admin
     - [ ] Set-up dedicated PSQL database
 - [?] Set-up valkey operator
 - [?] Set-up S3 compatible object storage
