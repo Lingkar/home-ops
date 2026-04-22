@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kc-admin-creds
+stringData:
+  client-id: ENC[AES256_GCM,data:tKGqvZH+vvu9DVXDA344CSiE6eEyQYDpw9OTITl9pA1tiSxQ,iv:0VIgGqFBfmkFbVfauTNhHSfY6MN4l6Kgsz4ee3QXw2c=,tag:g77YkAnhD0P4I/w6M+Wo6Q==,type:str]
+  client-secret: ENC[AES256_GCM,data:bvKr8xfkybu9mmaT9urLotqk2Tf/gMBN1SOCaxs72+lSdKV6xyl/nw==,iv:XTluF1QXw8ZiuAG0QdJqoxHDyOJITbemd/aUFSCakMg=,tag:V74mDn8Zm6YPcf/prKYSFQ==,type:str]
+  url: ENC[AES256_GCM,data:p0C/rqm400LQa0bfJM7Z4u12gmguH12X6A==,iv:qlQqVMrSZJsWFRm3B1HPSDnxzUHUwJU84Hq0IDi9yi0=,tag:WCMu3WvHVeCiGRmxbQUcDA==,type:str]
+sops:
+  age:
+    - recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvZXB1K2dNRnZkTHRrcGhT
+        ajhIQjVQanY1Z3YyeDhyVldRaUZjc0szMEE0CkFXT1BHZXRNaTdoUmxUMzlKUUxX
+        UDVZeWt1aGpwWFBMTk5PR1lDT2NVTFEKLS0tIFFZRUtvUE16QU1ITE14cUNDRExh
+        dnBCOGNKWDZ5ZTJLYlhQVkdJbEQ5SWMKUovWeeIrune71SM4qIM78VFTTcLAAD3A
+        q6Z8s6mM4kTzNU5LpbrliAbqbxsh0mdVlrV8vZ8YQT+o6EW5fitYcw==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2026-04-22T17:35:54Z"
+  mac: ENC[AES256_GCM,data:xP/yQ3T7vjP44/uoEOgw85mde2sAocK3X2pQZx7J2tw8B4buocAV/bOZKTD+FrPvTxBVQ3hTtEao01qfyCYeJUjmISYIRbFcPL3MAgmzIX7qfoVoXydViuuEwodNzFdjJBEBLRfwhVRnJaWERoIXq09c7wfP/pe9JDVeTNVZuRA=,iv:a+fsXMUAawo6yky3aeX1GYI9aN3i/HOVUe/9D7LjL2g=,tag:J7M51YYWFAnj2cgJVp8tBg==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  mac_only_encrypted: true
+  version: 3.12.2
