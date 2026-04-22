@@ -18,5 +18,4 @@ spec:
   forProvider:
     realm: whoop
   providerConfigRef:
-    kind: providerConfig
     name: kc-provider-config
