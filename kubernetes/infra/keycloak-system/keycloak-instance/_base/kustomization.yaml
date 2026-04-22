@@ -1,4 +1,4 @@
 resources:
   - app.yaml
   - crossplane.yaml
-  - kc-admin-creds.yaml
+  - kc-admin-creds.sops.yaml
