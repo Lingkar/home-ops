@@ -1,7 +1,7 @@
 apiVersion: keycloak.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
-  name: keycloak-provider-config
+  name: kc-provider-config
 spec:
   credentials:
     source: Secret
@@ -12,9 +12,11 @@ spec:
 ---
 apiVersion: realm.keycloak.crossplane.io/v1alpha1
 kind: Realm
+metadata:
+  name: kc-whoop
 spec:
   forProvider:
     realm: whoop
   providerConfigRef:
     kind: providerConfig
-    name: keycloak-provider-config
+    name: kc-provider-config
