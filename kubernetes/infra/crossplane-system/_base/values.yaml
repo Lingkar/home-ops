@@ -1,3 +1,4 @@
 provider:
   packages:
     - xpkg.upbound.io/crossplane-contrib/provider-sql:v0.9.0
+    - xpkg.upbound.io/crossplane-contrib/provider-keycloak:v2.18.0
