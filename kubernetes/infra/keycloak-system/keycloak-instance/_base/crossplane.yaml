@@ -9,3 +9,12 @@ spec:
       name: kc-admin-creds
       key: credentials
       namespace: crossplane-system
+---
+apiVersion: realm.keycloak.crossplane.io/v1alpha1
+kind: Realm
+spec:
+  forProvider:
+    realm: whoop
+  providerConfigRef:
+    kind: providerConfig
+    name: keycloak-provider-config
