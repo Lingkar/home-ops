@@ -7,7 +7,6 @@ spec:
     source: Secret
     secretRef:
       name: kc-admin-creds
-      key: data
       namespace: keycloak-system
 ---
 apiVersion: realm.keycloak.crossplane.io/v1alpha1
