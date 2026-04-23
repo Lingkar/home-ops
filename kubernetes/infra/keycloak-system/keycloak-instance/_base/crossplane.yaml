@@ -13,9 +13,43 @@ spec:
 apiVersion: realm.keycloak.crossplane.io/v1alpha1
 kind: Realm
 metadata:
-  name: kc-whoop
+  name: infra
 spec:
   forProvider:
-    realm: whoop
+    realm: infra
+  providerConfigRef:
+    name: kc-provider-config
+---
+apiVersion: oidc.keycloak.crossplane.io/v1alpha1
+kind: IdentityProvider
+metadata:
+  name: infra-kubernetes
+spec:
+  forProvider:
+    realmId: infra
+    clientId: kubernetes
+    issuer: "192.168.69.5"
+  providerConfigRef:
+    name: kc-provider-config
+---
+apiVersion: group.keycloak.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: infra-admin
+spec:
+  forProvider:
+    realmId: infra
+    name: admin
+  providerConfigRef:
+    name: kc-provider-config
+---
+apiVersion: group.keycloak.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: infra-dev
+spec:
+  forProvider:
+    realmId: infra
+    name: dev
   providerConfigRef:
     name: kc-provider-config
