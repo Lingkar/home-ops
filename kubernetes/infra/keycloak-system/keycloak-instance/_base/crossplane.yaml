@@ -19,18 +19,18 @@ spec:
     realm: infra
   providerConfigRef:
     name: kc-provider-config
-# ---
-# apiVersion: oidc.keycloak.crossplane.io/v1alpha1
-# kind: IdentityProvider
-# metadata:
-#   name: infra-kubernetes
-# spec:
-#   forProvider:
-#     realm: infra
-#     alias: kubernetes
-#     issuer: "192.168.69.5"
-#   providerConfigRef:
-#     name: kc-provider-config
+---
+apiVersion: identityprovider.keycloak.crossplane.io/v1alpha1
+kind: KubernetesIdentityProvider
+metadata:
+  name: infra-kubernetes
+spec:
+  forProvider:
+    realm: infra
+    alias: kubernetes
+    issuer: "https://192.168.69.5"
+  providerConfigRef:
+    name: kc-provider-config
 ---
 apiVersion: group.keycloak.crossplane.io/v1alpha1
 kind: Group
