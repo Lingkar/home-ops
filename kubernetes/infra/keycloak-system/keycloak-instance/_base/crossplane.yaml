@@ -89,7 +89,7 @@ spec:
   providerConfigRef:
     name: kc-provider-config
 ---
-apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+apiVersion: openidgroup.keycloak.crossplane.io/v1alpha1
 kind: GroupMembershipProtocolMapper
 metadata:
   name: infra-groupmembership
