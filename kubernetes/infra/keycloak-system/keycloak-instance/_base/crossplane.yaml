@@ -89,6 +89,21 @@ spec:
   providerConfigRef:
     name: kc-provider-config
 ---
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: ClientDefaultScopes
+metadata:
+  name: infra-harbor
+spec:
+  forProvider:
+    realmIdRef:
+      name: infra
+    clientIdRef:
+      name: infra-harbor
+    defaultScopes:
+      - groups
+  providerConfigRef:
+    name: kc-provider-config
+---
 apiVersion: openidgroup.keycloak.crossplane.io/v1alpha1
 kind: GroupMembershipProtocolMapper
 metadata:
