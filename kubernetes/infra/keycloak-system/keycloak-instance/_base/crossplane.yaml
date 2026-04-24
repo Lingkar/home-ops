@@ -78,6 +78,7 @@ metadata:
   name: infra-harbor-admin
 spec:
   forProvider:
+    realmId: infra
     clientId: harbor
     name: admin
     description: "The harbor admin role"
