@@ -95,6 +95,8 @@ metadata:
   name: infra-groupmembership
 spec:
   forProvider:
+    clientScopeIdRef:
+      name: infra-groups
     realmIdRef:
       name: infra
     name: "group membership"
