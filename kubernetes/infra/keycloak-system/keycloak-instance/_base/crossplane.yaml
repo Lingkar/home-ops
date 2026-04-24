@@ -81,3 +81,5 @@ spec:
     clientId: harbor
     name: admin
     description: "The harbor admin role"
+  providerConfigRef:
+    name: kc-provider-config
