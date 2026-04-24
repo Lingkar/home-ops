@@ -79,7 +79,8 @@ metadata:
 spec:
   forProvider:
     realmId: infra
-    clientId: harbor
+    clientIdRef:
+      name: harbor
     name: admin
     description: "The harbor admin role"
   providerConfigRef:
