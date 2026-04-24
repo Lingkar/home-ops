@@ -9,3 +9,10 @@ expose:
       - name: internal
         namespace: network
 externalURL: https://harbor.buijnsters.com
+database:
+  type: external
+  external:
+    host: cnpg-harbor-rw
+    username: app
+    existingSecret: cnpg-harbor-app
+    coreDatabase: app

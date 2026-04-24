@@ -20,8 +20,8 @@
         - [x] Set-up PSQL database
 - [/] Set-up Harbor OCI registry, public access?
     - [x] first version running
-    - [/] Connect to OIDC for authentication and authorization.
-        - [ ] Add some other groups next to admin
+    - [x] Connect to OIDC for authentication and authorization.
+        - [x] Add some other groups next to admin
     - [ ] Set-up dedicated PSQL database
 - [?] Set-up valkey operator
 - [?] Set-up S3 compatible object storage
