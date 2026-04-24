@@ -71,17 +71,3 @@ spec:
       - https://harbor.${SECRET_DOMAIN}/*
   providerConfigRef:
     name: kc-provider-config
----
-apiVersion: role.keycloak.crossplane.io/v1alpha1
-kind: Role
-metadata:
-  name: infra-harbor-admin
-spec:
-  forProvider:
-    realmId: infra
-    clientIdRef:
-      name: infra-harbor
-    name: admin
-    description: "The harbor admin role"
-  providerConfigRef:
-    name: kc-provider-config
