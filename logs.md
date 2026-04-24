@@ -28,6 +28,7 @@
 - [/] Set-up netbird
     - [x] tmp set-up with direct deployment
     - [ ] fix the kubernetes-operator + netbird-operator-config charts
+
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
@@ -58,6 +59,11 @@
 
 # ZFS storage pool
 https://oneuptime.com/blog/post/2026-03-03-add-zfs-support-to-talos-linux/view
+```
+apt-get update && apt-get install -y zfsutils-linux
+zpool list
+zpool status {{pool}}
+```
 
 # Network policy approach:
 Start in auditing mode:

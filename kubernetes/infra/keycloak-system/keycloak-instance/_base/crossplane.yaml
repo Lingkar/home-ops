@@ -53,3 +53,15 @@ spec:
     name: dev
   providerConfigRef:
     name: kc-provider-config
+---
+apiVersion: openidclient.keycloak.crossplane.io
+kind: Client
+metadata:
+  name: infra-harbor
+spec:
+  forProvider:
+    realmId: infra
+    name: harbor
+    clientId: harbor
+  providerConfigRef:
+    name: kc-provider-config
