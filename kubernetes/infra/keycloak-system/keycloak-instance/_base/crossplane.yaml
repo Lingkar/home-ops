@@ -64,6 +64,7 @@ spec:
     name: harbor
     clientId: harbor
     accessType: CONFIDENTIAL
+    standardFlowEnabled: true
     baseUrl: https://harbor.${SECRET_DOMAIN}
     rootUrl: https://harbor.${SECRET_DOMAIN}
     validRedirectUris:
