@@ -64,5 +64,9 @@ spec:
     name: harbor
     clientId: harbor
     accessType: CONFIDENTIAL
+    baseUrl: https://harbor.${SECRET_DOMAIN}
+    rootUrl: https://harbor.${SECRET_DOMAIN}
+    validRedirectUris:
+      - https://harbor.${SECRET_DOMAIN}/*
   providerConfigRef:
     name: kc-provider-config
