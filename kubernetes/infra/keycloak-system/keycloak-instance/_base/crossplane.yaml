@@ -26,7 +26,8 @@ metadata:
   name: infra-kubernetes
 spec:
   forProvider:
-    realm: infra
+    realmRef:
+      name: infra
     alias: kubernetes
     issuer: "https://192.168.69.5"
   providerConfigRef:
@@ -38,7 +39,8 @@ metadata:
   name: infra-admin
 spec:
   forProvider:
-    realmId: infra
+    realmIdRef:
+      name: infra
     name: admin
   providerConfigRef:
     name: kc-provider-config
@@ -49,7 +51,8 @@ metadata:
   name: infra-dev
 spec:
   forProvider:
-    realmId: infra
+    realmIdRef:
+      name: infra
     name: dev
   providerConfigRef:
     name: kc-provider-config
@@ -60,7 +63,8 @@ metadata:
   name: infra-harbor
 spec:
   forProvider:
-    realmId: infra
+    realmIdRef:
+      name: infra
     name: harbor
     clientId: harbor
     accessType: CONFIDENTIAL
@@ -69,5 +73,18 @@ spec:
     rootUrl: https://harbor.${SECRET_DOMAIN}
     validRedirectUris:
       - https://harbor.${SECRET_DOMAIN}/*
+  providerConfigRef:
+    name: kc-provider-config
+---
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: ClientScope
+metadata:
+  name: infra-groups
+spec:
+  forProvider:
+    realmIdRef:
+      name: infra
+    name: groups
+    description: "Groups - add the user groups"
   providerConfigRef:
     name: kc-provider-config
