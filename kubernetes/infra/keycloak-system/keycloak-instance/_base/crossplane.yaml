@@ -80,7 +80,7 @@ spec:
   forProvider:
     realmId: infra
     clientIdRef:
-      name: harbor
+      name: infra-harbor
     name: admin
     description: "The harbor admin role"
   providerConfigRef:
