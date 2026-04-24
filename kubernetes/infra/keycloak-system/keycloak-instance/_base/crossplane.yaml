@@ -101,6 +101,8 @@ spec:
       name: infra-harbor
     defaultScopes:
       - groups
+      - email
+      - profile
   providerConfigRef:
     name: kc-provider-config
 ---
