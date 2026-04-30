@@ -20,7 +20,7 @@ spec:
     userIdRef:
       name: admin
     roleIds:
-      - realm-management
+      - admin
   providerConfigRef:
     name: kc-provider-config
 ---

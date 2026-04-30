@@ -10,7 +10,7 @@ spec:
     initialPassword:
       - temporary: ENC[AES256_GCM,data:65/UCco=,iv:JcIuHI34ognsAupoPkvJi8KuRjs6Hnwh0h327TgF4AM=,tag:OKJqGaU/K4eOFILXIvHWnw==,type:bool]
         valueSecretRef:
-          name: ENC[AES256_GCM,data:XFjWnu/s1oeHq5xifA==,iv:eTb1zhj6Z8LzxX+HEXOiPfNQDJxm8xAXUIEUrwF01vw=,tag:erBQaxyuGRexNoeCkuoszQ==,type:str]
+          name: ENC[AES256_GCM,data:71/GbocTrXESMGCzW0w=,iv:SWnZP+/J6QtOGVz9whvwI7gHcxFPfWqTnm8HJOSW0lY=,tag:Kt1n25k0hXSH7OMVPdQ09A==,type:str]
           key: ENC[AES256_GCM,data:ca0FOtN8daEEn+4BHW/r,iv:HkzHnasSiRGSaZlcw7v3QScOcBOr1jFEoHH9f4QhOVc=,tag:Wg+xpDk/iVt5XBrWD6H9jQ==,type:str]
           namespace: ENC[AES256_GCM,data:LlO9G5kprkRppLHLbTKB,iv:VvkDj81vyolUUkucWTQhZ/R9Pqv5Pr85+dYEnt4vpzo=,tag:1KPSEP5ahYUUXhkaDOKyLQ==,type:str]
   providerConfigRef:
@@ -26,8 +26,8 @@ sops:
         VnkwYzVZcU81L2dLUEd0bFBIRjQ3am8KTsRIwJCvcQ5rptOWBxNUmvuJ7IiwuRNX
         bRtTbLAzMJ1NCs6Prd9kD5nvlPveixXamRkV3PlGh8ZoynX33NidSQ==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2026-04-30T19:31:17Z"
-  mac: ENC[AES256_GCM,data:IkAokpXDyqpfKjH6dJh7HvGFDHjYSWA9dq0L++nxAYP87lv0nOnEmEu74n7jKV+qtjPFx7XhKfmZLySzUGth9++0D/wpECpJMKbxiK8hShyqyrXSxPkVHRdKpclXvy47vLz1/UK+oyFOjpWPzcWoXSKNQFHG4uSyE8J/kgajHo8=,iv:Q8ffqeTk30sf4wTZ1aLcYzBKufWdYMSd9pzdKagPF7M=,tag:d54AM4IyRbtaBug0MYIiUg==,type:str]
+  lastmodified: "2026-04-30T19:54:29Z"
+  mac: ENC[AES256_GCM,data:PlzyFfDWkUqTxM8ATW7G4nRFRSAAbWXkOmyNY0umhm+rrr0opGxFXj+5wsNOhpt1tb/qLnYG1lTODyWawlVuau7aMKq7BjRpp5HSzvguIt8exDL9rbue1BG4XQZeAieawn98rTHGfJTFZis6qGxZuxUO+7a2yeM/wbt7TR+jj/8=,iv:zH7xWxk95UQoTOyQzDWfAK46kcA1wjq3R+E6Aqrw7T4=,tag:VhUOtbtv5yP4bHh4h1ktYg==,type:str]
   encrypted_regex: ^(data|stringData|spec)$
   mac_only_encrypted: true
   version: 3.12.2
