@@ -10,6 +10,20 @@ spec:
       key: credentials
       namespace: keycloak-system
 ---
+apiVersion: user.keycloak.crossplane.io/v1alpha1
+kind: Roles
+metadata:
+  name: admin
+spec:
+  forProvider:
+    realmId: master
+    userIdRef:
+      name: admin
+    roleIds:
+      - realm-management
+  providerConfigRef:
+    name: kc-provider-config
+---
 apiVersion: realm.keycloak.crossplane.io/v1alpha1
 kind: Realm
 metadata:
