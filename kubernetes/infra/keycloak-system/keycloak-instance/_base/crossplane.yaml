@@ -10,6 +10,17 @@ spec:
       key: credentials
       namespace: keycloak-system
 ---
+apiVersion: user.keycloak.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: admin
+spec:
+  forProvider:
+    firstName: Jan
+    username: Lingkar
+    initialPassword: test01234
+
+---
 apiVersion: realm.keycloak.crossplane.io/v1alpha1
 kind: Realm
 metadata:

@@ -1,0 +1,28 @@
+apiVersion: user.keycloak.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: admin
+spec:
+  forProvider:
+    realmId: ENC[AES256_GCM,data:Gw0vRwGX,iv:Mzt7RauVDbpfzeG4FogffMsjnRswxlDfcoJDUOwtVPc=,tag:AonKON10W/5/EVQNG1bCZw==,type:str]
+    firstName: ENC[AES256_GCM,data:XxLw,iv:+gWJDy4TRup6Fr17JurXbdoIC2XrwMwUXAbBqSM1cdo=,tag:e+SC9UXiE/YHBN9M7yotLA==,type:str]
+    username: ENC[AES256_GCM,data:foN9b0dQEw==,iv:qE9geEiWmotW/3MvjZ3hY127dNOTPrnqYNuNihamCBQ=,tag:3xHkcV72oj8eMmLvhQgWUg==,type:str]
+    initialPassword: ENC[AES256_GCM,data:UCNXb3narnl+7gxw+5Svue54k43EmOJaBBEh9bql,iv:TRJA1LXIuxba0lnov7/NSGOITmln6H0LB7ka+du8deY=,tag:MgeAHRVHpJG/u8fhnLS9Cg==,type:str]
+  providerConfigRef:
+    name: ENC[AES256_GCM,data:v2IqTLf4BEsG01EVqmArkZxr,iv:H8wdxABGctU/CqfsZWo+jUeZoCtAlX7O2sNyyzP8T7Y=,tag:PA1qQ1uU42P5gdtiQDUyXw==,type:str]
+sops:
+  age:
+    - recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmNGxmME11blh2Z1hhYkVP
+        VmpNQXpWenFyRXhLTWFJVkg0VGtmekdhU21jCksrZnh2KzZKeHJtaU03YmxKbVNi
+        MlZSbDN2Tjk0ejNRT2lhS2wrRDIyS2sKLS0tIExyT1p5a0c4RTFkSHE3Zi9WSmpD
+        VnkwYzVZcU81L2dLUEd0bFBIRjQ3am8KTsRIwJCvcQ5rptOWBxNUmvuJ7IiwuRNX
+        bRtTbLAzMJ1NCs6Prd9kD5nvlPveixXamRkV3PlGh8ZoynX33NidSQ==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2026-04-30T19:19:04Z"
+  mac: ENC[AES256_GCM,data:ROZTrHM7MIgf3icniEKwnr8oFegSxYg841zrPSJDsXdhra8N/fX51JZu/wuBFBt9hXTp6FT54TOus7N0HQxBNEvJExwUO8DqDNYHdS2By7BW9sP/iO6Rq3q1SCJ8JBD1+VaTKw3mTMmmTK1pCgu9Jmdmz4ROpPWbi8tB89OvNnE=,iv:dBGYR4TmOgoTIx85dJbrA4w2F1eMJIPO1EmEeZ86Du8=,tag:gXu4CzX5YELpIzY7+osfwQ==,type:str]
+  encrypted_regex: ^(data|stringData|spec)$
+  mac_only_encrypted: true
+  version: 3.12.2

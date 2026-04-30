@@ -7,30 +7,29 @@
     - [x] Fix resources in kube-system
 - [x] Remove sops-age from namespaces that don't need it
 - [x] Velero back-up snapshots to Cloud
-- [x] Velero set-up scheduled backups
+- [x] Velero set-up scheduled backup
 - [x] Linstor doesn't delete S3 back-ups when VS is deleted. (multiple open issues found)
 - [x] Velero perform full cluster restore -> https://linbit.com/blog/abstracting-persistent-storage-across-environments-with-linbit-sds/
 - [x] Fix custom RPI PWM Fan implementation https://github.com/siderolabs/sbc-raspberrypi/issues/58
 - [x] Create Velero logic such that specific PV's / PVC's are not included in the (remote) back-up. -> Label PVC: velero.io/exclude-from-backup=true
 - [x] Set-up proper MySQL server back-ups
 - [x] Set-up PSQL operator for Postgres databases
-- [ ] Set-up KeyCloak as OIDC issuer
+- [x] Set-up KeyCloak as OIDC issuer
     - [x] Set-up KeyCloak operator
     - [x] https://www.keycloak.org/operator/basic-deployment
         - [x] Set-up PSQL database
-- [/] Set-up Harbor OCI registry, public access?
+- [x] Set-up Harbor OCI registry, public access?
     - [x] first version running
     - [x] Connect to OIDC for authentication and authorization.
         - [x] Add some other groups next to admin
-    - [ ] Set-up dedicated PSQL database
-- [?] Set-up valkey operator
-- [?] Set-up S3 compatible object storage
-- [/] Set-up netbird
-    - [x] tmp set-up with direct deployment
-    - [ ] fix the kubernetes-operator + netbird-operator-config charts
-
+    - [x] Set-up dedicated PSQL database
+- [?] Set-up S3 compatible object storage -> RustFS
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
+- [ ] Fix Renovate config, separate patch roll-outs and autoupgrades
+- [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
+
+- [?] Set-up valkey operator
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
 - [ ] Set resources Velero, api-server, scheduler, controller manager
@@ -41,6 +40,9 @@
 - [ ] FluxCD diffing -> fix pipelines
 - [/] Set-up a notification channel https://ntfy.sh/ looks promising
     - [ ] Set-up basic credentials
+- [/] Set-up netbird
+    - [x] tmp set-up with direct deployment
+    - [ ] fix the kubernetes-operator + netbird-operator-config charts
 - [ ] Wordpress updates
     - [ ] Run wordpress as non-root
     - [ ] Migrate from MySQL to MariaDB
