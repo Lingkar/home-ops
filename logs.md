@@ -23,7 +23,7 @@
     - [x] Connect to OIDC for authentication and authorization.
         - [x] Add some other groups next to admin
     - [x] Set-up dedicated PSQL database
-- [?] Set-up S3 compatible object storage -> RustFS
+- [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
 - [ ] Fix Renovate config, separate patch roll-outs and autoupgrades
