@@ -1,7 +1,7 @@
 apiVersion: user.keycloak.crossplane.io/v1alpha1
 kind: User
 metadata:
-  name: admin
+  name: admin-0
 spec:
   forProvider:
     realmId: ENC[AES256_GCM,data:Gw0vRwGX,iv:Mzt7RauVDbpfzeG4FogffMsjnRswxlDfcoJDUOwtVPc=,tag:AonKON10W/5/EVQNG1bCZw==,type:str]
@@ -26,8 +26,8 @@ sops:
         VnkwYzVZcU81L2dLUEd0bFBIRjQ3am8KTsRIwJCvcQ5rptOWBxNUmvuJ7IiwuRNX
         bRtTbLAzMJ1NCs6Prd9kD5nvlPveixXamRkV3PlGh8ZoynX33NidSQ==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2026-04-30T19:28:01Z"
-  mac: ENC[AES256_GCM,data:GbFuP2lgNtLsizlO9Mu7JmLBdkOASp2vgePx1BmtTE+Jeny3WDrzTVe5FyxRdXdoQdJKGhzODJrC/bcVCKwwfvw+dAmzQmR3hwHWiI0XnE3c4dh5Wi28TijyOTdXlLMyHLACrhRw6dqmikVUsMaaziWveMkoGUYZKK6YpEqF+k8=,iv:884P+254zf35RIP0eFiajTnBFKeARO2F/FtiMlIs5vk=,tag:U1/XXr8NfTfC8nint/9lpQ==,type:str]
+  lastmodified: "2026-04-30T19:28:52Z"
+  mac: ENC[AES256_GCM,data:e0eMpdQKaZPOiB2w1lc03GiEWBKHAK15xx4FDYHZYO0AeT+taauCYufhGUKa29nLtnAcsj/GG+/B/jYGDMmsQBkURyQeG1/y+WybPnzo5oO/q6BMDdjEIIafjRphqA9ERr2QPJdDrHRwbUrKD01J3mxuI6GT0eQ3pn+oxEFpQnQ=,iv:CTPl3Bg7JWB2dZNbdMDk+Nf5Fq1nUAYipSHT34gfKZU=,tag:w397b5+F3jXAWXTNnNrs0w==,type:str]
   encrypted_regex: ^(data|stringData|spec)$
   mac_only_encrypted: true
   version: 3.12.2
