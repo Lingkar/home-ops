@@ -1,14 +1,14 @@
 apiVersion: user.keycloak.crossplane.io/v1alpha1
 kind: User
 metadata:
-  name: admin-0
+  name: admin
 spec:
   forProvider:
     realmId: ENC[AES256_GCM,data:Gw0vRwGX,iv:Mzt7RauVDbpfzeG4FogffMsjnRswxlDfcoJDUOwtVPc=,tag:AonKON10W/5/EVQNG1bCZw==,type:str]
     firstName: ENC[AES256_GCM,data:XxLw,iv:+gWJDy4TRup6Fr17JurXbdoIC2XrwMwUXAbBqSM1cdo=,tag:e+SC9UXiE/YHBN9M7yotLA==,type:str]
-    username: ENC[AES256_GCM,data:NUYJTQjfrdI=,iv:qln/+TlzsHb638M8klo3QVapcDvC/HkKbKLEFqwUtyU=,tag:H+iy+SYESYI3WqGvgSSl3g==,type:str]
+    username: ENC[AES256_GCM,data:a1BR3RhpeA==,iv:cLf90C7S+CUbt1rERG19NO7sslaGc1J1zQ0p/dJHd3s=,tag:YgJDvHDO7AfPDSEpAmWlOw==,type:str]
     initialPassword:
-      - temporary: ENC[AES256_GCM,data:FvTKCg==,iv:NlUmmyAFoWqnd5sjRyq6soU27pTFOh+R7G6awfSMWA8=,tag:z8ZvzgEwaO3djoQI3TYqQw==,type:bool]
+      - temporary: ENC[AES256_GCM,data:65/UCco=,iv:JcIuHI34ognsAupoPkvJi8KuRjs6Hnwh0h327TgF4AM=,tag:OKJqGaU/K4eOFILXIvHWnw==,type:bool]
         valueSecretRef:
           name: ENC[AES256_GCM,data:XFjWnu/s1oeHq5xifA==,iv:eTb1zhj6Z8LzxX+HEXOiPfNQDJxm8xAXUIEUrwF01vw=,tag:erBQaxyuGRexNoeCkuoszQ==,type:str]
           key: ENC[AES256_GCM,data:ca0FOtN8daEEn+4BHW/r,iv:HkzHnasSiRGSaZlcw7v3QScOcBOr1jFEoHH9f4QhOVc=,tag:Wg+xpDk/iVt5XBrWD6H9jQ==,type:str]
@@ -26,8 +26,8 @@ sops:
         VnkwYzVZcU81L2dLUEd0bFBIRjQ3am8KTsRIwJCvcQ5rptOWBxNUmvuJ7IiwuRNX
         bRtTbLAzMJ1NCs6Prd9kD5nvlPveixXamRkV3PlGh8ZoynX33NidSQ==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2026-04-30T19:28:52Z"
-  mac: ENC[AES256_GCM,data:e0eMpdQKaZPOiB2w1lc03GiEWBKHAK15xx4FDYHZYO0AeT+taauCYufhGUKa29nLtnAcsj/GG+/B/jYGDMmsQBkURyQeG1/y+WybPnzo5oO/q6BMDdjEIIafjRphqA9ERr2QPJdDrHRwbUrKD01J3mxuI6GT0eQ3pn+oxEFpQnQ=,iv:CTPl3Bg7JWB2dZNbdMDk+Nf5Fq1nUAYipSHT34gfKZU=,tag:w397b5+F3jXAWXTNnNrs0w==,type:str]
+  lastmodified: "2026-04-30T19:31:17Z"
+  mac: ENC[AES256_GCM,data:IkAokpXDyqpfKjH6dJh7HvGFDHjYSWA9dq0L++nxAYP87lv0nOnEmEu74n7jKV+qtjPFx7XhKfmZLySzUGth9++0D/wpECpJMKbxiK8hShyqyrXSxPkVHRdKpclXvy47vLz1/UK+oyFOjpWPzcWoXSKNQFHG4uSyE8J/kgajHo8=,iv:Q8ffqeTk30sf4wTZ1aLcYzBKufWdYMSd9pzdKagPF7M=,tag:d54AM4IyRbtaBug0MYIiUg==,type:str]
   encrypted_regex: ^(data|stringData|spec)$
   mac_only_encrypted: true
   version: 3.12.2
