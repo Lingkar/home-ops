@@ -12,6 +12,7 @@ spec:
         valueSecretRef:
           name: ENC[AES256_GCM,data:XFjWnu/s1oeHq5xifA==,iv:eTb1zhj6Z8LzxX+HEXOiPfNQDJxm8xAXUIEUrwF01vw=,tag:erBQaxyuGRexNoeCkuoszQ==,type:str]
           key: ENC[AES256_GCM,data:ca0FOtN8daEEn+4BHW/r,iv:HkzHnasSiRGSaZlcw7v3QScOcBOr1jFEoHH9f4QhOVc=,tag:Wg+xpDk/iVt5XBrWD6H9jQ==,type:str]
+          namespace: ENC[AES256_GCM,data:LlO9G5kprkRppLHLbTKB,iv:VvkDj81vyolUUkucWTQhZ/R9Pqv5Pr85+dYEnt4vpzo=,tag:1KPSEP5ahYUUXhkaDOKyLQ==,type:str]
   providerConfigRef:
     name: ENC[AES256_GCM,data:v2IqTLf4BEsG01EVqmArkZxr,iv:H8wdxABGctU/CqfsZWo+jUeZoCtAlX7O2sNyyzP8T7Y=,tag:PA1qQ1uU42P5gdtiQDUyXw==,type:str]
 sops:
@@ -25,8 +26,8 @@ sops:
         VnkwYzVZcU81L2dLUEd0bFBIRjQ3am8KTsRIwJCvcQ5rptOWBxNUmvuJ7IiwuRNX
         bRtTbLAzMJ1NCs6Prd9kD5nvlPveixXamRkV3PlGh8ZoynX33NidSQ==
         -----END AGE ENCRYPTED FILE-----
-  lastmodified: "2026-04-30T19:24:02Z"
-  mac: ENC[AES256_GCM,data:QwEMkVIDPekBYNHutw9F6bZSGev5LJcQcmAKMI591Rr/d6CedsVslFmBvEgDchjIk3cYqehZL2iXdHCEnQpmP9LbDGAo+j+eztxoqqlGfgsIEzIPlE7ZYuk2duC9VLW7IbpCM265N1I43GVcbrCsnzGtTSQ1hzdGbdDAoKliZN8=,iv:KL5hb+TofjIpAyuLWUZaF2xeXZUgaD0sYYegRYDEuqk=,tag:RphuyelPLVP/eSVbIn/+XQ==,type:str]
+  lastmodified: "2026-04-30T19:25:07Z"
+  mac: ENC[AES256_GCM,data:x0r/JaWxFh/7znT2LHIlVDtwmLbDZEUqg4BAAsuX77tBEOhjRpFDnyA2AFxDS5ScmBg0lWN/9SgwouuFEr4yvTlDr9mU3NZcLetdsVLEiCm4CWNHgR9ZYhFWnHVHkvF3+9HFJt4eSZ5a32hT6poId0ZJQdOqHGbBf5U5JKZesHE=,iv:K5F1gHHOwoJTJyow8V6NajalPTDDC3enXFcEbphuUhQ=,tag:ctWBpnrJSVIMtUPT+Hcbsw==,type:str]
   encrypted_regex: ^(data|stringData|spec)$
   mac_only_encrypted: true
   version: 3.12.2
