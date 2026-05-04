@@ -4,6 +4,6 @@ persistence:
 storageClass:
   create: false
 rbac:
-  create: false
+  create: true
 priorityClass:
   name: platform-low
