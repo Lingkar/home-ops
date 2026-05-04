@@ -43,6 +43,7 @@ nodes:
           officialExtensions:
             - siderolabs/vc4
             - siderolabs/drbd
+            - siderolabs/zfs
     # talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
     controlPlane: true
     networkInterfaces:
@@ -102,6 +103,7 @@ nodes:
         systemExtensions:
           officialExtensions:
             - siderolabs/drbd
+            - siderolabs/zfs
             - siderolabs/amdgpu
             - siderolabs/amd-ucode
     patches:
