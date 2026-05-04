@@ -37,6 +37,7 @@ linstorCluster:
               limits:
                 memory: 128Mi
   nfsServer:
+    enabled: false
     podTemplate:
       spec:
         containers:
