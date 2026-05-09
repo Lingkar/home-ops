@@ -11,7 +11,7 @@ resources:
   - harbor-system.yaml
   - kube-amd-gpu.yaml
   - mysql-system.yaml
-  - netbird.yaml
+  # - netbird.yaml
   - piraeus.yaml
   - rabbitmq.yaml
   - spegel.yaml
