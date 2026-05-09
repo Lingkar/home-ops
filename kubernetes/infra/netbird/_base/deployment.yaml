@@ -1,8 +1,3 @@
-# docker run --rm -d \
-# --cap-add=NET_ADMIN \
-# -e NB_SETUP_KEY=SETUP_KEY \
-# -v netbird-client:/var/lib/netbird \
-#
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/deployment.json
 apiVersion: apps/v1
 kind: Deployment
@@ -30,13 +25,13 @@ spec:
           envFrom:
             - secretRef:
                 name: netbird-setup-key
-          volumeMounts:
-            - name: netbird-var
-              mountPath: /var/lib/netbird
-      volumes:
-        - name: netbird-var
-          persistentVolumeClaim:
-            claimName: netbird-var
+          # volumeMounts:
+          #   - name: netbird-var
+          #     mountPath: /var/lib/netbird
+      # volumes:
+      #   - name: netbird-var
+      #     persistentVolumeClaim:
+      #       claimName: netbird-var
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/persistentvolumeclaim-v1.json
 apiVersion: v1
