@@ -6,7 +6,7 @@ metadata:
 spec:
   hostnames: ["grafana.${SECRET_DOMAIN}"]
   parentRefs:
-    - name: external
+    - name: internal
       namespace: network
   rules:
     - backendRefs:
