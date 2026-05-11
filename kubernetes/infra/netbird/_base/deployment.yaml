@@ -20,10 +20,6 @@ spec:
       containers:
         - image: netbirdio/netbird:0.70.5-rootless
           name: netbird
-          # securityContext:
-          #   capabilities:
-          #     add:
-          #       - NET_ADMIN
           envFrom:
             - secretRef:
                 name: netbird-setup-key
