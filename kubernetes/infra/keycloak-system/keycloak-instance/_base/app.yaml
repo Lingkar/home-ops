@@ -43,9 +43,6 @@ metadata:
   name: kc-infra
 spec:
   instances: 1
-  features:
-    enabled:
-      - dynamic-scopes
   db:
     vendor: postgres
     database: app
