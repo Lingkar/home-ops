@@ -49,7 +49,11 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "dc:a6:32:eb:ff:81"
-        dhcp: true
+        addresses:
+          - 192.168.68.252/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.68.1
         vip:
           ip: "192.168.69.5"
   - hostname: "c-01"
@@ -65,7 +69,11 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d2:90:ed"
-        dhcp: true
+        addresses:
+          - 192.168.68.253/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.68.1
         vip:
           ip: "192.168.69.5"
     schematic:
@@ -91,7 +99,11 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "38:05:25:34:67:7e"
-        dhcp: true
+        addresses:
+          - 192.168.68.254/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.68.1
         vip:
           ip: "192.168.69.5"
     schematic:
