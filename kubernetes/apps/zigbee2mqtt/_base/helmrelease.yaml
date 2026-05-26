@@ -28,3 +28,8 @@ spec:
       optional: false
       valuesKey: password
       targetPath: zigbee2mqtt.mqtt.password
+    - kind: Secret
+      name: mqtt-network-key
+      optional: false
+      valuesKey: network-key
+      targetPath: zigbee2mqtt.advanced.network_key

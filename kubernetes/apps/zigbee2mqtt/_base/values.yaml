@@ -5,8 +5,6 @@ zigbee2mqtt:
   serial:
     adapter: ember
     port: /dev/ttyACM0
-  advanced:
-    network_key: GENERATE
 service:
   type: ClusterIP
 statefulset:
