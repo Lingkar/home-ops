@@ -36,6 +36,8 @@ servers:
       # - name: autopath
       #   parameters: "@kubernetes"
       - name: forward
+        parameters: buijnsters.com 192.168.69.6
+      - name: forward
         parameters: . 1.1.1.1 1.0.0.1
       - name: cache
         configBlock: |-
