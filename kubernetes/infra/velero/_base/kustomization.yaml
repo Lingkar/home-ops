@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
+  - cm-sc-class-migration.yaml
   - grafana-dashboard.yaml
   - helmrelease.yaml
   #   - netpols.yaml
