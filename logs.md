@@ -33,6 +33,7 @@
 - [ ] Set-up intrusion detection with Falco
 - [ ] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
+- [ ] Set-up clean-up job for delete PV's with Retain
 
 - [?] Set-up valkey operator
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
