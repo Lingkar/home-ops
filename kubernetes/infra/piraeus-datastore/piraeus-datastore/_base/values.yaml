@@ -12,10 +12,10 @@ linstorCluster:
           - name: linstor-controller
             resources:
               requests:
-                cpu: 4000m
-                memory: 20Gi
+                cpu: 1000m
+                memory: 4Gi
               limits:
-                memory: 20Gi
+                memory: 4Gi
   affinityController:
     podTemplate:
       spec:
@@ -38,15 +38,6 @@ linstorCluster:
                 memory: 128Mi
   nfsServer:
     enabled: false
-    podTemplate:
-      spec:
-        containers:
-          - name: nfs-server
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 4Gi
   csiNode:
     podTemplate:
       spec:

@@ -15,6 +15,8 @@ cniConfig:
 nodes:
   - hostname: "rpi-00"
     ipAddress: "192.168.68.252"
+    nodeLabels:
+      piraeus.io/storage: "true"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
@@ -98,7 +100,7 @@ nodes:
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "38:05:25:34:67:7e"
+          hardwareAddr: "38:05:25:34:67:7e" # This is the right ethernet port
         addresses:
           - 192.168.68.254/22
         routes:
@@ -128,6 +130,7 @@ patches:
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
+  - "@./patches/global/machine-watchdog.yaml"
 # Controller patches
 controlPlane:
   kernelModules:

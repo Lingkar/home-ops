@@ -23,10 +23,11 @@
     - [x] Connect to OIDC for authentication and authorization.
         - [x] Add some other groups next to admin
     - [x] Set-up dedicated PSQL database
-- [/] Finish nfs-ganesha https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner
-    - [ ] from e.g. the satelite move data to new volume, mount the drbd volume with `mount -o ro /dev/drbd1009 /mnt/pvc`
-    - [ ] Instead of setting up new storageclass set-up separate nfs-ganesha servers and mount with https://kubernetes.io/docs/concepts/storage/volumes/#nfs
-    - [ ] Test-out per node shutdown
+- [x] Finish nfs-ganesha https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner
+    - [x] from e.g. the satelite move data to new volume, mount the drbd volume with `mount -o ro /dev/drbd1009 /mnt/pvc`
+    - [x] Instead of setting up new storageclass set-up separate nfs-ganesha servers and mount with https://kubernetes.io/docs/concepts/storage/volumes/#nfs
+    - [x] Test-out per node shutdown
+- [ ] Migrate all ssd-lvm-thin-1 -> ssd-lvm-thin-2
 - [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
