@@ -16,7 +16,7 @@ controllers:
           tag: 6.9.4@sha256:5d2c212561c4b5442ebc4d98933a9cbadcf3dee8888ed3fd9ed44667c27cc905
         env:
           - name: WORDPRESS_DB_HOST
-            value: mysql.mysql.svc.cluster.local
+            value: mysql-0.mysql.svc.cluster.local
           - name: WORDPRESS_DB_NAME
             value: phela
           - name: WORDPRESS_DB_USER
