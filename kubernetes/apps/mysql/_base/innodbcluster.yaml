@@ -26,6 +26,41 @@ spec:
         storage:
           persistentVolumeClaim:
             claimName: mysql-backup
+  # backupSchedules:
+  #   - name: daily
+  #     enabled: true
+  #     backupProfileName: default
+  #     deleteBackupData: false
+  #     schedule: "45 1 * * *"
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/mysql.oracle.com/innodbcluster_v2.json
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mysql-0
+spec:
+  secretName: mysql-credentials
+  tlsUseSelfSigned: true
+  version: 8.0.45
+  instances: 1
+  router:
+    instances: 1
+  edition: community
+  podSpec:
+    priorityClassName: platform-high
+  datadirVolumeClaimTemplate:
+    storageClassName: ssd-lvm-thin-2
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+  backupProfiles:
+    - name: default
+      dumpInstance:
+        storage:
+          persistentVolumeClaim:
+            claimName: mysql-backup
   backupSchedules:
     - name: daily
       enabled: true
