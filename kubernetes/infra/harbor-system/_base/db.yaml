@@ -4,10 +4,10 @@ kind: Cluster
 metadata:
   name: cnpg-harbor
 spec:
-  instances: 1
+  instances: 3
   storage:
     size: 1Gi
-    storageClass: ssd-lvm-thin-1
+    storageClass: ssd-lvm-thin-2
 ---
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/database_v1.json
 apiVersion: postgresql.cnpg.io/v1
