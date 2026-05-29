@@ -40,7 +40,7 @@ route:
 persistence:
   wordpress-data:
     type: persistentVolumeClaim
-    storageClass: ssd-lvm-thin-1
+    storageClass: ssd-lvm-thin-2
     accessMode: ReadWriteOnce
     size: 4Gi
     retain: true

@@ -31,7 +31,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: ssd-lvm-thin-1
+          storageClassName: ssd-lvm-thin-2
           resources:
             requests:
               storage: 16Gi

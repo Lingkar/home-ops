@@ -14,7 +14,7 @@ spec:
   podSpec:
     priorityClassName: platform-high
   datadirVolumeClaimTemplate:
-    storageClassName: ssd-lvm-thin-1 # Should stay on single replica backed PVC
+    storageClassName: ssd-lvm-thin-2
     accessModes:
       - ReadWriteOnce
     resources:
