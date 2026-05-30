@@ -27,13 +27,17 @@
     - [x] from e.g. the satelite move data to new volume, mount the drbd volume with `mount -o ro /dev/drbd1009 /mnt/pvc`
     - [x] Instead of setting up new storageclass set-up separate nfs-ganesha servers and mount with https://kubernetes.io/docs/concepts/storage/volumes/#nfs
     - [x] Test-out per node shutdown
-- [ ] Migrate all ssd-lvm-thin-1 -> ssd-lvm-thin-2
-- [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
+- [x] Migrate all ssd-lvm-thin-1 -> ssd-lvm-thin-2
+- [ ] Fix resource requests / limits -> no more OOM's on rpi
+- [ ] Set application priorities and evictions in case MS-S1 Max shuts down
+    - [x] Set-up priority classes
+    - [/] Test if it actually works
+- [ ] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
-- [ ] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
 - [ ] Set-up clean-up job for delete PV's with Retain
+- [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
 
 - [?] Set-up valkey operator
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
@@ -56,9 +60,6 @@
 - [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set-up barmancloud cnpg backup/restore pluging (needs S3 object storage)
-- [ ] Set application priorities and evictions in case MS-S1 Max shuts down
-    - [/] Set-up priority classes
-    - [ ] Test if it actually works
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
 - [ ] Schlink, link shortener
 - [ ] Posties, social media posting

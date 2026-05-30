@@ -2,6 +2,17 @@ machine:
   kubelet:
     extraConfig:
       serializeImagePulls: false
+      shutdownGracePeriod: 0s
+      shutdownGracePeriodCriticalPods: 0s
+      shutdownGracePeriodByPodPriority:
+        - priority: 0
+          shutdownGracePeriodSeconds: 60
+        - priority: 100000000
+          shutdownGracePeriodSeconds: 10
+        - priority: 500000000
+          shutdownGracePeriodSeconds: 10
+        - priority: 1000000000
+          shutdownGracePeriodSeconds: 10
     nodeIP:
       validSubnets:
         - 192.168.68.1/22
