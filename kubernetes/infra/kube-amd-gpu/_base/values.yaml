@@ -24,8 +24,6 @@ kmm:
         limits:
           memory: 60Mi
 node-feature-discovery:
-  nodeSelector:
-    kubernetes.io/arch: amd64
   gc:
     resources:
       requests:
@@ -41,6 +39,8 @@ node-feature-discovery:
       limits:
         memory: 80Mi
   worker:
+    nodeSelector:
+      kubernetes.io/arch: amd64
     resources:
       requests:
         cpu: 10m
