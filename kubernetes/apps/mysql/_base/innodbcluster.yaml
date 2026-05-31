@@ -13,19 +13,36 @@ spec:
     podSpec:
       resources:
         requests:
-          cpu: 10m
+          cpu: 15m
           memory: 72Mi
         limits:
           memory: 72Mi
   edition: community
+  # NOTE: podSpec is only regarded during StatefulSet buildup.
+  # The operator neither checks nor watches for changes to this field,
+  # so CR updates alone will NOT trigger a StatefulSet update.
+  # A manual restart, pod eviction, or StatefulSet delete may be needed
+  # for resource changes to take effect.
+  #
+  # Resources are set per-container using name-based merge (supported by the
+  # operator's merge_patch_object, matching containers by their "name" field).
   podSpec:
     priorityClassName: platform-high
-    resources:
-      requests:
-        cpu: 20m
-        memory: 2Gi
-      limits:
-        memory: 2Gi
+    containers:
+    - name: sidecar
+      resources:
+        requests:
+          cpu: 10m
+          memory: 178Mi
+        limits:
+          memory: 178Mi
+    - name: mysql
+      resources:
+        requests:
+          cpu: 15m
+          memory: 1089Mi
+        limits:
+          memory: 1089Mi
   datadirVolumeClaimTemplate:
     storageClassName: ssd-lvm-thin-2
     accessModes:

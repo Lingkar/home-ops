@@ -19,6 +19,28 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: amd-gpu-operator-workflow-controller
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: amd-gpu-operator-workflow-controller
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: workflow-controller
+                        resources:
+                          requests:
+                            cpu: 10m
+                            memory: 90Mi
+                          limits:
+                            memory: 90Mi
   valuesFrom:
     - kind: ConfigMap
       name: values-amd-gpu-operator

@@ -21,7 +21,7 @@ spec:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: all
+          name: messaging-topology-operator
         spec:
           template:
             spec:
@@ -30,10 +30,10 @@ spec:
                   resources:
                     requests:
                       cpu: 10m
-                      memory: 80Mi
+                      memory: 69Mi
                     limits:
                       cpu: null
-                      memory: 80Mi
+                      memory: 69Mi
       target:
         kind: Deployment
         name: messaging-topology-operator

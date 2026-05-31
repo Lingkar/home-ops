@@ -47,3 +47,12 @@ node-feature-discovery:
         memory: 80Mi
       limits:
         memory: 80Mi
+deviceConfig:
+  spec:
+    metricsExporter:
+      resource:
+        requests:
+          cpu: 10m
+          memory: 115Mi
+        limits:
+          memory: 115Mi

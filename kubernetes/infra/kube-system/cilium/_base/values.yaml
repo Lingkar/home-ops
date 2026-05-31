@@ -68,8 +68,28 @@ hubble:
         createConfigMap: false
   relay:
     enabled: true
+    resources:
+      limits:
+        memory: 77Mi
+      requests:
+        cpu: 10m
+        memory: 77Mi
   ui:
     enabled: true
+    frontend:
+      resources:
+        limits:
+          memory: 38Mi
+        requests:
+          cpu: 10m
+          memory: 38Mi
+    backend:
+      resources:
+        limits:
+          memory: 200Mi
+        requests:
+          cpu: 21m
+          memory: 200Mi
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "10.42.0.0/16"
