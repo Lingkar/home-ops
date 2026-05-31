@@ -15,8 +15,6 @@ cniConfig:
 nodes:
   - hostname: "rpi-00"
     ipAddress: "192.168.68.252"
-    nodeLabels:
-      piraeus.io/storage: "true"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false

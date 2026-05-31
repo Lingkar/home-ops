@@ -3,14 +3,11 @@ monitoring:
   enabled: true
 linstorCluster:
   linstorPassphraseSecret: linstor-passphrase
-  nodeSelector:
-    piraeus.io/storage: "true"
   controller:
     podTemplate:
       spec:
         nodeSelector:
           piraeus.io/storage: "true"
-          beta.kubernetes.io/arch: amd64
         containers:
           - name: linstor-controller
             resources:
@@ -24,7 +21,6 @@ linstorCluster:
       spec:
         nodeSelector:
           piraeus.io/storage: "true"
-          beta.kubernetes.io/arch: amd64
         containers:
           - name: linstor-affinity-controller
             resources:
@@ -38,7 +34,6 @@ linstorCluster:
       spec:
         nodeSelector:
           piraeus.io/storage: "true"
-          beta.kubernetes.io/arch: amd64
         containers:
           - name: ha-controller
             resources:
@@ -86,7 +81,6 @@ linstorCluster:
       spec:
         nodeSelector:
           piraeus.io/storage: "true"
-          beta.kubernetes.io/arch: amd64
         containers:
           - name: linstor-csi
             image: quay.io/piraeusdatastore/piraeus-csi:v1.11.2@sha256:b3ebbbd9d62d3226128303d1418ec087a021ca4746e1b613d0c12c0cbc9ca937
