@@ -5,6 +5,7 @@ metadata:
   name: cnpg-harbor
 spec:
   instances: 3
+  priorityClassName: platform-low
   storage:
     size: 1Gi
     storageClass: ssd-lvm-thin-2
