@@ -143,21 +143,6 @@ linstorSatelliteConfigurations:
   - name: talos-loader-override
     podTemplate:
       spec:
-        containers:
-          - name: linstor-satellite
-            resources:
-              requests:
-                cpu: 200m
-                memory: 512Mi
-              limits:
-                memory: 512Mi
-          - name: drbd-reactor
-            resources:
-              requests:
-                cpu: 10m
-                memory: 64Mi
-              limits:
-                memory: 64Mi
         initContainers:
           - name: drbd-shutdown-guard
             $patch: delete
@@ -215,6 +200,23 @@ linstorSatelliteConfigurations:
             - /dev/disk/by-partlabel/r-ssd-0
       - name: hdd-raidz-thin
         zfsThinPool: {}
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-satellite
+            resources:
+              requests:
+                cpu: 200m
+                memory: 350Mi
+              limits:
+                memory: 350Mi
+          - name: drbd-reactor
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
   - name: c-02
     nodeSelector:
       kubernetes.io/hostname: c-02
@@ -227,3 +229,20 @@ linstorSatelliteConfigurations:
           hostDevices:
             - /dev/disk/by-partlabel/r-ssd-0
             - /dev/disk/by-partlabel/r-ssd-1
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-satellite
+            resources:
+              requests:
+                cpu: 200m
+                memory: 400Mi
+              limits:
+                memory: 400Mi
+          - name: drbd-reactor
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
