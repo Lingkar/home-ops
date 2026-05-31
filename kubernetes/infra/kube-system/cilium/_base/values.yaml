@@ -2,10 +2,10 @@
 upgradeCompatibility: "1.18"
 policyAuditMode: false
 resources:
-  limits:
-    memory: 440Mi
   requests:
     cpu: 150m
+    memory: 440Mi
+  limits:
     memory: 440Mi
 autoDirectNodeRoutes: true
 bpf:
@@ -17,6 +17,12 @@ extraArgs:
 cni:
   # Required for pairing with Multus CNI
   exclusive: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 256Mi
 cgroup:
   automount:
     enabled: false
