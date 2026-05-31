@@ -131,6 +131,8 @@ resources:
   limits:
     memory: 500Mi
 nodeAgent:
+  nodeSelector:
+    piraeus.io/storage: "true"
   resources:
     requests:
       cpu: 30m
