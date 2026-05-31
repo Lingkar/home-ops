@@ -13,6 +13,10 @@ machine:
           shutdownGracePeriodSeconds: 20
         - priority: 1000000000
           shutdownGracePeriodSeconds: 20
+        - priority: 2000000000
+          shutdownGracePeriodSeconds: 20
+        - priority: 2000001000
+          shutdownGracePeriodSeconds: 20
     nodeIP:
       validSubnets:
         - 192.168.68.1/22
