@@ -182,6 +182,26 @@ linstorSatelliteConfigurations:
             hostPath:
               path: /var/etc/lvm/archive
               type: DirectoryOrCreate
+  - name: rpi-00
+    nodeSelector:
+      kubernetes.io/hostname: rpi-00
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-satellite
+            resources:
+              requests:
+                cpu: 200m
+                memory: 256Mi
+              limits:
+                memory: 256Mi
+          - name: drbd-reactor
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 32Mi
   - name: c-01
     nodeSelector:
       kubernetes.io/hostname: c-01

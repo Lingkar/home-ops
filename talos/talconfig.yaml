@@ -41,7 +41,6 @@ nodes:
             - siderolabs/drbd
             - siderolabs/zfs
     patches:
-      - "@./patches/rpi-00/machine-kubelet.yaml"
       - "@./patches/rpi-00/api-server-resources.yaml"
     # talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
     controlPlane: true

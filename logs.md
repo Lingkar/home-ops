@@ -47,6 +47,7 @@
 - [ ] Fix ETCD grafana dashboard
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
+    https://www.linuxjournal.com/article/6983?page=0%2C1
 - [ ] FluxCD diffing -> fix pipelines
 - [/] Set-up a notification channel https://ntfy.sh/ looks promising
     - [ ] Set-up basic credentials
