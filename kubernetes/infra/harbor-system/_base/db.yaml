@@ -11,9 +11,9 @@ spec:
   resources:
     requests:
       cpu: 30m
-      memory: 100Mi
+      memory: 200Mi
     limits:
-      memory: 100Mi
+      memory: 200Mi
 ---
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/database_v1.json
 apiVersion: postgresql.cnpg.io/v1
