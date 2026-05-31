@@ -37,6 +37,7 @@ spec:
     requests:
       storage: 1Gi
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/deployment.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,6 +47,8 @@ metadata:
 spec:
   revisionHistoryLimit: 1
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: ntfy
