@@ -117,10 +117,10 @@ instance:
                     resources:
                       requests:
                         cpu: 20m
-                        memory: 140Mi
+                        memory: 200Mi
                       limits:
                         cpu: null
-                        memory: 140Mi
+                        memory: 200Mi
       - target:
           kind: Deployment
           name: source-watcher
