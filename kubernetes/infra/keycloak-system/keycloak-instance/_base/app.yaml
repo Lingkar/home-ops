@@ -8,6 +8,12 @@ spec:
   storage:
     size: 1Gi
     storageClass: ssd-lvm-thin-2
+  resources:
+    requests:
+      cpu: 30m
+      memory: 100Mi
+    limits:
+      memory: 100Mi
 ---
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/database_v1.json
 apiVersion: postgresql.cnpg.io/v1
