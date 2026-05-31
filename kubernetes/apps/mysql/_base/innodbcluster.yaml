@@ -11,6 +11,7 @@ spec:
   router:
     instances: 1
     podSpec:
+      priorityClassName: platform-high
       resources:
         requests:
           cpu: 15m
