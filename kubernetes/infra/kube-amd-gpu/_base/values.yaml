@@ -37,7 +37,6 @@ node-feature-discovery:
         cpu: 10m
         memory: 80Mi
       limits:
-        cpu: null
         memory: 80Mi
   worker:
     resources:
