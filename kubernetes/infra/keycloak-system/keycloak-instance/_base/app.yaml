@@ -69,5 +69,5 @@ spec:
       cpu: 10m
       memory: 1256Mi
     limits:
-      cpu: null
+      cpu: 2
       memory: 1256Mi
