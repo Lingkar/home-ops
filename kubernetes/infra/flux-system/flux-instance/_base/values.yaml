@@ -57,10 +57,10 @@ instance:
                     resources:
                       requests:
                         cpu: 40m
-                        memory: 300Mi
+                        memory: 512Mi
                       limits:
                         cpu: null
-                        memory: 300Mi
+                        memory: 512Mi
       - target:
           kind: Deployment
           name: kustomize-controller
