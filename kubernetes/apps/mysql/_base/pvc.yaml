@@ -10,16 +10,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/persistentvolumeclaim-v1.json
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-backup-0
-spec:
-  storageClassName: ssd-lvm-thin-2
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
