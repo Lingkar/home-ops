@@ -1,0 +1,7 @@
+cluster:
+  apiServer:
+    resources:
+      requests:
+        memory: "1536Mi"
+      limits:
+        memory: "1536Mi"

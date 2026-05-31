@@ -20,8 +20,6 @@ nodes:
       secureboot: false
       mode: metal
       arch: arm64
-    patches:
-      - "@./patches/rpi-00/machine-kubelet.yaml"
     schematic:
       overlay:
         options:
@@ -42,6 +40,9 @@ nodes:
           officialExtensions:
             - siderolabs/drbd
             - siderolabs/zfs
+    patches:
+      - "@./patches/rpi-00/machine-kubelet.yaml"
+      - "@./patches/rpi-00/api-server-resources.yaml"
     # talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22
     controlPlane: true
     networkInterfaces:
@@ -83,6 +84,7 @@ nodes:
     patches:
       - "@./patches/c-01/system-disk-ssd.yaml"
       - "@./patches/c-01/raw-volume-hdd.yaml"
+      - "@./patches/c-01/api-server-resources.yaml"
   # TODO:: add user volume
   - hostname: "c-02"
     ipAddress: "192.168.68.254"
@@ -119,6 +121,7 @@ nodes:
     patches:
       - "@./patches/c-02/system-disk-ssd-1.yaml"
       - "@./patches/c-02/raw-volume-ssd-0.yaml"
+      - "@./patches/c-02/api-server-resources.yaml"
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"

@@ -5,11 +5,6 @@ cluster:
       # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
       enable-aggregator-routing: true
       default-watch-cache-size: "5"
-    resources:
-      requests:
-        memory: "512Mi"
-      limits:
-        memory: "1536Mi"
   controllerManager:
     extraArgs:
       bind-address: 0.0.0.0
