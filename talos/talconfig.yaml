@@ -22,13 +22,13 @@ nodes:
       secureboot: false
       mode: metal
       arch: arm64
+    patches:
+      - "@./patches/rpi-00/machine-kubelet.yaml"
     schematic:
       overlay:
         options:
-          # dtoverlay=gpio-fan,gpiopin=12
-          # https://docs.siderolabs.com/talos/v1.10/platform-specific-installations/single-board-computers/rpi_generic#configure-the-config-txt-file-for-usage-with-the-vc4-system  extension
           configTxt: |
-            gpu_mem=256
+            gpu_mem=16
             kernel=u-boot.bin
             arm_64bit=1
             arm_boost=1
@@ -36,14 +36,12 @@ nodes:
             dtoverlay=disable-bt
             dtoverlay=disable-wifi
             avoid_warnings=2
-            dtoverlay=vc4-kms-v3d,noaudio
             dtoverlay=pwm-gpio-fan,gpiopin=18
         image: siderolabs/sbc-raspberrypi
         name: rpi_generic
       customization:
         systemExtensions:
           officialExtensions:
-            - siderolabs/vc4
             - siderolabs/drbd
             - siderolabs/zfs
     # talosImageURL: factory.talos.dev/installer/b882a159b77ed3ecea434ddfa29f68599e72749c94c6e3e2b66b3121e6624a22

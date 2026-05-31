@@ -1,0 +1,14 @@
+machine:
+  kubelet:
+    extraConfig:
+      systemReserved:
+        memory: "256Mi"
+      kubeReserved:
+        memory: "256Mi"
+      evictionHard:
+        memory.available: "200Mi"
+        nodefs.available: "5%"
+      evictionSoft:
+        memory.available: "400Mi"
+      evictionSoftGracePeriod:
+        memory.available: "1m"
