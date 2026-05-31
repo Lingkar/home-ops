@@ -33,7 +33,6 @@ node-feature-discovery:
         cpu: 10m
         memory: 50Mi
       limits:
-        cpu: null
         memory: 50Mi
   master:
     resources:
@@ -49,5 +48,4 @@ node-feature-discovery:
         cpu: 10m
         memory: 80Mi
       limits:
-        cpu: null
         memory: 80Mi
