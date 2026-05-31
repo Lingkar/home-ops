@@ -16,3 +16,55 @@ database:
     username: app
     existingSecret: cnpg-harbor-app
     coreDatabase: app
+core:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 152Mi
+    limits:
+      memory: 152Mi
+jobservice:
+  resources:
+    requests:
+      cpu: 32m
+      memory: 70Mi
+    limits:
+      memory: 70Mi
+portal:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 40Mi
+    limits:
+      memory: 40Mi
+registry:
+  registry:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 40Mi
+      limits:
+        memory: 40Mi
+  controller:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 40Mi
+      limits:
+        memory: 40Mi
+redis:
+  internal:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 40Mi
+      limits:
+        memory: 40Mi
+trivy:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      cpu: null
+      memory: 256Mi

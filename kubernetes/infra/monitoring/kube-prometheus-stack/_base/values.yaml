@@ -16,6 +16,7 @@ kubeProxy:
   enabled: false
 prometheus:
   prometheusSpec:
+    retention: 14d
     ruleSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
@@ -44,15 +45,24 @@ nodeExporter:
 kube-state-metrics:
   resources:
     requests:
-      cpu: 10m
+      cpu: 40m
+      memory: 210Mi
     limits:
-      memory: 256Mi
+      memory: 210Mi
 prometheusOperator:
   resources:
     requests:
       cpu: 35m
+      memory: 100Mi
     limits:
       memory: 100Mi
+  prometheusConfigReloader:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 32Mi
 alertmanager:
   alertmanagerSpec:
     resources:

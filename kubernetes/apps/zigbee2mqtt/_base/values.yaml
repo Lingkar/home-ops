@@ -20,3 +20,10 @@ statefulset:
     storageClassName: ssd-lvm-thin-2
   secrets:
     name: mqtt-credentials
+  resources:
+    requests:
+      cpu: 10m
+      memory: 256Mi
+    limits:
+      cpu: null
+      memory: 256Mi

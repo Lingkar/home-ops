@@ -124,3 +124,16 @@ affinity:
               operator: In
               values:
                 - amd64
+resources:
+  requests:
+    cpu: 20m
+    memory: 500Mi
+  limits:
+    memory: 500Mi
+nodeAgent:
+  resources:
+    requests:
+      cpu: 30m
+      memory: 135Mi
+    limits:
+      memory: 135Mi

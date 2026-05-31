@@ -10,9 +10,22 @@ spec:
   instances: 1
   router:
     instances: 1
+    podSpec:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 72Mi
+        limits:
+          memory: 72Mi
   edition: community
   podSpec:
     priorityClassName: platform-high
+    resources:
+      requests:
+        cpu: 20m
+        memory: 2Gi
+      limits:
+        memory: 2Gi
   datadirVolumeClaimTemplate:
     storageClassName: ssd-lvm-thin-2
     accessModes:

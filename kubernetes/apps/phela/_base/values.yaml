@@ -25,6 +25,12 @@ controllers:
             secretKeyRef:
               name: mysql-credentials
               key: PASSWORD
+        resources:
+          requests:
+            cpu: 300m
+            memory: 2Gi
+          limits:
+            memory: 2Gi
 service:
   main:
     ports:

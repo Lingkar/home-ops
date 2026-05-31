@@ -13,5 +13,6 @@ watchedResources: ["HTTPRoute", "Service"]
 resources:
   requests:
     cpu: 10m
+    memory: 40Mi
   limits:
-    memory: 36Mi
+    memory: 40Mi

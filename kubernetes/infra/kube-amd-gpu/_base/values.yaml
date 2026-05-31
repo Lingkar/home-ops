@@ -1,0 +1,53 @@
+controllerManager:
+  manager:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 256Mi
+      limits:
+        cpu: null
+        memory: 256Mi
+kmm:
+  controller:
+    manager:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 84Mi
+        limits:
+          cpu: null
+          memory: 84Mi
+  webhookServer:
+    webhookServer:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 60Mi
+        limits:
+          cpu: null
+          memory: 60Mi
+node-feature-discovery:
+  gc:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        cpu: null
+        memory: 50Mi
+  master:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 80Mi
+      limits:
+        cpu: null
+        memory: 80Mi
+  worker:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 80Mi
+      limits:
+        cpu: null
+        memory: 80Mi

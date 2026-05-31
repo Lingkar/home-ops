@@ -75,12 +75,11 @@ spec:
             - containerPort: 80
               name: http
           resources:
-            limits:
-              memory: 300Mi
-              cpu: 200m
             requests:
-              cpu: 150m
-              memory: 150Mi
+              cpu: 10m
+              memory: 60Mi
+            limits:
+              memory: 60Mi
           volumeMounts:
             - mountPath: /var/cache/ntfy
               name: cache-volume

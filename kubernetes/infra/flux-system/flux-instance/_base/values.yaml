@@ -56,10 +56,11 @@ instance:
                   - name: manager
                     resources:
                       requests:
-                        cpu: 70m
-                        memory: 400Mi
+                        cpu: 40m
+                        memory: 300Mi
                       limits:
-                        memory: 400Mi
+                        cpu: null
+                        memory: 300Mi
       - target:
           kind: Deployment
           name: kustomize-controller
@@ -75,10 +76,11 @@ instance:
                   - name: manager
                     resources:
                       requests:
-                        cpu: 300m
-                        memory: 400Mi
+                        cpu: 55m
+                        memory: 300Mi
                       limits:
-                        memory: 400Mi
+                        cpu: null
+                        memory: 300Mi
       - target:
           kind: Deployment
           name: notification-controller
@@ -95,9 +97,10 @@ instance:
                     resources:
                       requests:
                         cpu: 10m
-                        memory: 70Mi
+                        memory: 72Mi
                       limits:
-                        memory: 70Mi
+                        cpu: null
+                        memory: 72Mi
       - target:
           kind: Deployment
           name: source-controller
@@ -113,10 +116,11 @@ instance:
                   - name: manager
                     resources:
                       requests:
-                        cpu: 300m
-                        memory: 512Mi
+                        cpu: 20m
+                        memory: 140Mi
                       limits:
-                        memory: 512Mi
+                        cpu: null
+                        memory: 140Mi
       - target:
           kind: Deployment
           name: source-watcher
@@ -133,9 +137,10 @@ instance:
                     resources:
                       requests:
                         cpu: 10m
-                        memory: 128Mi
+                        memory: 74Mi
                       limits:
-                        memory: 128Mi
+                        cpu: null
+                        memory: 74Mi
       # - target:
       #     kind: Deployment
       #     name: (kustomize-controller|helm-controller|source-controller)

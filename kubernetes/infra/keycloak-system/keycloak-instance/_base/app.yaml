@@ -64,3 +64,10 @@ spec:
   bootstrapAdmin:
     service:
       secret: kc-admin-creds
+  resources:
+    requests:
+      cpu: 10m
+      memory: 1256Mi
+    limits:
+      cpu: null
+      memory: 1256Mi
