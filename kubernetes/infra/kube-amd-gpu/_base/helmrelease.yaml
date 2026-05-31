@@ -41,6 +41,12 @@ spec:
                             memory: 90Mi
                           limits:
                             memory: 90Mi
+          - target:
+              kind: DeviceConfig
+              name: default
+            patch: |-
+              - op: remove
+                path: /metadata/annotations/helm.sh~1resource-policy
   valuesFrom:
     - kind: ConfigMap
       name: values-amd-gpu-operator

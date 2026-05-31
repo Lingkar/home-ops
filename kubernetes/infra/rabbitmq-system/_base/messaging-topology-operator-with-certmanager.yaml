@@ -2464,11 +2464,10 @@ spec:
               protocol: TCP
           resources:
             limits:
-              cpu: 300m
-              memory: 500Mi
+              memory: 70Mi
             requests:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 10m
+              memory: 70Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
