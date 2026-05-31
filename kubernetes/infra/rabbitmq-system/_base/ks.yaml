@@ -30,10 +30,10 @@ spec:
                   resources:
                     requests:
                       cpu: 10m
-                      memory: 69Mi
+                      memory: 70Mi
                     limits:
                       cpu: null
-                      memory: 69Mi
+                      memory: 70Mi
       target:
         kind: Deployment
         name: messaging-topology-operator

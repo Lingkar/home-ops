@@ -70,19 +70,19 @@ hubble:
     enabled: true
     resources:
       limits:
-        memory: 77Mi
+        memory: 80Mi
       requests:
         cpu: 10m
-        memory: 77Mi
+        memory: 80Mi
   ui:
     enabled: true
     frontend:
       resources:
         limits:
-          memory: 38Mi
+          memory: 40Mi
         requests:
           cpu: 10m
-          memory: 38Mi
+          memory: 40Mi
     backend:
       resources:
         limits:

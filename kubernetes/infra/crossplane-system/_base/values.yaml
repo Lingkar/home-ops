@@ -33,7 +33,7 @@ extraObjects:
                 - name: package-runtime
                   resources:
                     requests:
-                      cpu: 23m
-                      memory: 251Mi
+                      cpu: 30m
+                      memory: 256Mi
                     limits:
-                      memory: 251Mi
+                      memory: 256Mi
