@@ -6,13 +6,13 @@ machine:
       shutdownGracePeriodCriticalPods: 0s
       shutdownGracePeriodByPodPriority:
         - priority: 0
-          shutdownGracePeriodSeconds: 60
+          shutdownGracePeriodSeconds: 120
         - priority: 100000000
-          shutdownGracePeriodSeconds: 10
+          shutdownGracePeriodSeconds: 20
         - priority: 500000000
-          shutdownGracePeriodSeconds: 10
+          shutdownGracePeriodSeconds: 20
         - priority: 1000000000
-          shutdownGracePeriodSeconds: 10
+          shutdownGracePeriodSeconds: 20
     nodeIP:
       validSubnets:
         - 192.168.68.1/22
