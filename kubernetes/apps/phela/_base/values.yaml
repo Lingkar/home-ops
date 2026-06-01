@@ -28,9 +28,9 @@ controllers:
         resources:
           requests:
             cpu: 300m
-            memory: 2Gi
+            memory: 1Gi
           limits:
-            memory: 2Gi
+            memory: 1Gi
 service:
   main:
     ports:
