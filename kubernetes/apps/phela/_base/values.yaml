@@ -6,7 +6,7 @@ defaultPodOptions:
   hostNetwork: false
   hostPID: false
   shareProcessNamespace: false
-  priorityClassName: platform-low
+  priorityClassName: platform-high
 controllers:
   main:
     containers:
