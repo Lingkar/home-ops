@@ -28,10 +28,10 @@
     - [x] Instead of setting up new storageclass set-up separate nfs-ganesha servers and mount with https://kubernetes.io/docs/concepts/storage/volumes/#nfs
     - [x] Test-out per node shutdown
 - [x] Migrate all ssd-lvm-thin-1 -> ssd-lvm-thin-2
-- [ ] Fix resource requests / limits -> no more OOM's on rpi
-- [ ] Set application priorities and evictions in case MS-S1 Max shuts down
+- [x] Fix resource requests / limits -> no more OOM's on rpi
+- [x] Set application priorities and evictions in case MS-S1 Max shuts down
     - [x] Set-up priority classes
-    - [/] Test if it actually works
+    - [x] Test if it actually works
 - [ ] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco

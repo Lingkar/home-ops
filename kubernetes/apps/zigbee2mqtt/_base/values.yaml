@@ -14,7 +14,7 @@ service:
 statefulset:
   nodeSelector:
     kubernetes.io/hostname: c-01
-  priorityClassName: platform-low
+  priorityClassName: platform-high
   storage:
     enabled: true
     storageClassName: ssd-lvm-thin-2
