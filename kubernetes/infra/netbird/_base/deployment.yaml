@@ -26,9 +26,9 @@ spec:
           resources:
             requests:
               cpu: 10m
-              memory: 100Mi
+              memory: 256Mi
             limits:
-              memory: 100Mi
+              memory: 256Mi
           envFrom:
             - secretRef:
                 name: netbird-setup-key
