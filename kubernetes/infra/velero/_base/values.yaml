@@ -50,6 +50,7 @@ schedules:
       ttl: 168h # 1 week
       snapshotVolumes: true
       snapshotMoveData: true
+      csiSnapshotTimeout: 30m
       excludedNamespaces: [] # Should exclude certain namespaces in the future
       includedResources:
         - pv
@@ -60,6 +61,7 @@ schedules:
       ttl: 850h # 35 days
       snapshotVolumes: true
       snapshotMoveData: true
+      csiSnapshotTimeout: 30m
       excludedNamespaces: [] # Should exclude certain namespaces in the future
       includedResources:
         - pv
