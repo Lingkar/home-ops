@@ -30,7 +30,7 @@ instance:
         patch: |
           - op: add
             path: /spec/template/spec/priorityClassName
-            value: platform-high
+            value: platform-low
       # Set resources
       - target:
           kind: Deployment
