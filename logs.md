@@ -32,7 +32,7 @@
 - [x] Set application priorities and evictions in case MS-S1 Max shuts down
     - [x] Set-up priority classes
     - [x] Test if it actually works
-- [/] Fix Renovate config, separate patch roll-outs and autoupgrades
+- [x] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
