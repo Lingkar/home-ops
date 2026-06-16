@@ -33,22 +33,23 @@
     - [x] Set-up priority classes
     - [x] Test if it actually works
 - [x] Fix Renovate config, separate patch roll-outs and autoupgrades
+- [x] Set resources Velero, api-server, scheduler, controller manager
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
-- [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
-- [ ] Set-up clean-up job for delete PV's with Retain
-- [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
-
-- [?] Set-up valkey operator
-- [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
-- [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
-- [ ] Set resources Velero, api-server, scheduler, controller manager
-- [ ] Switch from ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds to official gateway-api-crd (if possible)
-- [ ] Fix ETCD grafana dashboard
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
+- [ ] Set-up clean-up job for delete PV's with Retain
+- [ ] Sharing of GPU -> removal of amd gpu operator in favour of custom logic for "unsafe" gpu sharing
+
 - [ ] FluxCD diffing -> fix pipelines
+- [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
+- [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
+- [?] Set-up valkey operator
+- [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
+- [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
+- [ ] Switch from ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds to official gateway-api-crd (if possible)
+- [ ] Fix ETCD grafana dashboard
 - [/] Set-up a notification channel https://ntfy.sh/ looks promising
     - [ ] Set-up basic credentials
 - [/] Set-up netbird
