@@ -31,6 +31,9 @@ prometheus:
         memory: 2Gi
     storageSpec:
       volumeClaimTemplate:
+        metadata:
+          labels:
+            velero.io/exclude-from-backup: "true"
         spec:
           storageClassName: ssd-lvm-thin-2
           resources:
