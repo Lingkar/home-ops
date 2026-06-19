@@ -6,8 +6,6 @@ linstorCluster:
   controller:
     podTemplate:
       spec:
-        nodeSelector:
-          piraeus.io/storage: "true"
         containers:
           - name: linstor-controller
             resources:
@@ -19,8 +17,6 @@ linstorCluster:
   affinityController:
     podTemplate:
       spec:
-        nodeSelector:
-          piraeus.io/storage: "true"
         containers:
           - name: linstor-affinity-controller
             resources:
@@ -32,8 +28,6 @@ linstorCluster:
   highAvailabilityController:
     podTemplate:
       spec:
-        nodeSelector:
-          piraeus.io/storage: "true"
         containers:
           - name: ha-controller
             resources:
