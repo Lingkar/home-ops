@@ -90,7 +90,7 @@ nodes:
       secureboot: true
       mode: metal
       arch: amd64
-    controlPlane: true
+    controlPlane: false
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "38:05:25:34:67:7e" # This is the right ethernet port
@@ -99,8 +99,6 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: 192.168.68.1
-        vip:
-          ip: "192.168.69.5"
     schematic:
       customization:
         extraKernelArgs:
@@ -116,7 +114,6 @@ nodes:
     patches:
       - "@./patches/c-02/system-disk-ssd-1.yaml"
       - "@./patches/c-02/raw-volume-ssd-0.yaml"
-      - "@./patches/c-02/api-server-resources.yaml"
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"
