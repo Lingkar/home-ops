@@ -3,6 +3,7 @@
   "extends": [
     "config:best-practices",
     ":dependencyDashboard",
+    ":automergeBranch",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
     ":separatePatchReleases",
@@ -97,7 +98,8 @@
         "patch"
       ],
       "minimumReleaseAge": "5 days",
-      "automerge": true
+      "automerge": true,
+      "ignoreTests": true //TODO: Remove ignoreTests after a proper CI pipeline is installed
     },
     {
       "description": "Minor updates",
