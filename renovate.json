@@ -3,7 +3,6 @@
   "extends": [
     "config:best-practices",
     ":dependencyDashboard",
-    ":automergeBranch",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
     ":separatePatchReleases",
@@ -11,6 +10,7 @@
     ":prConcurrentLimitNone"
   ],
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "platformAutomerge": true,
   "ignorePaths": [
     "**/*.sops.*"
   ],
@@ -97,8 +97,7 @@
         "patch"
       ],
       "minimumReleaseAge": "5 days",
-      "automerge": true,
-      "autoApprove": true
+      "automerge": true
     },
     {
       "description": "Minor updates",
