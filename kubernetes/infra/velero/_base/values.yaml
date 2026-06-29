@@ -6,6 +6,7 @@ configuration:
   garbageCollectionFrequency: 15m
   terminatingResourceTimeout: 30m
   defaultItemOperationTimeout: 120m
+  dataMoverPrepareTimeout: 60m
   backupStorageLocation:
     - name: hetzner
       provider: velero.io/aws
@@ -136,6 +137,6 @@ nodeAgent:
   resources:
     requests:
       cpu: 30m
-      memory: 135Mi
+      memory: 256Mi
     limits:
-      memory: 135Mi
+      memory: 256Mi
