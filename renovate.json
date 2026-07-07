@@ -3,10 +3,9 @@
   "extends": [
     "config:best-practices",
     ":dependencyDashboard",
-    ":automergeBranch",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
-    ":separatePatchReleases",
+    ":separateMinorPatch",
     ":prHourlyLimitNone",
     ":prConcurrentLimitNone"
   ],
@@ -92,6 +91,7 @@
         "helm-values",
         "kubernetes",
         "github-actions",
+        "custom.regex",
         "mise"
       ],
       "matchUpdateTypes": [
