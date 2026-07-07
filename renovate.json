@@ -85,7 +85,7 @@
       "minimumGroupSize": 2
     },
     {
-      "description": "Patch updates",
+      "description": "Group all patch updates",
       "matchManagers": [
         "flux",
         "helm-values",
@@ -97,9 +97,17 @@
       "matchUpdateTypes": [
         "patch"
       ],
+      "groupName": "all patch updates",
       "minimumReleaseAge": "5 days",
-      "automerge": true,
-      "ignoreTests": true //TODO: Remove ignoreTests after a proper CI pipeline is installed
+      "automerge": true
+    },
+    {
+      "description": "Group all digest updates",
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "groupName": "all digest updates",
+      "automerge": true
     },
     {
       "description": "Minor updates",
