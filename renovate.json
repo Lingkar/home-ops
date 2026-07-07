@@ -120,7 +120,7 @@
         "minor"
       ],
       "minimumReleaseAge": "10 days",
-      "automerge": false,
+      "automerge": true,
       "autoApprove": false
     },
     {
