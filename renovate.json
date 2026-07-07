@@ -89,6 +89,7 @@
       "matchManagers": [
         "flux",
         "helm-values",
+        "helmfile",
         "kubernetes",
         "github-actions",
         "custom.regex",
@@ -112,8 +113,10 @@
       "matchManagers": [
         "flux",
         "helm-values",
+        "helmfile",
         "kubernetes",
         "github-actions",
+        "custom.regex",
         "mise"
       ],
       "matchUpdateTypes": [
@@ -128,8 +131,10 @@
       "matchManagers": [
         "flux",
         "helm-values",
+        "helmfile",
         "kubernetes",
         "github-actions",
+        "custom.regex",
         "mise"
       ],
       "matchUpdateTypes": [
