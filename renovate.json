@@ -85,7 +85,7 @@
       "minimumGroupSize": 2
     },
     {
-      "description": "Group all patch updates",
+      "description": "Patch updates",
       "matchManagers": [
         "flux",
         "helm-values",
@@ -97,16 +97,14 @@
       "matchUpdateTypes": [
         "patch"
       ],
-      "groupName": "all patch updates",
       "minimumReleaseAge": "5 days",
       "automerge": true
     },
     {
-      "description": "Group all digest updates",
+      "description": "Digest updates",
       "matchUpdateTypes": [
         "digest"
       ],
-      "groupName": "all digest updates",
       "automerge": true
     },
     {
