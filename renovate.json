@@ -5,7 +5,7 @@
     ":dependencyDashboard",
     ":semanticCommits",
     ":separateMultipleMajorReleases",
-    ":separateMinorPatch",
+    ":separatePatchReleases",
     ":prHourlyLimitNone",
     ":prConcurrentLimitNone"
   ],
