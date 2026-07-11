@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-4.6.2/charts/library/common/values.schema.json
+defaultPodOptions:
+  automountServiceAccountToken: false
+  enableServiceLinks: false
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  shareProcessNamespace: false
+  priorityClassName: platform-high
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: harbor.buijnsters.com/tgoo/dummy-backend@sha256:ac4eb43f3f6e69889751cd34ad4454ab92cd9def57b4003772e3de89f52d9bc4
+          tag: latest@sha256:5d2c212561c4b5442ebc4d98933a9cbadcf3dee8888ed3fd9ed44667c27cc905
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:postgresql://cnpg-harbor-rw.harbor-system.svc.cluster.local:5432/app
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: cnpg-tgoo-app
+                key: username
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: cnpg-tgoo-app
+                key: password
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: update
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 1Gi
+service:
+  main:
+    ports:
+      http:
+        port: 8080
+        protocol: TCP
+route:
+  main:
+    parentRefs:
+      - name: external
+        namespace: network
+    hostnames: ["tgoo-dummy.buijnsters.com"]

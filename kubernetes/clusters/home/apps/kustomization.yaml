@@ -3,6 +3,7 @@ resources:
   - home-ops-private.yaml
   - mysql.yaml
   - ntfy.yaml
-  - portfolio.yaml
   - phela.yaml
+  - portfolio.yaml
+  - tgoo.yaml
   - zigbee2mqtt.yaml

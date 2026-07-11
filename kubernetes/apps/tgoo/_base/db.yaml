@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-tgoo
+spec:
+  instances: 3
+  priorityClassName: platform-high
+  storage:
+    size: 1Gi
+    storageClass: ssd-lvm-thin-2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      memory: 500Mi
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: cnpg-tgoo
+spec:
+  name: app
+  owner: app
+  cluster:
+    name: tgoo
