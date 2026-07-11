@@ -16,17 +16,10 @@ controllers:
           tag: latest
         env:
           - name: SPRING_DATASOURCE_URL
-            value: jdbc:postgresql://cnpg-harbor-rw.harbor-system.svc.cluster.local:5432/app
-          - name: SPRING_DATASOURCE_USERNAME
             valueFrom:
               secretKeyRef:
                 name: cnpg-tgoo-app
-                key: username
-          - name: SPRING_DATASOURCE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: cnpg-tgoo-app
-                key: password
+                key: fqdn-jdbc-uri
           - name: SPRING_JPA_HIBERNATE_DDL_AUTO
             value: update
         resources:
