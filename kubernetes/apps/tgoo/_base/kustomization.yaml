@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - db.yaml
   - helmrelease.yaml
-  - netpol.yaml
+  # - netpol.yaml
   - source.yaml
 configMapGenerator:
   - name: values-tgoo
