@@ -12,7 +12,7 @@ controllers:
     containers:
       main:
         image:
-          repository: harbor.buijnsters.com/tgoo/dummy-backend@sha256:ac4eb43f3f6e69889751cd34ad4454ab92cd9def57b4003772e3de89f52d9bc4
+          repository: harbor.buijnsters.com/tgoo/dummy-backend
           tag: latest@sha256:5d2c212561c4b5442ebc4d98933a9cbadcf3dee8888ed3fd9ed44667c27cc905
         env:
           - name: SPRING_DATASOURCE_URL
