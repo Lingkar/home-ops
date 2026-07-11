@@ -17,7 +17,7 @@ spec:
   egress:
     - toEndpoints:
         - matchLabels:
-            cnpg.io/cluster: cnpg-harbor
+            cnpg.io/cluster: cnpg-tgoo
       toPorts:
         - ports:
             - port: "5432"
