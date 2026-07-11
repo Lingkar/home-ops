@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - db.yaml
   - helmrelease.yaml
-  - mysql-credentials.sops.yaml
   - netpol.yaml
   - source.yaml
 configMapGenerator:
