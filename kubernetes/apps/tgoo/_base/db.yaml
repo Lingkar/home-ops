@@ -4,7 +4,7 @@ kind: Cluster
 metadata:
   name: cnpg-tgoo
 spec:
-  instances: 3
+  instances: 1
   priorityClassName: platform-high
   storage:
     size: 1Gi
