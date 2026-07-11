@@ -13,7 +13,7 @@ controllers:
       main:
         image:
           repository: harbor.buijnsters.com/tgoo/dummy-backend
-          tag: latest@sha256:5d2c212561c4b5442ebc4d98933a9cbadcf3dee8888ed3fd9ed44667c27cc905
+          tag: latest
         env:
           - name: SPRING_DATASOURCE_URL
             value: jdbc:postgresql://cnpg-harbor-rw.harbor-system.svc.cluster.local:5432/app
