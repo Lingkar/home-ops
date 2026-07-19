@@ -246,6 +246,17 @@
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)"
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
+    },
+    {
+      "description": "Detect container images in CRDs",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)kubernetes/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s+(?<depName>\\S+):(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "docker"
     }
   ]
 }

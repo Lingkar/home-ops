@@ -2,6 +2,59 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: privileged-rpi-00
+  namespace: piraeus-datastore
+  labels:
+    app: privileged-rpi-00
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privileged-rpi-00
+  template:
+    metadata:
+      labels:
+        app: privileged-rpi-00
+    spec:
+      # hostIPC: true
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/hostname: rpi-00
+      containers:
+        - image: ubuntu:noble
+          name: ubuntu
+          resources: {}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "tail -f /dev/null"
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-root
+              mountPath: /host
+          securityContext:
+            privileged: true
+          # allowPrivilegeEscalation: false
+          #   runAsNonRoot: true
+          #   seccompProfile:
+          #     type: RuntimeDefault
+          #   capabilities:
+          #     drop:
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: host-root
+          hostPath:
+            path: /
+status: {}
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/deployment.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: privileged-c-01
   namespace: piraeus-datastore
   labels:
