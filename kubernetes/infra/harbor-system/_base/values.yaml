@@ -68,3 +68,6 @@ trivy:
     limits:
       cpu: null
       memory: 256Mi
+persistence:
+  registry:
+    size: 10Gi
