@@ -54,11 +54,27 @@ servers:
 priorityClassName: system-cluster-critical
 affinity:
   nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
+    - preferredDuringSchedulingIgnoredDuringExecution:
+      weigth: 1
+      preference:
         - matchExpressions:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
+topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: '{{ template "coredns.name" . }}'
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+    topologyKey: topology.kubernetes.io/zone
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: '{{ template "coredns.name" . }}'
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+    topologyKey: kubernetes.io/hostname
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
 tolerations:
   - key: CriticalAddonsOnly
     operator: Exists
