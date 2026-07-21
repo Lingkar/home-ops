@@ -54,12 +54,12 @@ servers:
 priorityClassName: system-cluster-critical
 affinity:
   nodeAffinity:
-    - preferredDuringSchedulingIgnoredDuringExecution:
-        weigth: 1
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
         preference:
-          - matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
+          matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
 topologySpreadConstraints:
   - labelSelector:
       matchLabels:
