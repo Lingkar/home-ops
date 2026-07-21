@@ -55,11 +55,11 @@ priorityClassName: system-cluster-critical
 affinity:
   nodeAffinity:
     - preferredDuringSchedulingIgnoredDuringExecution:
-      weigth: 1
-      preference:
-        - matchExpressions:
-            - key: node-role.kubernetes.io/control-plane
-              operator: Exists
+        weigth: 1
+        preference:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
 topologySpreadConstraints:
   - labelSelector:
       matchLabels:
