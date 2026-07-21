@@ -5,5 +5,4 @@ resources:
   - ntfy.yaml
   - phela.yaml
   - portfolio.yaml
-  - tgoo.yaml
   - zigbee2mqtt.yaml
