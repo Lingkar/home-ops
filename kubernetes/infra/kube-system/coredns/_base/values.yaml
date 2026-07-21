@@ -52,14 +52,14 @@ servers:
         configBlock: |-
           class error
 priorityClassName: system-cluster-critical
-affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-            - key: node-role.kubernetes.io/control-plane
-              operator: Exists
+# affinity:
+#   nodeAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#       - weight: 1
+#         preference:
+#           matchExpressions:
+#             - key: node-role.kubernetes.io/control-plane
+#               operator: Exists
 topologySpreadConstraints:
   - labelSelector:
       matchLabels:
