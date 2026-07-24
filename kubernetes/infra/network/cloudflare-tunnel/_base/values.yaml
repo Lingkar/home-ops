@@ -57,9 +57,26 @@ serviceMonitor:
   app:
     endpoints:
       - port: http
+configMaps:
+  cloudflare-tunnel-config:
+    data:
+      config.yaml: |-
+        originRequest:
+          originServerName: "external.${SECRET_DOMAIN}"
+        ingress:
+          - hostname: "${SECRET_DOMAIN}"
+            service: &svc https://cilium-gateway-external.network.svc.cluster.local
+          - hostname: "*.${SECRET_DOMAIN}"
+            service: *svc
+          - hostname: "phela-intelligence.com"
+            service: *svc
+          - hostname: "*.phela-intelligence.com"
+            service: *svc
+          - service: http_status:404
 persistence:
   config-file:
     type: configMap
+    identifier: cloudflare-tunnel-config
     globalMounts:
       - path: /etc/cloudflared/config.yaml
         subPath: config.yaml

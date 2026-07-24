@@ -8,9 +8,6 @@ resources:
   - secret.sops.yaml
   - source.yaml
 configMapGenerator:
-  - name: cloudflare-tunnel-config
-    files:
-      - config.yaml=./tunnel-config.yaml
   - name: values-cloudflare-tunnel
     behavior: create
     files:

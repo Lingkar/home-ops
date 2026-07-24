@@ -15,10 +15,6 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  values:
-    persistence:
-      config-file:
-        name: cloudflare-tunnel-config
   valuesFrom:
     - kind: ConfigMap
       name: values-cloudflare-tunnel
