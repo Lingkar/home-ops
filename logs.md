@@ -42,7 +42,7 @@
 - [ ] Set-up clean-up job for delete PV's with Retain
 - [ ] Sharing of GPU -> removal of amd gpu operator in favour of custom logic for "unsafe" gpu sharing
 
-- [ ] FluxCD diffing -> fix pipelines
+- [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
 - [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
 - [?] Set-up valkey operator

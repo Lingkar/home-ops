@@ -21,7 +21,7 @@
   },
   "helm-values": {
     "managerFilePatterns": [
-      "/(^|/)values(-[a-z0-9])?\\.ya?ml$/"
+      "/(^|/)values.*\\.ya?ml$/"
     ]
   },
   "kubernetes": {
