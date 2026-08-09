@@ -34,13 +34,13 @@
     - [x] Test if it actually works
 - [x] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [x] Set resources Velero, api-server, scheduler, controller manager
+- [/] Sharing of GPU -> removal of amd gpu operator in favour of custom logic for "unsafe" gpu sharing
 - [ ] Set-up Alloy log collection + Loki log storage
 - [ ] Set-up intrusion detection with Falco
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
 - [ ] Set-up clean-up job for delete PV's with Retain
-- [ ] Sharing of GPU -> removal of amd gpu operator in favour of custom logic for "unsafe" gpu sharing
 
 - [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
