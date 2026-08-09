@@ -9,7 +9,6 @@ resources:
   - crossplane.yaml
   - grafana-system.yaml
   - harbor-system.yaml
-  - kube-amd-gpu.yaml
   - mysql-system.yaml
   - netbird.yaml
   - piraeus.yaml

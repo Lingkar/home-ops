@@ -15,7 +15,6 @@ cluster:
           exemptions:
             namespaces:
               - piraeus-datastore
-              - kube-amd-gpu
               - monitoring
               - spegel
               - velero
