@@ -1,3 +1,4 @@
 resources:
   - grafana.yaml
   - kube-prometheus-stack.yaml
+  - opentelemetry.yaml
