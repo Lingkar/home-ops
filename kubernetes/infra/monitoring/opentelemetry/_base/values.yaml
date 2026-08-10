@@ -1,2 +1,5 @@
+crds:
+  installOtel: false
+  installPrometheus: false
 opentelemetry-operator:
   enabled: false
