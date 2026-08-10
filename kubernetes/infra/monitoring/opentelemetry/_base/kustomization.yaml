@@ -1,2 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
-  - otel-collector.yaml
+  - helmrelease.yaml
+  - source.yaml
+configMapGenerator:
+  - name: values-opentelemetry-kube-stack
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../utils/helm/kustomizeconfig.yaml
