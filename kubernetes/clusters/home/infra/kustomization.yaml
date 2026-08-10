@@ -1,16 +1,17 @@
 resources:
-  - flux-system
-  - keycloak-system
-  - kube-system
-  - monitoring
-  - network
   - cert-manager.yaml
   - cnpg-system.yaml
   - crossplane.yaml
+  - flux-system
   - grafana-system.yaml
   - harbor-system.yaml
+  - keycloak-system
+  - kube-system
+  - monitoring
   - mysql-system.yaml
   - netbird.yaml
+  - network
+  - opentelemetry-system.yaml
   - piraeus.yaml
   - rabbitmq.yaml
   - spegel.yaml
