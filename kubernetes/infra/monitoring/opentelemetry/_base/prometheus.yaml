@@ -71,6 +71,7 @@ spec:
         values:
           - nonexistent
   serviceMonitorSelector: {}
+  serviceName: prometheus-otel
   shards: 1
   storage:
     volumeClaimTemplate:

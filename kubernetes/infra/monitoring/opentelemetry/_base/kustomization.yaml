@@ -3,6 +3,7 @@ resources:
   - helmrelease.yaml
   - prometheus.yaml
   - source.yaml
+  - svc.yaml
 configMapGenerator:
   - name: values-opentelemetry-kube-stack
     behavior: create
