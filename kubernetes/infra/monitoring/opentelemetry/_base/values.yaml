@@ -3,3 +3,16 @@ crds:
   installPrometheus: false
 opentelemetry-operator:
   enabled: false
+collectors:
+  daemon:
+    config:
+      exporters:
+        otlphttp/loki:
+          endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
+          headers:
+            X-Scope-OrgID: platform
+      service:
+        pipelines:
+          logs:
+            exporters:
+              - otlphttp/loki
