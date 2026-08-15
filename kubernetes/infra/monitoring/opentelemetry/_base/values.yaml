@@ -6,6 +6,13 @@ opentelemetry-operator:
 collectors:
   daemon:
     config:
+      processors:
+        transform/events:
+          error_mode: ignore
+          log_statements:
+            - context: log
+              statements:
+                - set(resource.attributes["k8s.resource.type"], "events") where attributes["event.domain"] == "k8s"
       exporters:
         otlphttp/loki:
           endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
@@ -14,5 +21,11 @@ collectors:
       service:
         pipelines:
           logs:
+            processors:
+              - k8s_attributes
+              - resource_detection/env
+              - resource/hostname
+              - transform/events
+              - batch
             exporters:
               - otlphttp/loki
