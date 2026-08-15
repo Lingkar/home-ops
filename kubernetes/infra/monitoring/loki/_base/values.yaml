@@ -6,6 +6,8 @@ defaults:
     - secretRef:
         name: s3-credentials
 loki:
+  commonConfig:
+    replication_factor: 1
   storage:
     type: s3
     bucketNames:
