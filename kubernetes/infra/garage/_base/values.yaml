@@ -1,0 +1,18 @@
+garage:
+  replicationFactor: "1"
+  metadataAutoSnapshotInterval: "4 hours"
+deployment:
+  replicaCount: 1
+persistence:
+  meta:
+    storageClass: ssd-lvm-thin-2
+    size: 2Gi
+  data:
+    storageClass: ssd-lvm-thin-2
+    size: 20Gi
+monitoring:
+  metrics:
+    enabled: true
+  tracing:
+    # TODO: add otel endpoint for tracing
+    sink: ""

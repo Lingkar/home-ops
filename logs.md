@@ -42,6 +42,7 @@
            For this set-up a new clean prometheus instance which doesn't scrape anything.
            configure the otel-kube-stack collector to export to this new instance.
            Add this new prometheus instance as a datasource to grafana, and validate wether all the dashboards remain working.
+- [/] Set-up S3 compatible object storage -> Garage
 - [ ] Set-up intrusion detection with Falco
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
@@ -50,7 +51,6 @@
 
 - [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
-- [?] Set-up S3 compatible object storage -> RustFS or smth else maybe?
 - [?] Set-up valkey operator
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)

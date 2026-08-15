@@ -3,6 +3,7 @@ resources:
   - cnpg-system.yaml
   - crossplane.yaml
   - flux-system
+  - garage.yaml
   - grafana-system.yaml
   - harbor-system.yaml
   - keycloak-system
