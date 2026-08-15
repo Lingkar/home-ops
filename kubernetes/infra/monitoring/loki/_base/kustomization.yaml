@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+resources:
+  - helmrelease.yaml
+  - s3-credentials.sops.yaml
+  - source.yaml
+configMapGenerator:
+  - name: values-loki
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../../utils/helm/kustomizeconfig.yaml
