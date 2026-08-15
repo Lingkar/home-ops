@@ -12,16 +12,17 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  dependsOn:
+    - name: kube-prometheus-stack
+      namespace: flux-system
   interval: 1h
-  path: ./loki/_base
-  components:
-    - ../../components/common
+  path: ./monitoring/loki/_base
   prune: true
   retryInterval: 2m
   sourceRef:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: loki
+  targetNamespace: monitoring
   timeout: 5m
   wait: false

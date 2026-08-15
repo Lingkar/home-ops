@@ -8,7 +8,6 @@ resources:
   - harbor-system.yaml
   - keycloak-system
   - kube-system
-  - loki.yaml
   - monitoring
   - mysql-system.yaml
   - netbird.yaml
