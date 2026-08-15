@@ -37,12 +37,9 @@
 - [x] Sharing of GPU -> removal of amd gpu operator in favour of custom logic for "unsafe" gpu sharing
 - [ ] Set-up OTEL operator and a collector instance forwarding to loki log storage
     - [x] set-up OTEL operator
-    - [/] set-up OTEL collector
-           opentelemetry-kube-stack can be used for setting-up otel in a kube-prometheus-stack compatible way. 
-           For this set-up a new clean prometheus instance which doesn't scrape anything.
-           configure the otel-kube-stack collector to export to this new instance.
-           Add this new prometheus instance as a datasource to grafana, and validate wether all the dashboards remain working.
-- [/] Set-up S3 compatible object storage -> Garage
+    - [x] set-up OTEL collector
+        Configure it for collection of logs
+- [x] Set-up S3 compatible object storage -> Garage
 - [ ] Set-up intrusion detection with Falco
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
