@@ -35,7 +35,7 @@
 - [x] Fix Renovate config, separate patch roll-outs and autoupgrades
 - [x] Set resources Velero, api-server, scheduler, controller manager
 - [x] Sharing of GPU -> removal of amd gpu operator in favour of custom logic for "unsafe" gpu sharing
-- [ ] Set-up OTEL operator and a collector instance forwarding to loki log storage
+- [x] Set-up OTEL operator and a collector instance forwarding to loki log storage
     - [x] set-up OTEL operator
     - [x] set-up OTEL collector
         Configure it for collection of logs
@@ -66,6 +66,8 @@
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set-up barmancloud cnpg backup/restore pluging (needs S3 object storage)
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
+- [ ] Add more k8s resources to the otel collector: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
+    - [ ] Decide wether the otel stack clusterrole really needs permissions for (cluster-wide) getting / listing secrets.
 - [ ] Schlink, link shortener
 - [ ] Posties, social media posting
 - [ ] it-tools
