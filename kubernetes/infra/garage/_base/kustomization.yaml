@@ -16,3 +16,4 @@ configMapGenerator:
       - dashboard.json=dashboard.json
 configurations:
   - ../../utils/helm/kustomizeconfig.yaml
+  - kustomizeconfig.yaml
