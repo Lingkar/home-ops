@@ -40,6 +40,9 @@ nodes:
         image: siderolabs/sbc-raspberrypi
         name: rpi_generic
       customization:
+        extraKernelArgs:
+          - -lockdown
+          - lockdown=integrity
         systemExtensions:
           officialExtensions:
             - siderolabs/vc4
@@ -77,6 +80,9 @@ nodes:
           ip: "192.168.69.5"
     schematic:
       customization:
+        extraKernelArgs:
+          - -lockdown
+          - lockdown=integrity
         systemExtensions:
           officialExtensions:
             - siderolabs/drbd
@@ -110,6 +116,8 @@ nodes:
           - amd_iommu=off
           - amdgpu.gttsize=126976
           - ttm.pages_limit=32505856
+          - -lockdown
+          - lockdown=integrity
         systemExtensions:
           officialExtensions:
             - siderolabs/drbd
