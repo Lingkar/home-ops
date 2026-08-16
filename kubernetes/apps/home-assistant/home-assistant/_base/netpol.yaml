@@ -49,6 +49,7 @@ spec:
         - matchName: pypi.org
         - matchName: github.com
         - matchName: api.github.com
+        - matchName: raw.githubusercontent.com
         - matchName: wheels.home-assistant.io
     - toEndpoints:
         - matchLabels:
