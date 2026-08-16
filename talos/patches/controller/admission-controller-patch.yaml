@@ -14,11 +14,12 @@ cluster:
             warn-version: latest
           exemptions:
             namespaces:
-              - piraeus-datastore
+              - falco
               - monitoring
+              - piraeus-datastore
+              - scroop
               - spegel
               - velero
               - zigbee2mqtt
-              - scroop
             runtimeClasses: []
             usernames: []
