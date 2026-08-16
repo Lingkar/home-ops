@@ -1,5 +1,4 @@
 resources:
-  - falco.yaml
   - home-assistant.yaml
   - home-ops-private.yaml
   - mysql.yaml

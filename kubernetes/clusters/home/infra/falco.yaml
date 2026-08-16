@@ -27,7 +27,7 @@ spec:
   retryInterval: 2m
   sourceRef:
     kind: ExternalArtifact
-    name: apps
+    name: infra
     namespace: flux-system
   targetNamespace: falco
   timeout: 5m
