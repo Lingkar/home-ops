@@ -46,6 +46,9 @@ spec:
         - matchPattern: "*.googleapis.com"
         - matchName: data-v2.hacs.xyz
         - matchName: alerts.home-assistant.io
+        - matchName: pypi.org
+        - matchName: api.github.com
+        - matchName: wheels.home-assistant.io
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system

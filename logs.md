@@ -44,6 +44,7 @@
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
+- [ ] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [ ] Set-up clean-up job for delete PV's with Retain
 
 - [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
