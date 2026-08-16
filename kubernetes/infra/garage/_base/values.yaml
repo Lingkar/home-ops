@@ -13,6 +13,8 @@ persistence:
 monitoring:
   metrics:
     enabled: true
+    serviceMonitor:
+      enabled: true
   tracing:
     # TODO: add otel endpoint for tracing
     sink: ""
