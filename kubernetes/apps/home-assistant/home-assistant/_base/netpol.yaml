@@ -47,6 +47,7 @@ spec:
         - matchName: data-v2.hacs.xyz
         - matchName: alerts.home-assistant.io
         - matchName: pypi.org
+        - matchName: github.com
         - matchName: api.github.com
         - matchName: wheels.home-assistant.io
     - toEndpoints:
