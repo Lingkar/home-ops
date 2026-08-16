@@ -1,0 +1,181 @@
+# Falco instance - DaemonSet on every node with modern_ebpf driver
+apiVersion: instance.falcosecurity.dev/v1alpha1
+kind: Falco
+metadata:
+  name: falco
+spec:
+  podTemplateSpec:
+    spec:
+      containers:
+        - name: falco
+          tty: true
+---
+# Container plugin - required by official rules for container metadata fields
+# (container.id, container.image.repository, etc.)
+apiVersion: artifact.falcosecurity.dev/v1alpha1
+kind: Plugin
+metadata:
+  name: container
+spec:
+  ociArtifact:
+    image:
+      repository: falcosecurity/plugins/plugin/container
+      tag: latest
+    registry:
+      name: ghcr.io
+---
+# K8smeta plugin - Kubernetes metadata enrichment
+# Connects to the k8s-metacollector service deployed below
+apiVersion: artifact.falcosecurity.dev/v1alpha1
+kind: Plugin
+metadata:
+  name: k8smeta
+spec:
+  ociArtifact:
+    image:
+      repository: falcosecurity/plugins/plugin/k8smeta
+      tag: latest
+    registry:
+      name: ghcr.io
+  config:
+    initConfig:
+      collectorPort: 45000
+      collectorHostname: metacollector.falco.svc
+      nodeName: "$${FALCO_K8S_NODE_NAME}"
+---
+# Official Falco detection rules (stable)
+apiVersion: artifact.falcosecurity.dev/v1alpha1
+kind: Rulesfile
+metadata:
+  name: falco-rules
+spec:
+  ociArtifact:
+    image:
+      repository: falcosecurity/rules/falco-rules
+      tag: latest
+    registry:
+      name: ghcr.io
+  priority: 50
+---
+# Falco configuration - wire output to Falcosidekick + stdout for testing
+# Stdout output is enabled by default for immediate visibility.
+# For production, you may want to disable stdout and rely on Falcosidekick.
+apiVersion: artifact.falcosecurity.dev/v1alpha1
+kind: Config
+metadata:
+  name: falco-output
+spec:
+  config:
+    json_output: true
+    stdout_output:
+      enabled: true
+    http_output:
+      enabled: true
+      url: "http://falcosidekick.falco.svc:2801"
+  priority: 60
+---
+# Falcosidekick - fan-out daemon for Falco events
+# Configured to forward events to Falcosidekick UI.
+# Add more output integrations via env vars in podTemplateSpec.
+# See: https://github.com/falcosecurity/falcosidekick#outputs
+apiVersion: instance.falcosecurity.dev/v1alpha1
+kind: Component
+metadata:
+  name: falcosidekick
+spec:
+  component:
+    type: falcosidekick
+  replicas: 2
+  podTemplateSpec:
+    spec:
+      containers:
+        - name: falcosidekick
+          env:
+            - name: WEBUI_URL
+              value: "http://falcosidekick-ui.falco.svc:2802"
+---
+# k8s-metacollector - centralized Kubernetes metadata for Falco instances
+# The k8smeta plugin connects to this service on port 45000
+apiVersion: instance.falcosecurity.dev/v1alpha1
+kind: Component
+metadata:
+  name: metacollector
+spec:
+  component:
+    type: metacollector
+  replicas: 1
+---
+# Redis StatefulSet for Falcosidekick UI (persistent event storage)
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: falcosidekick-ui-redis
+  labels:
+    app.kubernetes.io/name: falcosidekick-ui-redis
+spec:
+  serviceName: falcosidekick-ui-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: falcosidekick-ui-redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: falcosidekick-ui-redis
+    spec:
+      containers:
+        - name: redis
+          image: docker.io/redis/redis-stack:7.2.0-v11
+          ports:
+            - containerPort: 6379
+              name: redis
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+# Redis Service (default address: falcosidekick-ui-redis:6379)
+apiVersion: v1
+kind: Service
+metadata:
+  name: falcosidekick-ui-redis
+  labels:
+    app.kubernetes.io/name: falcosidekick-ui-redis
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+      name: redis
+  selector:
+    app.kubernetes.io/name: falcosidekick-ui-redis
+---
+# Falcosidekick UI - web dashboard for event visualization
+apiVersion: instance.falcosecurity.dev/v1alpha1
+kind: Component
+metadata:
+  name: falcosidekick-ui
+spec:
+  component:
+    type: falcosidekick-ui
+  replicas: 1
