@@ -3,11 +3,15 @@ resources:
   - helmrelease.yaml
   - source.yaml
 configMapGenerator:
-  - name: values-garage
+  - name: garage-values
     behavior: create
     files:
       - values.yaml=values.yaml
     literals:
       - env-values.yaml=''
+  - name: garage-dashboard
+    behavior: create
+    files:
+      - dashboard.json=dashboard.json
 configurations:
   - ../../utils/helm/kustomizeconfig.yaml

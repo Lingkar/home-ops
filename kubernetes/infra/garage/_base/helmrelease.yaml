@@ -17,7 +17,7 @@ spec:
       retries: 3
   valuesFrom:
     - kind: ConfigMap
-      name: values-garage
+      name: garage-values
     - kind: ConfigMap
-      name: values-garage
+      name: garage-values
       valuesKey: env-values.yaml
