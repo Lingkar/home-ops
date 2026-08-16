@@ -57,7 +57,7 @@ schedules:
         - pv
         - pvc
   pv-snapshots-remote-weekly:
-    schedule: "15 3 * * mon" # Back-up every Monday at 02:15
+    schedule: "15 3 * * mon" # Back-up every Monday at 03:15
     template:
       ttl: 850h # 35 days
       snapshotVolumes: true
@@ -93,8 +93,16 @@ metrics:
         annotations:
           message: Velero backup {{ $labels.schedule }} has been failing for the last 12h
         expr: |-
-          velero_backup_last_status{schedule!=""} != 1
+          velero_backup_last_status{schedule!="", schedule!~".*weekly.*"} != 1
         for: 12h
+        labels:
+          severity: critical
+      - alert: VeleroBackupFailing
+        annotations:
+          message: Velero backup {{ $labels.schedule }} has been failing for the last 1h
+        expr: |-
+          velero_backup_last_status{schedule=~".*weekly.*"} != 1
+        for: 1h
         labels:
           severity: critical
       - alert: VeleroNoNewBackup
@@ -102,9 +110,21 @@ metrics:
           message: Velero backup {{ $labels.schedule }} has not run successfully in the last 25h
         expr: |-
           (
-          (time() - velero_backup_last_successful_timestamp{schedule!=""}) >bool (25 * 3600)
+          (time() - velero_backup_last_successful_timestamp{schedule!="", schedule!~".*weekly.*"}) >bool (25 * 3600)
           or
-          absent(velero_backup_last_successful_timestamp{schedule!=""})
+          absent(velero_backup_last_successful_timestamp{schedule!="", schedule!~".*weekly.*"})
+          ) == 1
+        for: 1h
+        labels:
+          severity: critical
+      - alert: VeleroNoNewBackup
+        annotations:
+          message: Velero backup {{ $labels.schedule }} has not run successfully in the last 8 days
+        expr: |-
+          (
+          (time() - velero_backup_last_successful_timestamp{schedule=~".*weekly.*"}) >bool (8 * 24 * 3600)
+          or
+          absent(velero_backup_last_successful_timestamp{schedule=~".*weekly.*"})
           ) == 1
         for: 1h
         labels:

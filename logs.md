@@ -46,6 +46,7 @@
     https://www.linuxjournal.com/article/6983?page=0%2C1
 - [ ] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [ ] Set-up clean-up job for delete PV's with Retain
+        Additionally the linstor resource definition might need to be removed including its snapshots.
 
 - [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
