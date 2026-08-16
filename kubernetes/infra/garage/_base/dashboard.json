@@ -62,7 +62,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -140,7 +140,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "sum(rate(block_bytes_read{job=\"garage-metrics\"}[$__rate_interval])    )",
@@ -152,7 +152,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "-sum(rate(block_bytes_written{job=\"garage-metrics\"}[$__rate_interval])    )",
@@ -168,7 +168,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -246,7 +246,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -264,7 +264,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -342,7 +342,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "sum(rate(web_request_counter {job=\"garage-metrics\"}[$__rate_interval]))",
@@ -358,7 +358,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -436,7 +436,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "sum by (rpc_endpoint) (rate(rpc_request_counter {job=\"garage-metrics\"}[$__rate_interval]))",
@@ -452,7 +452,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -530,7 +530,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -548,7 +548,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -626,7 +626,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "sum by(status_code) (rate(web_error_counter {job=\"garage-metrics\"}[$__rate_interval]))",
@@ -642,7 +642,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -744,7 +744,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "block_resync_queue_length{job=\"garage-metrics\"}",
@@ -759,7 +759,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -836,7 +836,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "sum by(table_name) (table_gc_todo_queue_length{job=\"garage-metrics\"})",
@@ -851,7 +851,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -928,7 +928,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "sum by(table_name) (table_merkle_updater_todo_queue_length{job=\"garage-metrics\"})",
@@ -943,7 +943,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${datasource}"
+        "uid": "$${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1020,7 +1020,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "$${datasource}"
           },
           "exemplar": true,
           "expr": "block_resync_errored_blocks{job=\"garage-metrics\"}",
@@ -1042,8 +1042,8 @@
       {
         "current": {
           "selected": false,
-          "text": "${DS_DS_PROMETHEUS}",
-          "value": "${DS_DS_PROMETHEUS}"
+          "text": "$${DS_DS_PROMETHEUS}",
+          "value": "$${DS_DS_PROMETHEUS}"
         },
         "hide": 0,
         "includeAll": false,
