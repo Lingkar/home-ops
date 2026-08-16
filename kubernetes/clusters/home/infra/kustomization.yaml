@@ -2,6 +2,7 @@ resources:
   - cert-manager.yaml
   - cnpg-system.yaml
   - crossplane.yaml
+  - falco-system
   - flux-system
   - garage.yaml
   - grafana-system.yaml
