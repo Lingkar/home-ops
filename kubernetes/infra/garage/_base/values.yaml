@@ -3,6 +3,7 @@ image:
 garage:
   replicationFactor: "1"
   metadataAutoSnapshotInterval: "4 hours"
+priorityClassName: platform-low
 deployment:
   replicaCount: 1
 persistence:

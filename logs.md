@@ -40,7 +40,10 @@
     - [x] set-up OTEL collector
         Configure it for collection of logs
 - [x] Set-up S3 compatible object storage -> Garage
-- [ ] Set-up intrusion detection with Falco
+- [/] Set-up intrusion detection with Falco
+    - [x] Falco has been installed
+    - [ ] Configure alerting with Falco 
+- [ ] Make sure all daemonsets have a priorityClass set, such that they can always be scheduled.
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
