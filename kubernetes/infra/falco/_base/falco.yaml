@@ -66,6 +66,9 @@ metadata:
   name: falco-output
 spec:
   config:
+    libs_logger:
+      enabled: true
+      severity: debug
     json_output: true
     stdout_output:
       enabled: true
