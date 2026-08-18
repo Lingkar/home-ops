@@ -41,7 +41,10 @@
         Configure it for collection of logs
 - [x] Set-up S3 compatible object storage -> Garage
 - [/] Set-up a notification channel https://ntfy.sh/ looks promising
-    - [ ] Set-up basic credentials
+    - [/] Set-up basic credentials
+        Admin user has been set-up, default deny-all has been enabled, create an access token for usage from different machines.
+        Create a alerting user account with access to specific topics.
+        https://docs.ntfy.sh/config/#example-private-instance
 - [/] Set-up intrusion detection with Falco
     - [x] Falco has been installed
     - [ ] Configure alerting with Falco 
