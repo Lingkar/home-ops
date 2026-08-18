@@ -57,6 +57,32 @@ spec:
       name: ghcr.io
   priority: 50
 ---
+# Custom rules - tune known-operator noise
+apiVersion: artifact.falcosecurity.dev/v1alpha1
+kind: Rulesfile
+metadata:
+  name: falco-rules-custom
+spec:
+  inlineRules:
+    - macro: user_known_contact_k8s_api_server_activities
+      condition: >
+        (k8s.ns.name in (
+          cert-manager,
+          cnpg-system,
+          crossplane-system,
+          flux-system,
+          garage,
+          grafana-system,
+          keycloak-system,
+          monitoring,
+          mysql-system,
+          opentelemetry-system,
+          piraeus-datastore,
+          rabbitmq-system,
+          velero
+        ))
+  priority: 60
+---
 # Falco configuration - wire output to Falcosidekick + stdout for testing
 # Stdout output is enabled by default for immediate visibility.
 # For production, you may want to disable stdout and rely on Falcosidekick.
