@@ -83,7 +83,8 @@ spec:
         ))
     - macro: known_drop_and_execute_activities
       condition: >
-        (proc.exepath = /opt/cni/bin/cilium-cni and container.id = runtime)
+        ((proc.exepath = /opt/cni/bin/cilium-cni and container.id = runtime) or
+         (k8s.ns.name = scroop and proc.exepath = /app/calibre/bin/calibre_postinstall))
   priority: 60
 ---
 # Falco configuration - wire output to Falcosidekick + stdout for testing
