@@ -81,6 +81,9 @@ spec:
           rabbitmq-system,
           velero
         ))
+    - macro: known_drop_and_execute_activities
+      condition: >
+        (proc.exepath = /opt/cni/bin/cilium-cni and container.id = runtime)
   priority: 60
 ---
 # Falco configuration - wire output to Falcosidekick + stdout for testing
