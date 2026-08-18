@@ -4,7 +4,7 @@ kind: Secret
 metadata:
   name: ntfy-auth
 stringData:
-  NTFY_AUTH_USERS: ENC[AES256_GCM,data:J73eEOa26QIglXNtEyQCDtu1m5Qd+LKgatXN2/il6qAM60tP6aWryO7UmjaMbT6zL/mU,iv:kRqKYmimETSAIQR1z5e1cuCtu+P4PG5ev0zUozOux9s=,tag:e132AUcWpACCv5SdTLaa7g==,type:str]
+  NTFY_AUTH_USERS: ENC[AES256_GCM,data:vku5f5QzVQnlTtN+vSPk17alHOvXp9JqmF1deE72pDu2mv6bfojXegEi+x3ps3X1/ixmbWNu2sxP/mK2IwKjeIo1f5gsWstTRTA=,iv:2be2FzxfB7pY4hAdfKfFdusGsN1R/XI+8wDwIPlOlts=,tag:jE79nVjGe6P7lb105NRgsA==,type:str]
   NTFY_AUTH_ACCESS: ""
   NTFY_AUTH_TOKENS: ""
 sops:
@@ -19,7 +19,7 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
   encrypted_regex: ^(data|stringData|spec)$
-  lastmodified: "2026-08-18T20:06:18Z"
-  mac: ENC[AES256_GCM,data:kdnI3NoB9XUtPyb2tUjRfDr0tIPLkE40FI0JlypwlND6EK7eScW/okjPIjEuIX2+oHoPEC7a+NFPsCmBPcIKQcXdm2XSG2ZNTi6DVGtQSAAuHwUZYhMt0C7Q635PVupwhmnyndq7oVKiFnK2fhNPDxW2CDdG6il/Vkjp7Pe/xC0=,iv:KB1mi/5P/092mBBCOPXt7XD0vbM8Sb4fRSY0gC+8nYI=,tag:6c77iP/aIcMdPo3gyDlGzw==,type:str]
+  lastmodified: "2026-08-18T20:11:17Z"
+  mac: ENC[AES256_GCM,data:Q3mIkw55esycQXTISnl3Wiiga9Qr4Eg4X8E3VfK4NMayFwznqBO5+s8vUv7tVOvJcdtUJB+xaYGD4cBX1xqt/9pOukefSl5ZmdNPh8mUuBYLh4X2nz3hZ05YJ1a2075oeHoE9P/63pGSvv4HAs0E07L6xI2Wx7aoHOAtGM9MEo4=,iv:euNm/Do0PZC0WqE14+DuhOsPCz3zQvHUCxXaKFdJFD0=,tag:zziQuozamrZ8QuECP5K4EA==,type:str]
   mac_only_encrypted: true
   version: 3.13.3
