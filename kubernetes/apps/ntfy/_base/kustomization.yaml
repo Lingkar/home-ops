@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
   - auth.sops.yaml
   - ntfy.yaml
