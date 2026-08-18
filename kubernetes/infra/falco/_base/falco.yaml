@@ -75,6 +75,7 @@ spec:
           grafana-system,
           keycloak-system,
           monitoring,
+          mysql,
           mysql-system,
           opentelemetry-system,
           piraeus-datastore,
@@ -83,8 +84,22 @@ spec:
         ))
     - macro: known_drop_and_execute_activities
       condition: >
-        ((proc.exepath = /opt/cni/bin/cilium-cni and container.id = runtime) or
+        (proc.exepath in (/opt/cni/bin/cilium-cni,
+                          /opt/cni/bin/cilium-sysctlfix,
+                          /opt/cni/bin/cilium-mount) or
          (k8s.ns.name = scroop and proc.exepath = /app/calibre/bin/calibre_postinstall))
+    - macro: user_known_stand_streams_redirect_activities
+      condition: >
+        (k8s.ns.name = scroop and container.name = gluetun and proc.name = ping)
+    - macro: user_known_read_sensitive_files_activities
+      condition: >
+        (k8s.ns.name = scroop and
+         container.image.repository = lscr.io/linuxserver/calibre and
+         proc.name = sed and fd.name = /etc/sudoers)
+    - list: user_known_packet_socket_binaries
+      append: true
+      items:
+        - cilium-agent
   priority: 60
 ---
 # Falco configuration - wire output to Falcosidekick + stdout for testing
