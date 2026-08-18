@@ -71,11 +71,11 @@ spec:
               value: INFO
             - name: NTFY_AUTH_DEFAULT_ACCESS
               value: deny-all
-            - name: NTFY_AUTH-FILE
+            - name: NTFY_AUTH_FILE
               value: "/var/lib/ntfy/user.db"
-            - name: NTFY_CACHE-FILE
+            - name: NTFY_CACHE_FILE
               value: "/var/lib/ntfy/cache.db"
-            - name: NTFY_ATTACHMENT-CACHE-DIR
+            - name: NTFY_ATTACHMENT_CACHE_DIR
               value: "/var/lib/ntfy/attachments"
             - name: TZ
               value: Europe/Amsterdam
