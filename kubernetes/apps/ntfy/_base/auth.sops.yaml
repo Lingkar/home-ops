@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ntfy-auth
+stringData:
+  NTFY_AUTH_USERS: ENC[AES256_GCM,data:J73eEOa26QIglXNtEyQCDtu1m5Qd+LKgatXN2/il6qAM60tP6aWryO7UmjaMbT6zL/mU,iv:kRqKYmimETSAIQR1z5e1cuCtu+P4PG5ev0zUozOux9s=,tag:e132AUcWpACCv5SdTLaa7g==,type:str]
+  NTFY_AUTH_ACCESS: ""
+  NTFY_AUTH_TOKENS: ""
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnU2tTbmlLRHpsSGhRak14
+        K2RHTjhNV1RiUEtLcFVwTTIxV0lBZ3ZQeUQ4CktLVEw0SlZ4cUl0QktpWDNadjV3
+        UHZRWjNiZlNUYnNNOXlVTDF4OEtCbVUKLS0tIE9abk44T2pJbGhHelZiMldKSzh2
+        TCs3OGN1dDhqQ3FNdExURzZVTzJHSWMKwYgtd+9T7OyK9EFXawkUwZ+t/Hl3ZjQh
+        q7quW414aq1b2Gskcz5Hdvwhyd7LoiJOz76VDIgT2SEBp4sJv4urqw==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+  encrypted_regex: ^(data|stringData|spec)$
+  lastmodified: "2026-08-18T20:06:18Z"
+  mac: ENC[AES256_GCM,data:kdnI3NoB9XUtPyb2tUjRfDr0tIPLkE40FI0JlypwlND6EK7eScW/okjPIjEuIX2+oHoPEC7a+NFPsCmBPcIKQcXdm2XSG2ZNTi6DVGtQSAAuHwUZYhMt0C7Q635PVupwhmnyndq7oVKiFnK2fhNPDxW2CDdG6il/Vkjp7Pe/xC0=,iv:KB1mi/5P/092mBBCOPXt7XD0vbM8Sb4fRSY0gC+8nYI=,tag:6c77iP/aIcMdPo3gyDlGzw==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3

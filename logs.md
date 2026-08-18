@@ -40,6 +40,8 @@
     - [x] set-up OTEL collector
         Configure it for collection of logs
 - [x] Set-up S3 compatible object storage -> Garage
+- [/] Set-up a notification channel https://ntfy.sh/ looks promising
+    - [ ] Set-up basic credentials
 - [/] Set-up intrusion detection with Falco
     - [x] Falco has been installed
     - [ ] Configure alerting with Falco 
@@ -60,8 +62,6 @@
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
 - [ ] Switch from ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds to official gateway-api-crd (if possible)
 - [ ] Fix ETCD grafana dashboard
-- [/] Set-up a notification channel https://ntfy.sh/ looks promising
-    - [ ] Set-up basic credentials
 - [/] Set-up netbird
     - [x] tmp set-up with direct deployment
     - [ ] fix the kubernetes-operator + netbird-operator-config charts

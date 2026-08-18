@@ -1,2 +1,3 @@
 resources:
+  - auth.sops.yaml
   - ntfy.yaml

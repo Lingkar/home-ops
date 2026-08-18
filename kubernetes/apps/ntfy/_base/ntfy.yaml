@@ -69,12 +69,19 @@ spec:
               value: "https://ntfy.sh"
             - name: NTFY_LOG_LEVEL
               value: INFO
+            - name: NTFY_AUTH_DEFAULT_ACCESS
+              value: deny-all
+            - name: NTFY_AUTH-FILE
+              value: "/var/lib/ntfy/user.db"
             - name: NTFY_CACHE-FILE
-              value: "/var/cache/ntfy/cache.db"
+              value: "/var/lib/ntfy/cache.db"
             - name: NTFY_ATTACHMENT-CACHE-DIR
-              value: "/var/cache/ntfy/attachments"
+              value: "/var/lib/ntfy/attachments"
             - name: TZ
               value: Europe/Amsterdam
+          envFrom:
+            - secretRef:
+                name: ntfy-auth
           ports:
             - containerPort: 80
               name: http
@@ -85,9 +92,12 @@ spec:
             limits:
               memory: 60Mi
           volumeMounts:
-            - mountPath: /var/cache/ntfy
-              name: cache-volume
+            - name: config
+              mountPath: /etc/ntfy
+            - name: volume
+              mountPath: /var/lib/ntfy
       volumes:
-        - name: cache-volume
+        - name: config
+        - name: volume
           persistentVolumeClaim:
             claimName: ntfy
