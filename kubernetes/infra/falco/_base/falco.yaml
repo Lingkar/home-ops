@@ -102,6 +102,11 @@ spec:
         (k8s.ns.name = scroop and
          container.image.repository = lscr.io/linuxserver/calibre and
          proc.name = sed and fd.name = /etc/sudoers)
+    - macro: postgres_running_cnpg
+      condition: >
+        (proc.pname = postgres and
+         (proc.cmdline startswith "sh -c /controller/manager wal-archive" or
+          proc.cmdline startswith "sh -c -- /controller/manager wal-archive"))
     - list: user_known_packet_socket_binaries
       override:
         items: append
