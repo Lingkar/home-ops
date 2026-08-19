@@ -76,6 +76,7 @@
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set-up barmancloud cnpg backup/restore pluging (needs S3 object storage)
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
+- [ ] Make the node shutdown with piraeus compatible with Talos by performing the missing `drbdadm down all` command
 - [ ] Add more k8s resources to the otel collector: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
     - [ ] Decide wether the otel stack clusterrole really needs permissions for (cluster-wide) getting / listing secrets.
 - [ ] Schlink, link shortener

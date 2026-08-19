@@ -140,9 +140,14 @@ spec:
     spec:
       containers:
         - name: falcosidekick
+          envFrom:
+            - secretRef:
+                name: falcosidekick-ntfy
           env:
             - name: WEBUI_URL
               value: "http://falcosidekick-ui.falco.svc:2802"
+            - name: WEBHOOK_ADDRESS
+              value: "https://ntfy.${SECRET_DOMAIN}/home-falco"
 ---
 # k8s-metacollector - centralized Kubernetes metadata for Falco instances
 # The k8smeta plugin connects to this service on port 45000

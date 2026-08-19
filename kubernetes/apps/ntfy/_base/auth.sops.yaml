@@ -4,9 +4,9 @@ kind: Secret
 metadata:
   name: ntfy-auth
 stringData:
-  NTFY_AUTH_USERS: ENC[AES256_GCM,data:vku5f5QzVQnlTtN+vSPk17alHOvXp9JqmF1deE72pDu2mv6bfojXegEi+x3ps3X1/ixmbWNu2sxP/mK2IwKjeIo1f5gsWstTRTA=,iv:2be2FzxfB7pY4hAdfKfFdusGsN1R/XI+8wDwIPlOlts=,tag:jE79nVjGe6P7lb105NRgsA==,type:str]
-#  NTFY_AUTH_ACCESS: ""
-#  NTFY_AUTH_TOKENS: ""
+  NTFY_AUTH_USERS: ENC[AES256_GCM,data:1HqVbxsbMu6MuC7pyjX3ZozVGkCgjkePdI1UOZktSn4ipX7lsTdRErgDqLy+joMxfKTbRltkPoHMiiDAuZRomRMH4p27gwftB5+M3Tibc5f5VS5GXziGyOWzaMNYEDJqxTnn1Gsx2zc13eG34mMQlO+2O2fi7Z3BUtAR7Ye7ryNbD6lkxECKR3EKwSpElzdUYkAx,iv:EHtGA7C9cQABfu44BPOHR+3zQndI3dJgK5s2DfASBwE=,tag:IMQ/0C2/zCpblZEIOoZrvQ==,type:str]
+  NTFY_AUTH_ACCESS: ENC[AES256_GCM,data:DbBIdXogl4onRC36VbLFew==,iv:BygaaP/4b3EFF+taCw9lLTXic2WXhrQJXXCrC+uyWmw=,tag:703Vb9x3xrUSMB6uB6HkxQ==,type:str]
+  NTFY_AUTH_TOKENS: ENC[AES256_GCM,data:dXSnUKZgVEeYrbBIP1P3fAyAj37UwY1fPpKj7hYWrVoJuGXnNRx4,iv:FKfut1malrkokUYAhZ03XBGQ4SNRY890rO0XgRfm9oU=,tag:+vUW3NYjhwFWSlwkMGZtBw==,type:str]
 sops:
   age:
     - enc: |
@@ -19,7 +19,7 @@ sops:
         -----END AGE ENCRYPTED FILE-----
       recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
   encrypted_regex: ^(data|stringData|spec)$
-  lastmodified: "2026-08-18T20:20:55Z"
-  mac: ENC[AES256_GCM,data:i5YZtq1QZcSL7zJP/7HhvXRT3snOO+tzGCW5ctkLKOO9aOytLGVieWa9IKPVqAwoR8ngTbO3vULUE+RZ3FnUHtgF4ILKhJFP521mQ0IJhpX0bH7J8hVWSOXOY9JqWSVM2aFRMIqQ9HGLSfhjDYrwiwEby4tYoXVSNhXskR3WXC0=,iv:lQ9Sf25S2sHFqrxDz0hD0Li8wiCQdrblcGFfMiCWcOE=,tag:s+lLk2RtqLuGKcmj5dizAA==,type:str]
+  lastmodified: "2026-08-19T18:13:16Z"
+  mac: ENC[AES256_GCM,data:kxCjuMaRygcyvzTG1bLzJJxYwjNaAmMerFzX4RlN461ms9coFUhaXoqqeAfKY2WMqLfQYtTE7tEHMV/571tDVIi47syIVyVKFn/o7WjPWMM8DzHgiaZRvW5H/YIuhLggMYKk8hXd0ruO91rKMDxN13KrnlkVIsQfYjKNRK04aEw=,iv:dwIj9YK7NLiOFuRS1ji3bj+AweEfDlnbdyM9ugdBdV0=,tag:hQu2VuUJuFVNfCDDOBy0+w==,type:str]
   mac_only_encrypted: true
   version: 3.13.3

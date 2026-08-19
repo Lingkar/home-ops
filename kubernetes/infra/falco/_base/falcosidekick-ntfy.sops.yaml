@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: falcosidekick-ntfy
+stringData:
+  WEBHOOK_CUSTOMHEADERS: ENC[AES256_GCM,data:rT4YVUM3TBzSmBEQ40zDTKjMC3o05XMlkkWl+h2v7TkFqaYjOmm07xauGVFJiaZ1tfjzaknp,iv:RU7H8JLOdfCUvqWkzZUnwwfT+2qkyCNpAOcHKA9O3Uo=,tag:DYuqn/y+oEdl5SPbBUHa+w==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCSWp1QjhHQWJVbkV3STVJ
+        ZU9LUVFjdVRQU2pYeVM4STViclpOUHgzY1ZrCko1S25OYmo2WGVjc3Y3Z2tHODhQ
+        a2lTZGc1Y2pmMmtBcXUxampwSnhEQTAKLS0tIHo5Z2E4UzdZVDVjQjgxeUVCWnhu
+        TjlieTE3czgzeGgxUjNFN000OXRpRlEKMzE/oW+U1EKukMrGiTzC+N3YX3HN08Uv
+        70uhial6pFUu8GKBGv/XsQtOqm7jmjKdC293QhcX1gDLV9L0IZDS7g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+  encrypted_regex: ^(data|stringData|spec)$
+  lastmodified: "2026-08-19T18:16:04Z"
+  mac: ENC[AES256_GCM,data:vW0y6E3RZATCfrGkBH+3oaExvdDc1vtHEqTkz52zcLYDXO2PjrQ6BP6/45eqNvv6pSm13zXlBQR2eGbkzFQCIKawkX9c+iAgJIBbKlJZcqeyZ8qcuJZoE76SgFVhVajRKytsgKDifj1ADRBVQ6Tbg1ryfoFdtK/CHamgDPCz+Ro=,iv:MIitnV81RH7/WkSJrT2r2EYFk6hByrA1ids3KA5sP4E=,tag:wnC0fK9TgXDtCYyh6aAhHw==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
