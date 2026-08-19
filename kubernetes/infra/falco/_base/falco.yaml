@@ -6,6 +6,7 @@ metadata:
 spec:
   podTemplateSpec:
     spec:
+      priorityClassName: platform-low
       containers:
         - name: falco
           tty: true
