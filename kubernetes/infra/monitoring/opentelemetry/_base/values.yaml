@@ -3,6 +3,8 @@ crds:
   installPrometheus: false
 opentelemetry-operator:
   enabled: false
+defaultCRConfig:
+  priorityClassName: platform-low
 collectors:
   daemon:
     config:
