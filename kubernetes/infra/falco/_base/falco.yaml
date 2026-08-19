@@ -79,9 +79,13 @@ spec:
           mysql-system,
           opentelemetry-system,
           piraeus-datastore,
+          falco-system
           rabbitmq-system,
           velero
-        ))
+        )) or
+        (k8s.ns.name = falco and container.name in (artifact-operator, metacollector)) or
+        (k8s.ns.name = harbor-system and container.name = postgres) or
+        (k8s.ns.name = network and container.name in (k8s-gateway, external-dns))
     - macro: known_drop_and_execute_activities
       condition: >
         (proc.exepath in (/opt/cni/bin/cilium-cni,
