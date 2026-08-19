@@ -80,7 +80,7 @@ spec:
           mysql-system,
           opentelemetry-system,
           piraeus-datastore,
-          falco-system
+          falco-system,
           rabbitmq-system,
           velero
         )) or
@@ -103,7 +103,8 @@ spec:
          container.image.repository = lscr.io/linuxserver/calibre and
          proc.name = sed and fd.name = /etc/sudoers)
     - list: user_known_packet_socket_binaries
-      append: true
+      override:
+        items: append
       items:
         - cilium-agent
   priority: 60
