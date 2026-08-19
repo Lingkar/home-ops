@@ -40,15 +40,16 @@
     - [x] set-up OTEL collector
         Configure it for collection of logs
 - [x] Set-up S3 compatible object storage -> Garage
-- [/] Set-up a notification channel https://ntfy.sh/ looks promising
-    - [/] Set-up basic credentials
+- [x] Set-up a notification channel https://ntfy.sh/ looks promising
+    - [x] Set-up basic credentials
         Admin user has been set-up, default deny-all has been enabled, create an access token for usage from different machines.
         Create a alerting user account with access to specific topics.
         https://docs.ntfy.sh/config/#example-private-instance
-- [/] Set-up intrusion detection with Falco
+- [x] Set-up intrusion detection with Falco
     - [x] Falco has been installed
-    - [ ] Configure alerting with Falco 
-- [ ] Make sure all daemonsets have a priorityClass set, such that they can always be scheduled.
+    - [x] Configure alerting with Falco 
+- [x] Make sure all daemonsets have a priorityClass set, such that they can always be scheduled.
+    The daemonsets which matter now have a priorityClass
 - [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
