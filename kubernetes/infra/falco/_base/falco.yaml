@@ -94,7 +94,8 @@ spec:
          (k8s.ns.name = scroop and proc.exepath = /app/calibre/bin/calibre_postinstall))
     - macro: user_known_stand_streams_redirect_activities
       condition: >
-        (k8s.ns.name = scroop and container.name = gluetun and proc.name = ping)
+        (k8s.ns.name = scroop and container.name = gluetun and proc.name = ping) or
+        (k8s.ns.name = mysql and container.name = router and container.image.repository = container-registry.oracle.com/mysql/community-router)
     - macro: user_known_read_sensitive_files_activities
       condition: >
         (k8s.ns.name = scroop and
