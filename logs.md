@@ -50,7 +50,9 @@
     - [x] Configure alerting with Falco 
 - [x] Make sure all daemonsets have a priorityClass set, such that they can always be scheduled.
     The daemonsets which matter now have a priorityClass
-- [ ] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
+- [x] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
+        Added a daily shallow kopia verify check
+        Added a montly full kopia verify check
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
 - [ ] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
