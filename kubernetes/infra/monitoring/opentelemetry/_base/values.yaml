@@ -5,6 +5,9 @@ opentelemetry-operator:
   enabled: false
 defaultCRConfig:
   priorityClassName: platform-low
+  resources:
+    limits:
+      cpu: null
 collectors:
   daemon:
     resources:
