@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zfs-scrub-script
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+data:
+  zfs-scrub.sh: |
+    #!/bin/sh
+    set -u
+
+    notify() {
+      local title="$1" msg="$2"
+      if [ -n "${NTFY_TOKEN:-}" ] && [ -n "${NTFY_URL:-}" ]; then
+        curl -fsS --connect-timeout 10 --max-time 30 -o /dev/null \
+          -H "Authorization: Bearer ${NTFY_TOKEN}" \
+          -H "Title: ${title}" \
+          -H "Priority: high" \
+          -H "Tags: warning,floppy_disk" \
+          -d "${msg}" \
+          "${NTFY_URL}" || echo "WARN: failed to send ntfy notification" >&2
+      else
+        echo "WARN: NTFY_TOKEN/NTFY_URL not set, skipping notification" >&2
+      fi
+    }
+
+    ZPOOL="${ZPOOL:-hdd-raidz-thin}"
+    POLL_INTERVAL="${POLL_INTERVAL:-300}"
+    TIMEOUT="${TIMEOUT:-0}"
+
+    if zpool status "$ZPOOL" 2>/dev/null | grep -q "scan: scrub in progress"; then
+      echo "scrub already in progress on ${ZPOOL}; monitoring existing scrub"
+    else
+      echo "=== starting scrub on ${ZPOOL} ==="
+      if ! zpool scrub "$ZPOOL"; then
+        echo "ERROR: failed to start scrub on ${ZPOOL}"
+        notify "ZFS scrub FAILED" "failed to start scrub on ${ZPOOL}"
+        exit 1
+      fi
+    fi
+
+    ELAPSED=0
+    while zpool status "$ZPOOL" 2>/dev/null | grep -q "scan: scrub in progress"; do
+      sleep "$POLL_INTERVAL"
+      ELAPSED=$((ELAPSED + POLL_INTERVAL))
+      if [ "$TIMEOUT" -gt 0 ] && [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+        echo "WARN: scrub still in progress after ${ELAPSED}s"
+        notify "ZFS scrub TIMEOUT" "scrub on ${ZPOOL} still in progress after ${ELAPSED}s"
+        exit 1
+      fi
+    done
+
+    SCAN="$(zpool status "$ZPOOL" 2>/dev/null | awk '$1 == "scan:" {$1=""; sub(/^[ \t]+/, ""); print; exit}')"
+    echo "scrub finished: ${SCAN}"
+
+    if printf '%s' "$SCAN" | grep -qiE "cancel"; then
+      echo "WARN: scrub was canceled"
+      notify "ZFS scrub CANCELED" "scrub on ${ZPOOL} was canceled: ${SCAN}"
+      exit 1
+    fi
+
+    if printf '%s' "$SCAN" | grep -qE "with [1-9][0-9]* errors"; then
+      echo "ERROR: scrub completed with errors"
+      notify "ZFS scrub FAILED" "scrub on ${ZPOOL} completed with errors: ${SCAN}"
+      exit 1
+    fi
+
+    if ! zpool status "$ZPOOL" 2>/dev/null | grep -q "errors: No known data errors"; then
+      echo "ERROR: data errors present after scrub"
+      notify "ZFS scrub FAILED" "data errors present on ${ZPOOL} after scrub"
+      exit 1
+    fi
+
+    echo "scrub completed successfully on ${ZPOOL}"

@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: disk-selftest-script
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+data:
+  disk-selftest.sh: |
+    #!/bin/sh
+    set -u
+
+    notify() {
+      local title="$1" msg="$2"
+      if [ -n "${NTFY_TOKEN:-}" ] && [ -n "${NTFY_URL:-}" ]; then
+        curl -fsS --connect-timeout 10 --max-time 30 -o /dev/null \
+          -H "Authorization: Bearer ${NTFY_TOKEN}" \
+          -H "Title: ${title}" \
+          -H "Priority: high" \
+          -H "Tags: warning,floppy_disk" \
+          -d "${msg}" \
+          "${NTFY_URL}" || echo "WARN: failed to send ntfy notification" >&2
+      else
+        echo "WARN: NTFY_TOKEN/NTFY_URL not set, skipping notification" >&2
+      fi
+    }
+
+    NODE="${NODE:-unknown}"
+    SELFTEST_TYPE="${SELFTEST_TYPE:-short}"
+    POLL_INTERVAL="${POLL_INTERVAL:-60}"
+    TIMEOUT="${TIMEOUT:-0}"
+    FAILED=""
+
+    DEVICES="$(smartctl --scan 2>/dev/null | awk '{print $1}')"
+    if [ -z "$DEVICES" ]; then
+      notify "SMART ${NODE} self-test FAILED" "smartctl --scan returned no devices on ${NODE}"
+      exit 1
+    fi
+
+    for DEV in $DEVICES; do
+      echo "=== starting ${SELFTEST_TYPE} self-test on ${DEV} ==="
+      if ! smartctl -t "$SELFTEST_TYPE" "$DEV" >/dev/null 2>&1; then
+        echo "ERROR: failed to start ${SELFTEST_TYPE} test on ${DEV}"
+        FAILED="${FAILED}\n- ${DEV}: could not start self-test"
+        continue
+      fi
+
+      ELAPSED=0
+      while smartctl -c "$DEV" 2>/dev/null | grep -q "Self-test routine in progress"; do
+        sleep "$POLL_INTERVAL"
+        ELAPSED=$((ELAPSED + POLL_INTERVAL))
+        if [ "$TIMEOUT" -gt 0 ] && [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+          echo "WARN: ${DEV} self-test still in progress after ${ELAPSED}s"
+          FAILED="${FAILED}\n- ${DEV}: self-test timed out"
+          break
+        fi
+      done
+
+      RESULT="$(smartctl -l selftest "$DEV" 2>/dev/null)"
+      if printf '%s' "$RESULT" | grep -qiE "read failure|write failure|unknown failure|electrical failure|with error"; then
+        echo "ERROR: ${DEV} self-test reported a failure"
+        FAILED="${FAILED}\n- ${DEV}: self-test failed"
+      else
+        echo "OK: ${DEV} self-test completed"
+      fi
+    done
+
+    if [ -n "$FAILED" ]; then
+      notify "SMART ${NODE} self-test FAILED" "${SELFTEST_TYPE} self-test problems on ${NODE}:${FAILED}"
+      exit 1
+    fi
+
+    echo "${SELFTEST_TYPE} self-tests completed on ${NODE}"

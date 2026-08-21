@@ -1,0 +1,255 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: smartctl-short-c-01
+spec:
+  schedule: "0 4 * * 0"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 1200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: smartctl-selftest
+        spec:
+          restartPolicy: Never
+          priorityClassName: platform-low
+          nodeSelector:
+            kubernetes.io/hostname: c-01
+          containers:
+            - name: smartctl-selftest
+              image: harbor.buijnsters.com/library/disk-health:latest@sha256:9375aa8bdc096f44dbdc16a4a14e33707041c72b8dd757adcd6654d6e7f2b42a
+              command: ["/bin/sh", "/scripts/disk-selftest.sh"]
+              securityContext:
+                privileged: true
+              env:
+                - name: NODE
+                  value: c-01
+                - name: SELFTEST_TYPE
+                  value: short
+                - name: POLL_INTERVAL
+                  value: "30"
+                - name: TIMEOUT
+                  value: "900"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disk-health-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dev
+                  mountPath: /dev
+                - name: scripts
+                  mountPath: /scripts
+          volumes:
+            - name: dev
+              hostPath:
+                path: /dev
+            - name: scripts
+              configMap:
+                name: disk-selftest-script
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: smartctl-short-c-02
+spec:
+  schedule: "0 4 * * 0"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 1200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: smartctl-selftest
+        spec:
+          restartPolicy: Never
+          priorityClassName: platform-low
+          nodeSelector:
+            kubernetes.io/hostname: c-02
+          containers:
+            - name: smartctl-selftest
+              image: harbor.buijnsters.com/library/disk-health:latest@sha256:9375aa8bdc096f44dbdc16a4a14e33707041c72b8dd757adcd6654d6e7f2b42a
+              command: ["/bin/sh", "/scripts/disk-selftest.sh"]
+              securityContext:
+                privileged: true
+              env:
+                - name: NODE
+                  value: c-02
+                - name: SELFTEST_TYPE
+                  value: short
+                - name: POLL_INTERVAL
+                  value: "30"
+                - name: TIMEOUT
+                  value: "900"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disk-health-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dev
+                  mountPath: /dev
+                - name: scripts
+                  mountPath: /scripts
+          volumes:
+            - name: dev
+              hostPath:
+                path: /dev
+            - name: scripts
+              configMap:
+                name: disk-selftest-script
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: smartctl-long-c-01
+spec:
+  schedule: "0 1 8 * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 43200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: smartctl-selftest
+        spec:
+          restartPolicy: Never
+          priorityClassName: platform-low
+          nodeSelector:
+            kubernetes.io/hostname: c-01
+          containers:
+            - name: smartctl-selftest
+              image: harbor.buijnsters.com/library/disk-health:latest@sha256:9375aa8bdc096f44dbdc16a4a14e33707041c72b8dd757adcd6654d6e7f2b42a
+              command: ["/bin/sh", "/scripts/disk-selftest.sh"]
+              securityContext:
+                privileged: true
+              env:
+                - name: NODE
+                  value: c-01
+                - name: SELFTEST_TYPE
+                  value: long
+                - name: POLL_INTERVAL
+                  value: "300"
+                - name: TIMEOUT
+                  value: "39600"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disk-health-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dev
+                  mountPath: /dev
+                - name: scripts
+                  mountPath: /scripts
+          volumes:
+            - name: dev
+              hostPath:
+                path: /dev
+            - name: scripts
+              configMap:
+                name: disk-selftest-script
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: smartctl-long-c-02
+spec:
+  schedule: "0 1 8 * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 43200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: smartctl-selftest
+        spec:
+          restartPolicy: Never
+          priorityClassName: platform-low
+          nodeSelector:
+            kubernetes.io/hostname: c-02
+          containers:
+            - name: smartctl-selftest
+              image: harbor.buijnsters.com/library/disk-health:latest@sha256:9375aa8bdc096f44dbdc16a4a14e33707041c72b8dd757adcd6654d6e7f2b42a
+              command: ["/bin/sh", "/scripts/disk-selftest.sh"]
+              securityContext:
+                privileged: true
+              env:
+                - name: NODE
+                  value: c-02
+                - name: SELFTEST_TYPE
+                  value: long
+                - name: POLL_INTERVAL
+                  value: "300"
+                - name: TIMEOUT
+                  value: "39600"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disk-health-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dev
+                  mountPath: /dev
+                - name: scripts
+                  mountPath: /scripts
+          volumes:
+            - name: dev
+              hostPath:
+                path: /dev
+            - name: scripts
+              configMap:
+                name: disk-selftest-script

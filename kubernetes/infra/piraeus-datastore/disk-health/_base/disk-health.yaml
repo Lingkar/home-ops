@@ -1,0 +1,119 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: disk-health-c-01
+spec:
+  schedule: "30 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 900
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: disk-health
+        spec:
+          restartPolicy: Never
+          priorityClassName: platform-low
+          nodeSelector:
+            kubernetes.io/hostname: c-01
+          containers:
+            - name: disk-health
+              image: harbor.buijnsters.com/library/disk-health:latest@sha256:9375aa8bdc096f44dbdc16a4a14e33707041c72b8dd757adcd6654d6e7f2b42a
+              command: ["/bin/sh", "/scripts/disk-health.sh"]
+              securityContext:
+                privileged: true
+              env:
+                - name: NODE
+                  value: c-01
+                - name: TEMP_WARN
+                  value: "60"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disk-health-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dev
+                  mountPath: /dev
+                - name: scripts
+                  mountPath: /scripts
+          volumes:
+            - name: dev
+              hostPath:
+                path: /dev
+            - name: scripts
+              configMap:
+                name: disk-health-script
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: disk-health-c-02
+spec:
+  schedule: "30 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 900
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: disk-health
+        spec:
+          restartPolicy: Never
+          priorityClassName: platform-low
+          nodeSelector:
+            kubernetes.io/hostname: c-02
+          containers:
+            - name: disk-health
+              image: harbor.buijnsters.com/library/disk-health:latest@sha256:9375aa8bdc096f44dbdc16a4a14e33707041c72b8dd757adcd6654d6e7f2b42a
+              command: ["/bin/sh", "/scripts/disk-health.sh"]
+              securityContext:
+                privileged: true
+              env:
+                - name: NODE
+                  value: c-02
+                - name: TEMP_WARN
+                  value: "60"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disk-health-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dev
+                  mountPath: /dev
+                - name: scripts
+                  mountPath: /scripts
+          volumes:
+            - name: dev
+              hostPath:
+                path: /dev
+            - name: scripts
+              configMap:
+                name: disk-health-script

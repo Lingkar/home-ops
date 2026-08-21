@@ -1,0 +1,84 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zfs-health-script
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+data:
+  zfs-health.sh: |
+    #!/bin/sh
+    set -u
+
+    notify() {
+      local title="$1" msg="$2"
+      if [ -n "${NTFY_TOKEN:-}" ] && [ -n "${NTFY_URL:-}" ]; then
+        curl -fsS --connect-timeout 10 --max-time 30 -o /dev/null \
+          -H "Authorization: Bearer ${NTFY_TOKEN}" \
+          -H "Title: ${title}" \
+          -H "Priority: high" \
+          -H "Tags: warning,floppy_disk" \
+          -d "${msg}" \
+          "${NTFY_URL}" || echo "WARN: failed to send ntfy notification" >&2
+      else
+        echo "WARN: NTFY_TOKEN/NTFY_URL not set, skipping notification" >&2
+      fi
+    }
+
+    ZPOOL="${ZPOOL:-hdd-raidz-thin}"
+    CAP_WARN="${CAP_WARN:-80}"
+    FAILED=""
+
+    POOL_LIST="$(zpool list -H -o name,health,capacity 2>/dev/null)"
+    if ! printf '%s' "$POOL_LIST" | awk -v p="$ZPOOL" '$1 == p {found=1} END {exit !found}'; then
+      echo "ERROR: zpool '${ZPOOL}' not present"
+      notify "ZFS pool FAILED" "zpool '${ZPOOL}' not found in 'zpool list'"
+      exit 1
+    fi
+
+    HEALTH="$(printf '%s' "$POOL_LIST" | awk -v p="$ZPOOL" '$1 == p {print $2}')"
+    CAP="$(printf '%s' "$POOL_LIST" | awk -v p="$ZPOOL" '$1 == p {print $3}' | tr -d '%')"
+
+    if [ "$HEALTH" != "ONLINE" ]; then
+      echo "ERROR: ${ZPOOL} health = ${HEALTH}"
+      FAILED="${FAILED}\n- ${ZPOOL}: health=${HEALTH}"
+    fi
+
+    if printf '%s' "$CAP" | grep -qE '^[0-9]+$' && [ "$CAP" -gt "$CAP_WARN" ]; then
+      echo "WARN: ${ZPOOL} capacity = ${CAP}%"
+      FAILED="${FAILED}\n- ${ZPOOL}: capacity=${CAP}%"
+    fi
+
+    STATUS="$(zpool status "$ZPOOL" 2>/dev/null)"
+
+    BADROWS="$(printf '%s' "$STATUS" | awk 'NF >= 5 && $1 !~ /^(NAME|pool:|state:|scan:|errors:|config:)/ {
+      if ($2 != "ONLINE") printf "state:%s=%s;", $1, $2
+      if ($3+0 != 0 || $4+0 != 0 || $5+0 != 0) printf "counters:%s(r=%s,w=%s,c=%s);", $1, $3, $4, $5
+    }')"
+
+    if [ -n "$BADROWS" ]; then
+      echo "ERROR: unhealthy devices in ${ZPOOL}: ${BADROWS}"
+      FAILED="${FAILED}\n- ${ZPOOL}: ${BADROWS}"
+    fi
+
+    if ! printf '%s' "$STATUS" | grep -q "errors: No known data errors"; then
+      echo "ERROR: ${ZPOOL} reports data errors"
+      FAILED="${FAILED}\n- ${ZPOOL}: data errors present"
+    fi
+
+    SCAN="$(printf '%s' "$STATUS" | awk '$1 == "scan:" {$1=""; sub(/^[ \t]+/, ""); print; exit}')"
+    if printf '%s' "$SCAN" | grep -q "none requested"; then
+      echo "WARN: ${ZPOOL} has never been scrubbed"
+      FAILED="${FAILED}\n- ${ZPOOL}: never scrubbed"
+    fi
+    if printf '%s' "$SCAN" | grep -qE "with [1-9][0-9]* errors"; then
+      echo "ERROR: ${ZPOOL} last scrub had errors: ${SCAN}"
+      FAILED="${FAILED}\n- ${ZPOOL}: scrub errors (${SCAN})"
+    fi
+
+    if [ -n "$FAILED" ]; then
+      notify "ZFS pool FAILED" "ZFS problems on ${ZPOOL}:${FAILED}"
+      exit 1
+    fi
+
+    echo "zpool ${ZPOOL} healthy"

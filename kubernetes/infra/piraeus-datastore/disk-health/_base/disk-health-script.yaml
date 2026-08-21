@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: disk-health-script
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+data:
+  disk-health.sh: |
+    #!/bin/sh
+    set -u
+
+    notify() {
+      local title="$1" msg="$2"
+      if [ -n "${NTFY_TOKEN:-}" ] && [ -n "${NTFY_URL:-}" ]; then
+        curl -fsS --connect-timeout 10 --max-time 30 -o /dev/null \
+          -H "Authorization: Bearer ${NTFY_TOKEN}" \
+          -H "Title: ${title}" \
+          -H "Priority: high" \
+          -H "Tags: warning,floppy_disk" \
+          -d "${msg}" \
+          "${NTFY_URL}" || echo "WARN: failed to send ntfy notification" >&2
+      else
+        echo "WARN: NTFY_TOKEN/NTFY_URL not set, skipping notification" >&2
+      fi
+    }
+
+    NODE="${NODE:-unknown}"
+    TEMP_WARN="${TEMP_WARN:-55}"
+    FAILED=""
+
+    DEVICES="$(smartctl --scan 2>/dev/null | awk '{print $1}')"
+    if [ -z "$DEVICES" ]; then
+      echo "ERROR: smartctl --scan returned no devices on ${NODE}"
+      notify "SMART ${NODE} FAILED" "smartctl --scan returned no devices on ${NODE}"
+      exit 1
+    fi
+
+    for DEV in $DEVICES; do
+      echo "=== checking ${DEV} ==="
+
+      if ! smartctl -H "$DEV" 2>/dev/null | grep -q "PASSED"; then
+        echo "ERROR: ${DEV} overall-health self-assessment not PASSED"
+        FAILED="${FAILED}\n- ${DEV}: overall-health not PASSED"
+      fi
+
+      JSON="$(smartctl -j -a "$DEV" 2>/dev/null)"
+
+      for ATTR in Reallocated_Sector_Ct Reported_Uncorrect Command_Timeout Current_Pending_Sector Offline_Uncorrectable Spin_Retry_Count; do
+        RAW="$(printf '%s' "$JSON" | jq -r --arg a "$ATTR" '.ata_smart_attributes.table[]? | select(.name == $a) | .raw.value // empty' 2>/dev/null)"
+        if printf '%s' "$RAW" | grep -qE '^[0-9]+$' && [ "$RAW" -gt 0 ]; then
+          echo "ERROR: ${DEV} ${ATTR} raw=${RAW}"
+          FAILED="${FAILED}\n- ${DEV}: ${ATTR} raw=${RAW}"
+        fi
+      done
+
+      if printf '%s' "$JSON" | jq -e '.nvme_smart_health_information_log' >/dev/null 2>&1; then
+        CW="$(printf '%s' "$JSON" | jq -r '.nvme_smart_health_information_log.critical_warning // 0')"
+        ME="$(printf '%s' "$JSON" | jq -r '.nvme_smart_health_information_log.media_errors // 0')"
+        PU="$(printf '%s' "$JSON" | jq -r '.nvme_smart_health_information_log.percentage_used // 0')"
+        SP="$(printf '%s' "$JSON" | jq -r '.nvme_smart_health_information_log.available_spare // 100')"
+        [ "$CW" -gt 0 ] 2>/dev/null && { echo "ERROR: ${DEV} NVMe critical_warning=${CW}"; FAILED="${FAILED}\n- ${DEV}: NVMe critical_warning=${CW}"; }
+        [ "$ME" -gt 0 ] 2>/dev/null && { echo "ERROR: ${DEV} NVMe media_errors=${ME}"; FAILED="${FAILED}\n- ${DEV}: NVMe media_errors=${ME}"; }
+        [ "$PU" -gt 90 ] 2>/dev/null && { echo "WARN: ${DEV} NVMe percentage_used=${PU}%"; FAILED="${FAILED}\n- ${DEV}: NVMe percentage_used=${PU}%"; }
+        [ "$SP" -lt 10 ] 2>/dev/null && { echo "WARN: ${DEV} NVMe available_spare=${SP}%"; FAILED="${FAILED}\n- ${DEV}: NVMe available_spare=${SP}%"; }
+      fi
+
+      TEMP="$(printf '%s' "$JSON" | jq -r '.temperature.current // empty' 2>/dev/null)"
+      if printf '%s' "$TEMP" | grep -qE '^[0-9]+$' && [ "$TEMP" -gt "$TEMP_WARN" ]; then
+        echo "WARN: ${DEV} temperature=${TEMP}C"
+        FAILED="${FAILED}\n- ${DEV}: temperature=${TEMP}C"
+      fi
+    done
+
+    if [ -n "$FAILED" ]; then
+      notify "SMART ${NODE} FAILED" "Smartctl problems on ${NODE}:${FAILED}"
+      exit 1
+    fi
+
+    echo "all disks healthy on ${NODE}"

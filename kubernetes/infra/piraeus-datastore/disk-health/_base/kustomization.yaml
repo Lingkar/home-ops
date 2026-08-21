@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+resources:
+  - disk-health-ntfy.sops.yaml
+  - disk-health-script.yaml
+  - disk-health.yaml
+  - disk-selftest-script.yaml
+  - smartctl-selftest.yaml
+  - zfs-health-script.yaml
+  - zfs-health.yaml
+  - zfs-scrub-script.yaml
+  - zfs-scrub.yaml

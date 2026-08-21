@@ -55,6 +55,9 @@
         Added a montly full kopia verify check
 - [ ] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
+    The Prometheus smartctl and zfs exporters lack proper release artifacts
+    For now will run a recurring ZFS check with a ntfy alert when problems arise.
+    For now will run a recurring smartctl check with a ntfy alert when problems arise.
 - [ ] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [ ] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] Set-up Immich
@@ -71,11 +74,11 @@
 - [/] Set-up netbird
     - [x] tmp set-up with direct deployment
     - [ ] fix the kubernetes-operator + netbird-operator-config charts
-- [ ] Wordpress updates
+- [?] Wordpress updates
     - [ ] Run wordpress as non-root
     - [ ] Migrate from MySQL to MariaDB
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
-- [ ] Add interactive Velero bootstrap step to restore from latest found S3 back-up
+- [?] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [ ] Set-up barmancloud cnpg backup/restore pluging (needs S3 object storage)
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
