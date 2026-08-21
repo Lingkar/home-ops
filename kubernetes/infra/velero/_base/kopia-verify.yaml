@@ -1,0 +1,309 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/serviceaccount-v1.json
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kopia-verify
+  labels:
+    app.kubernetes.io/component: kopia-verify
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/role-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kopia-verify
+  labels:
+    app.kubernetes.io/component: kopia-verify
+rules:
+  - apiGroups: ["velero.io"]
+    resources: ["backuprepositories"]
+    verbs: ["get", "list"]
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/rolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kopia-verify
+  labels:
+    app.kubernetes.io/component: kopia-verify
+subjects:
+  - kind: ServiceAccount
+    name: kopia-verify
+    namespace: velero
+roleRef:
+  kind: Role
+  name: kopia-verify
+  apiGroup: rbac.authorization.k8s.io
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kopia-verify-script
+  labels:
+    app.kubernetes.io/component: kopia-verify
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+data:
+  verify.sh: |
+    #!/bin/sh
+    set -u
+
+    mkdir -p "$(dirname "${KOPIA_CONFIG_PATH}")" "${KOPIA_CACHE_DIRECTORY}" || true
+
+    get_ini() {
+      sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$2" \
+        | head -1 \
+        | sed 's/^"//; s/"$//; s/\r$//'
+    }
+
+    notify() {
+      local title="$1" msg="$2"
+      if [ -n "${NTFY_TOKEN:-}" ] && [ -n "${NTFY_URL:-}" ]; then
+        curl -fsS --connect-timeout 10 --max-time 30 -o /dev/null \
+          -H "Authorization: Bearer ${NTFY_TOKEN}" \
+          -H "Title: ${title}" \
+          -H "Priority: high" \
+          -H "Tags: warning,floppy_disk" \
+          -d "${msg}" \
+          "${NTFY_URL}" || echo "WARN: failed to send ntfy notification" >&2
+      else
+        echo "WARN: NTFY_TOKEN/NTFY_URL not set, skipping notification" >&2
+      fi
+    }
+
+    export AWS_ACCESS_KEY_ID="$(get_ini aws_access_key_id /secrets/s3/cloud)"
+    export AWS_SECRET_ACCESS_KEY="$(get_ini aws_secret_access_key /secrets/s3/cloud)"
+    export KOPIA_PASSWORD="$(cat /secrets/repo/repository-password)"
+
+    : "${AWS_ACCESS_KEY_ID:?aws_access_key_id not found in s3-credentials}"
+    : "${AWS_SECRET_ACCESS_KEY:?aws_secret_access_key not found in s3-credentials}"
+    : "${KOPIA_PASSWORD:?repository-password not found in velero-repo-credentials}"
+
+    NAMESPACES="$(sed '/^[[:space:]]*$/d' /data/namespaces.txt 2>/dev/null || true)"
+
+    if [ -z "$NAMESPACES" ]; then
+      echo "no kopia backup repositories found; nothing to verify"
+      exit 0
+    fi
+
+    VERIFY_ARGS=""
+    if [ "${VERIFY_FILES_PERCENT:-0}" != "0" ]; then
+      VERIFY_ARGS="--verify-files-percent=${VERIFY_FILES_PERCENT}"
+    fi
+
+    FAILED=""
+
+    for NS in $NAMESPACES; do
+      echo "=== verifying kopia repository for namespace '${NS}' ==="
+      if ! kopia repository connect s3 --readonly \
+            --bucket="${S3_BUCKET}" \
+            --endpoint="${S3_ENDPOINT}" \
+            --region="${S3_REGION}" \
+            --prefix="${S3_PREFIX_BASE}/${NS}/"; then
+        echo "ERROR: failed to connect to repository for namespace '${NS}'"
+        FAILED="${FAILED}\n- ${NS}: connect failed"
+        continue
+      fi
+
+      if ! kopia snapshot verify ${VERIFY_ARGS}; then
+        echo "ERROR: snapshot verify failed for namespace '${NS}'"
+        FAILED="${FAILED}\n- ${NS}: verify failed"
+      fi
+
+      kopia repository disconnect 2>/dev/null || true
+    done
+
+    if [ -n "$FAILED" ]; then
+      notify "Velero Kopia verify FAILED" "Kopia verification failed:${FAILED}"
+      exit 1
+    fi
+
+    echo "all kopia repositories verified successfully"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kopia-verify-daily
+  labels:
+    app.kubernetes.io/component: kopia-verify
+spec:
+  schedule: "0 4 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 7200
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/component: kopia-verify
+        spec:
+          serviceAccountName: kopia-verify
+          restartPolicy: Never
+          nodeSelector:
+            beta.kubernetes.io/arch: amd64
+          initContainers:
+            - name: list-repositories
+              image: bitnami/kubectl:latest@sha256:190ebe23a27084c9477b48cf9503472608197792456857ac8fdcf2eb877aa34e
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  kubectl get backuprepositories -n velero \
+                    -o custom-columns=TYPE:.spec.repositoryType,NS:.spec.volumeNamespace --no-headers \
+                    | awk '$1=="kopia"{print $2}' > /data/namespaces.txt
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          containers:
+            - name: verify
+              image: kopia/kopia:0.16.0@sha256:748cc753b49c0a74b42aac7e45ccad4b86615b2692384db842b09c8b22910c9e
+              command: ["/bin/sh", "/scripts/verify.sh"]
+              env:
+                - name: S3_BUCKET
+                  value: buijnsters-home-backup
+                - name: S3_ENDPOINT
+                  value: fsn1.your-objectstorage.com
+                - name: S3_REGION
+                  value: fsn1
+                - name: S3_PREFIX_BASE
+                  value: velero/kopia
+                - name: VERIFY_FILES_PERCENT
+                  value: "0"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-velero"
+                - name: KOPIA_CONFIG_PATH
+                  value: /tmp/kopia/repository.config
+                - name: KOPIA_CACHE_DIRECTORY
+                  value: /tmp/kopia-cache
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: velero-verify-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 512Mi
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: scripts
+                  mountPath: /scripts
+                - name: s3-credentials
+                  mountPath: /secrets/s3
+                  readOnly: true
+                - name: repo-credentials
+                  mountPath: /secrets/repo
+                  readOnly: true
+          volumes:
+            - name: data
+              emptyDir: {}
+            - name: scripts
+              configMap:
+                name: kopia-verify-script
+            - name: s3-credentials
+              secret:
+                secretName: s3-credentials
+            - name: repo-credentials
+              secret:
+                secretName: velero-repo-credentials
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/cronjob-batch-v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kopia-verify-full
+  labels:
+    app.kubernetes.io/component: kopia-verify
+spec:
+  schedule: "0 5 1 * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/component: kopia-verify
+        spec:
+          serviceAccountName: kopia-verify
+          restartPolicy: Never
+          nodeSelector:
+            beta.kubernetes.io/arch: amd64
+          initContainers:
+            - name: list-repositories
+              image: bitnami/kubectl:latest@sha256:190ebe23a27084c9477b48cf9503472608197792456857ac8fdcf2eb877aa34e
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  kubectl get backuprepositories -n velero \
+                    -o custom-columns=TYPE:.spec.repositoryType,NS:.spec.volumeNamespace --no-headers \
+                    | awk '$1=="kopia"{print $2}' > /data/namespaces.txt
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          containers:
+            - name: verify
+              image: kopia/kopia:0.16.0@sha256:748cc753b49c0a74b42aac7e45ccad4b86615b2692384db842b09c8b22910c9e
+              command: ["/bin/sh", "/scripts/verify.sh"]
+              env:
+                - name: S3_BUCKET
+                  value: buijnsters-home-backup
+                - name: S3_ENDPOINT
+                  value: fsn1.your-objectstorage.com
+                - name: S3_REGION
+                  value: fsn1
+                - name: S3_PREFIX_BASE
+                  value: velero/kopia
+                - name: VERIFY_FILES_PERCENT
+                  value: "100"
+                - name: NTFY_URL
+                  value: "https://ntfy.${SECRET_DOMAIN}/home-velero"
+                - name: KOPIA_CONFIG_PATH
+                  value: /tmp/kopia/repository.config
+                - name: KOPIA_CACHE_DIRECTORY
+                  value: /tmp/kopia-cache
+                - name: NTFY_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: velero-verify-ntfy
+                      key: NTFY_TOKEN
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 2Gi
+                limits:
+                  memory: 2Gi
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: scripts
+                  mountPath: /scripts
+                - name: s3-credentials
+                  mountPath: /secrets/s3
+                  readOnly: true
+                - name: repo-credentials
+                  mountPath: /secrets/repo
+                  readOnly: true
+          volumes:
+            - name: data
+              emptyDir: {}
+            - name: scripts
+              configMap:
+                name: kopia-verify-script
+            - name: s3-credentials
+              secret:
+                secretName: s3-credentials
+            - name: repo-credentials
+              secret:
+                secretName: velero-repo-credentials

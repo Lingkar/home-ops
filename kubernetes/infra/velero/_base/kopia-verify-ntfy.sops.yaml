@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: velero-verify-ntfy
+  labels:
+    app.kubernetes.io/component: kopia-verify
+stringData:
+  NTFY_TOKEN: ENC[AES256_GCM,data:8Y5HEARNXyGlZ5N3onPYKui75nGIGEQ1MtWDOYubL4c=,iv:/BZoHG0zXQAdXgwEoj/C+chl1mUbzE+b8hqxI2XXzBU=,tag:iUErop6CgaDybmbRxhlF1Q==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2UjJmdDdWRmRPbjY5a2J4
+        T3hOWVdNWjhKOXBhYmo4d0J2SWtxM1RZSlY4CmxVaXlaU25Oamk4Mk9uZVliZVdw
+        RDlKTi81TUt5a3pSckZOUUVib21OT2MKLS0tIEkweGI1V1NmNnNQTlBrUHhmYXQ5
+        cUwwbk1OZXgyR0diby9LOE1DRXRqcVkKQKr/Aq9q9U84a9sO71g8DQyeNSMZPX6Q
+        aN9zKS+9ztDHKcqWOsxMVB9kqqHHho63RBtDbpJNVup8G8Mnv3+Ynw==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+  encrypted_regex: ^(data|stringData|spec)$
+  lastmodified: "2026-08-21T07:23:17Z"
+  mac: ENC[AES256_GCM,data:W25p8BN9m0YjhY9JQye2o7UjymJN2nVdKCNQtLCH9IO4ERe6zMITd0zfmCoAGT/OZH1ZyEzXHMSQScrG5AgcN0mh6G3WA7NiLxj7jaoBc2koqJf3Fbnib94N2dWFiMpejPv6fPhxY0nJokgokpwWJpBaauhOxB3vIdUXgoosssM=,iv:KtwSZiip0a7ACefsqTKpqIA8ahljsOj3kNBgc0OBt8A=,tag:ZHYv99smdp076b5dRQIj+w==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3

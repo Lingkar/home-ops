@@ -3,6 +3,8 @@ resources:
   - cm-sc-class-migration.yaml
   - grafana-dashboard.yaml
   - helmrelease.yaml
+  - kopia-verify.yaml
+  - kopia-verify-ntfy.sops.yaml
   #   - netpols.yaml
   - s3-credentials.sops.yaml
   - source.yaml
