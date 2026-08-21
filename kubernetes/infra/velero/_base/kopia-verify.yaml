@@ -124,7 +124,7 @@ data:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: kopia-verify-daily
+  name: kopia-verify-shallow
   labels:
     app.kubernetes.io/component: kopia-verify
 spec:
