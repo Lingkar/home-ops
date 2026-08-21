@@ -41,7 +41,9 @@ data:
     fi
 
     ELAPSED=0
-    while zpool status "$ZPOOL" 2>/dev/null | grep -q "scan: scrub in progress"; do
+    while STATUS="$(zpool status "$ZPOOL" 2>/dev/null)" && printf '%s' "$STATUS" | grep -q "scan: scrub in progress"; do
+      PROGRESS="$(printf '%s' "$STATUS" | grep -E "scanned|% done" | tr '\t\n' ' ' | sed 's/^ *//; s/ *$//; s/  */ /g')"
+      echo "[scrub ${ZPOOL}] ${PROGRESS:-starting} (${ELAPSED}s elapsed)"
       sleep "$POLL_INTERVAL"
       ELAPSED=$((ELAPSED + POLL_INTERVAL))
       if [ "$TIMEOUT" -gt 0 ] && [ "$ELAPSED" -ge "$TIMEOUT" ]; then
