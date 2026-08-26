@@ -249,6 +249,17 @@
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },
     {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)kustomization\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/(?<depName>[\\w-]+/[\\w-]+)/(?<currentValue>v?[\\d\\.]+)/(?<assetPath>\\S+\\.ya?ml)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    },
+    {
       "description": "Detect container images in CRDs",
       "customType": "regex",
       "managerFilePatterns": [
