@@ -250,8 +250,8 @@
     },
     {
       "customType": "regex",
-      "fileMatch": [
-        "(^|/)kustomization\\.ya?ml$"
+      "managerFilePatterns": [
+        "/(^|/)kustomization\\.ya?ml$/"
       ],
       "matchStrings": [
         "https://raw\\.githubusercontent\\.com/(?<depName>[\\w-]+/[\\w-]+)/(?<currentValue>v?[\\d\\.]+)/(?<assetPath>\\S+\\.ya?ml)"
