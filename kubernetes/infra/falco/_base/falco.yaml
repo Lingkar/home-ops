@@ -92,7 +92,11 @@ spec:
         (proc.exepath in (/opt/cni/bin/cilium-cni,
                           /opt/cni/bin/cilium-sysctlfix,
                           /opt/cni/bin/cilium-mount) or
-         (k8s.ns.name = scroop and proc.exepath = /app/calibre/bin/calibre_postinstall))
+         (k8s.ns.name = scroop and proc.exepath = /app/calibre/bin/calibre_postinstall) or
+         (k8s.ns.name = scroop and
+          container.image.repository = lscr.io/linuxserver/lazylibrarian and
+          (proc.exepath startswith /app/calibre/ or
+           (proc.exepath = /usr/bin/xz and proc.pname = tar))))
     - macro: user_known_stand_streams_redirect_activities
       condition: >
         (k8s.ns.name = scroop and container.name = gluetun and proc.name = ping) or
@@ -112,6 +116,10 @@ spec:
         items: append
       items:
         - cilium-agent
+    - rule: Packet socket created in container
+      condition: and not (k8s.ns.name = home-assistant and container.name = app)
+      override:
+        condition: append
   priority: 60
 ---
 # Falco configuration - wire output to Falcosidekick + stdout for testing
