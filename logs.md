@@ -24,7 +24,7 @@
         - [x] Add some other groups next to admin
     - [x] Set-up dedicated PSQL database
 - [x] Finish nfs-ganesha https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner
-    - [x] from e.g. the satelite move data to new volume, mount the drbd volume with `mount -o ro /dev/drbd1009 /mnt/pvc`
+    - [x] from e.g. the satellite move data to new volume, mount the drbd volume with `mount -o ro /dev/drbd1009 /mnt/pvc`
     - [x] Instead of setting up new storageclass set-up separate nfs-ganesha servers and mount with https://kubernetes.io/docs/concepts/storage/volumes/#nfs
     - [x] Test-out per node shutdown
 - [x] Migrate all ssd-lvm-thin-1 -> ssd-lvm-thin-2
@@ -47,18 +47,18 @@
         https://docs.ntfy.sh/config/#example-private-instance
 - [x] Set-up intrusion detection with Falco
     - [x] Falco has been installed
-    - [x] Configure alerting with Falco 
+    - [x] Configure alerting with Falco
 - [x] Make sure all daemonsets have a priorityClass set, such that they can always be scheduled.
     The daemonsets which matter now have a priorityClass
 - [x] Run a recurring verify on the Kopia back-ups https://kopia.io/docs/advanced/consistency/
         Added a daily shallow kopia verify check
-        Added a montly full kopia verify check
+        Added a monthly full kopia verify check
 - [x] Run a recurring ZFS check and enable notification from smartctl for disk health (or via prometheus) -> scrutiny?
     https://www.linuxjournal.com/article/6983?page=0%2C1
     The Prometheus smartctl and zfs exporters lack proper release artifacts
     For now will run a recurring ZFS check with a ntfy alert when problems arise.
     For now will run a recurring smartctl check with a ntfy alert when problems arise.
-- [ ] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
+- [/] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [ ] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] Set-up Immich
 
@@ -80,11 +80,11 @@
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [?] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
-- [ ] Set-up barmancloud cnpg backup/restore pluging (needs S3 object storage)
+- [ ] Set-up barmancloud cnpg backup/restore plugin (needs S3 object storage)
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
 - [ ] Make the node shutdown with piraeus compatible with Talos by performing the missing `drbdadm down all` command
 - [ ] Add more k8s resources to the otel collector: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
-    - [ ] Decide wether the otel stack clusterrole really needs permissions for (cluster-wide) getting / listing secrets.
+    - [ ] Decide whether the otel stack clusterrole really needs permissions for (cluster-wide) getting / listing secrets.
 - [ ] Schlink, link shortener
 - [ ] Posties, social media posting
 - [ ] it-tools

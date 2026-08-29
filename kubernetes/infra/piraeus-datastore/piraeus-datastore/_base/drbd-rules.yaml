@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: piraeus-datastore-drbd
+spec:
+  groups:
+    - name: drbdadm.rules
+      rules:
+        - alert: drbdResourceOutOfSync
+          annotations:
+            summary: "DRBD resource out of sync"
+            description: |
+              DRBD resource "{{ $labels.name }}" on "{{ $labels.node }}" is out of sync with peer "{{ $labels.conn_name }}": {{ humanize1024 $value }}.
+              Check the resync progress with "drbdadm status {{ $labels.name }}".
+          expr: drbd_peerdevice_outofsync_bytes > 0
+          for: 30m
+          labels:
+            severity: warning
+        - alert: drbdResourceBelowReplicaCount
+          annotations:
+            summary: "DRBD resource has too few UpToDate replicas"
+            description: |
+              DRBD resource "{{ $labels.name }}" currently has only {{ $value }} UpToDate replica(s).
+              Data may still be available, but redundancy is reduced.
+          expr: |
+            sum by (name) (drbd_device_state{drbd_device_state="UpToDate"}) < 2
+            and on (name)
+            linstor_resource_definition_resource_count > 1
+          for: 5m
+          labels:
+            severity: warning
+        - alert: drbdConnectionCongested
+          annotations:
+            summary: "DRBD peer connection congested"
+            description: |
+              DRBD connection from "{{ $labels.node }}" to "{{ $labels.conn_name }}" for resource "{{ $labels.name }}" is congested.
+              This may indicate a slow or overloaded link.
+          expr: drbd_connection_congested > 0
+          for: 5m
+          labels:
+            severity: warning

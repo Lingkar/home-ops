@@ -14,6 +14,7 @@ database:
   external:
     host: cnpg-harbor-rw
     username: app
+    # nosemgrep: generic.secrets.gitleaks.generic-api-key.generic-api-key
     existingSecret: cnpg-harbor-app
     coreDatabase: app
 core:

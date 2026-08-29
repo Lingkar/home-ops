@@ -12,8 +12,8 @@ repos:
     rev: v2.4.2
     hooks:
       - id: codespell
-        args: ["--ignore-words-list", "NotIn"]
-        exclude: ^.*\.secret\.yaml$
+        args: ["--ignore-words-list", "UpToDate,NotIn,flate"]
+        exclude: (bootstrap|kubernetes)/.*\.sops\.ya?ml
   - repo: https://github.com/semgrep/pre-commit
     rev: "v1.156.0"
     hooks:
