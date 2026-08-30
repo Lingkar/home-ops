@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - helmrelease.yaml
   - httproute.yaml
-  #   - netpols.yaml
+  #   - netpol.yaml
   - secret.sops.yaml
   - source.yaml
 configMapGenerator:

@@ -5,7 +5,7 @@ resources:
   - helmrelease.yaml
   - kopia-verify.yaml
   - kopia-verify-ntfy.sops.yaml
-  #   - netpols.yaml
+  #   - netpol.yaml
   - s3-credentials.sops.yaml
   - source.yaml
   - repo-credentials.sops.yaml
