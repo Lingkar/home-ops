@@ -11,7 +11,9 @@ spec:
   egress:
     - toFQDNs:
         - matchName: region2.v2.argotunnel.com
-    - toServices:
-        - k8sService:
-            namespace: network
-            serviceName: cilium-gateway-external
+    - toCIDR:
+        - 192.168.69.8/32
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
