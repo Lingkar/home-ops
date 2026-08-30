@@ -2,11 +2,12 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-egress-cloudflare
+  name: allow-egress-cloudflare-tunnel
 spec:
   description: "Allow egress to cloudflare via DNS-aware FQDN policy"
   endpointSelector:
-    matchLabels: {}
+    matchLabels:
+      k8s:app.kubernetes.io/name: cloudflare-tunnel
   egress:
     - toFQDNs:
         - matchName: region2.v2.argotunnel.com
