@@ -9,8 +9,21 @@ spec:
     matchLabels:
       k8s:app.kubernetes.io/name: cloudflare-tunnel
   egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
     - toFQDNs:
+        - matchName: region1.v2.argotunnel.com
         - matchName: region2.v2.argotunnel.com
+        - matchName: api.cloudflare.com
     - toCIDR:
         - 192.168.69.8/32
       toPorts:
