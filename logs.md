@@ -58,8 +58,8 @@
     The Prometheus smartctl and zfs exporters lack proper release artifacts
     For now will run a recurring ZFS check with a ntfy alert when problems arise.
     For now will run a recurring smartctl check with a ntfy alert when problems arise.
-- [/] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
-- [ ] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
+- [x] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
+- [/] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] Set-up Immich
 
 - [ ] Set-up clean-up job for delete PV's with Retain
