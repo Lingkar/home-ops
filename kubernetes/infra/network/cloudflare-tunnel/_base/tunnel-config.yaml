@@ -1,5 +1,5 @@
 originRequest:
-  originServerName: "external.${SECRET_DOMAIN}"
+  matchSNItoHost: true
 
 ingress:
   - hostname: "${SECRET_DOMAIN}"
