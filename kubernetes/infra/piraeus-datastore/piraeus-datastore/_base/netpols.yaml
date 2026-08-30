@@ -28,3 +28,8 @@ spec:
             - port: "7000"
               endPort: 9000
               protocol: TCP
+    # TODO: remove after cluster wide has been rolled out
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: monitoring
+            app.kubernetes.io/name: prometheus
