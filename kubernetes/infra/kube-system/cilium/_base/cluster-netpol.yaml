@@ -25,36 +25,5 @@ spec:
         operator: NotIn
         values:
           - kube-system
----
-# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
-apiVersion: cilium.io/v2
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: allow-ingress-egress
-spec:
-  description: "Allow all the egress traffic from reserved ingress identity to any endpoint in the cluster"
-  endpointSelector:
-    matchExpressions:
-      - key: reserved:ingress
+      - key: io.kubernetes.pod.namespace
         operator: Exists
-  egress:
-    - toEntities:
-        - cluster
----
-# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
-apiVersion: cilium.io/v2
-kind: CiliumClusterwideNetworkPolicy
-metadata:
-  name: allow-ingress-to-gateway
-spec:
-  description: "Allow ingress to the cluster ingress/gateway proxies (reserved:ingress) from world, cluster, health and host"
-  endpointSelector:
-    matchExpressions:
-      - key: reserved:ingress
-        operator: Exists
-  ingress:
-    - fromEntities:
-        - world
-        - cluster
-        - health
-        - host
