@@ -3,7 +3,7 @@ originRequest:
 
 ingress:
   - hostname: "${SECRET_DOMAIN}"
-    service: &svc https://cilium-gateway-external.network.svc.cluster.local
+    service: &svc https://192.168.69.8
   - hostname: "*.${SECRET_DOMAIN}"
     service: *svc
   - hostname: "phela-intelligence.com"
