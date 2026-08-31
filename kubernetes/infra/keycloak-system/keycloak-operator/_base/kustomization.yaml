@@ -1,2 +1,2 @@
 resources:
-  - https://github.com/keycloak/keycloak-k8s-resources//kubernetes?ref=26.7.2
+  - https://github.com/keycloak/keycloak-k8s-resources//kubernetes?ref=26.7.3
