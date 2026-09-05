@@ -50,7 +50,7 @@ releases:
   - name: piraeus-operator
     namespace: piraeus-datastore
     chart: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
-    version: 2.10.8
+    version: 2.11.0
     values:
       - "../../kubernetes/infra/piraeus-datastore/piraeus-operator/_base/values.yaml"
     needs: ["spegel/spegel"]
