@@ -249,6 +249,7 @@
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },
     {
+      "description": "Update remote github resources in kustomization.yaml",
       "customType": "regex",
       "managerFilePatterns": [
         "/(^|/)kustomization\\.ya?ml$/"

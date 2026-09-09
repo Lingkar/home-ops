@@ -1,5 +1,4 @@
 resources:
   # - admin-user.sops.yaml
   - app.yaml
-  # - crossplane.yaml
   - kc-admin-creds.sops.yaml
