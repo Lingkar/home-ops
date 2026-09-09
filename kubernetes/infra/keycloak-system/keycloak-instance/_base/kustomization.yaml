@@ -1,4 +1,2 @@
 resources:
-  # - admin-user.sops.yaml
   - app.yaml
-  - kc-admin-creds.sops.yaml
