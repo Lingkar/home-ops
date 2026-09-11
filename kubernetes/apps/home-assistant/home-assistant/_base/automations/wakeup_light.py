@@ -1,0 +1,46 @@
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+LIGHT             = "light.living_light_test"
+ALARM_SENSOR      = "sensor.sm_a546b_next_alarm"
+ENABLE_SWITCH     = "input_boolean.wakeup_light"   # kill switch (create in HA UI or config)
+RAMP_BEFORE_MINUTES = 30           # ramp duration
+MIN_BRIGHTNESS_PCT  = 2            # starting brightness
+MAX_BRIGHTNESS_PCT  = 100          # brightness at alarm time
+# Kelvin-native light (min_color_temp_kelvin 2202 / max 6535):
+# current HA light.turn_on takes color_temp_kelvin=...; color_temp= (mireds)
+# and kelvin= were deprecated and REMOVED from the service schema.
+START_KELVIN        = 2200         # warm
+END_KELVIN          = 3800         # cooler at alarm time
+RAMP_INTERVAL_SEC   = 60           # poll interval (matches cron)
+_TZ = ZoneInfo("Europe/Amsterdam")
+@time_trigger("once(now)", "cron(* * * * *)")
+def wakeup_ramp(**kwargs):
+    task.unique("wakeup_ramp")
+    log.info("RUNNING")
+    if ENABLE_SWITCH and (not state.exist(ENABLE_SWITCH)
+                          or state.get(ENABLE_SWITCH).lower() in ("off", "false", "0")):
+        log.info("Wake-up light functionality turned off")
+        return
+    # raw = state.get(ALARM_SENSOR)
+    raw = '2026-09-11T21:51:00+00:00'
+    if not raw:
+        return
+    try:
+        alarm = datetime.fromisoformat(raw).astimezone(_TZ)
+    except ValueError:
+        return
+    now = datetime.now(_TZ)
+    ramp_start = alarm - timedelta(minutes=RAMP_BEFORE_MINUTES)
+    if now >= alarm:                       # done: stays at max, no-op
+        log.info("Max reached")
+        return
+    if now < ramp_start:                   # not ramping yet
+        log.info("Not yet ramping")
+        return
+    progress = (now - ramp_start) / (alarm - ramp_start)          # 0..1
+    brightness = MIN_BRIGHTNESS_PCT + (MAX_BRIGHTNESS_PCT - MIN_BRIGHTNESS_PCT) * progress
+    kelvin = START_KELVIN + int((END_KELVIN - START_KELVIN) * progress)
+    light.turn_on(entity_id=LIGHT,
+                  brightness_pct=brightness,
+                  color_temp_kelvin=kelvin)
+    log.info(f"progress: {progress}, brightness: {brightness}, kelvin: {kelvin}")

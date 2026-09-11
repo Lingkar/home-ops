@@ -8,6 +8,10 @@ spec:
   chartRef:
     kind: OCIRepository
     name: home-assistant
+  values:
+    persistence:
+      pyscript-scripts:
+        name: pyscript-scripts
   valuesFrom:
     - kind: ConfigMap
       name: values-home-assistant

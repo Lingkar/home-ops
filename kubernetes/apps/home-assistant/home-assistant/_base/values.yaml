@@ -46,6 +46,8 @@ route:
         #       - identifier: app
         #         port: *port
 persistence:
+  tmp:
+    type: emptyDir
   config:
     type: persistentVolumeClaim
     storageClass: ssd-lvm-thin-2
@@ -53,5 +55,7 @@ persistence:
     size: 1Gi
     globalMounts:
       - path: /config
-  tmp:
-    type: emptyDir
+  pyscript-scripts:
+    type: configMap
+    globalMounts:
+      - path: /config/pyscript/scripts
