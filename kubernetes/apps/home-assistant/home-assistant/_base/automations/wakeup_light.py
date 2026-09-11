@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-LIGHT             = "light.living_light_test"
+LIGHT             = "light.bedroom_light_main"
 ALARM_SENSOR      = "sensor.sm_a546b_next_alarm"
 ENABLE_SWITCH     = "input_boolean.wakeup_light"   # kill switch (create in HA UI or config)
 RAMP_BEFORE_MINUTES = 30           # ramp duration
@@ -16,13 +16,11 @@ _TZ = ZoneInfo("Europe/Amsterdam")
 @time_trigger("once(now)", "cron(* * * * *)")
 def wakeup_ramp(**kwargs):
     task.unique("wakeup_ramp")
-    log.info("RUNNING")
     if ENABLE_SWITCH and (not state.exist(ENABLE_SWITCH)
                           or state.get(ENABLE_SWITCH).lower() in ("off", "false", "0")):
-        log.info("Wake-up light functionality turned off")
+        log.debug("Wake-up light functionality turned off")
         return
-    # raw = state.get(ALARM_SENSOR)
-    raw = '2026-09-11T21:51:00+00:00'
+    raw = state.get(ALARM_SENSOR)
     if not raw:
         return
     try:
@@ -32,10 +30,10 @@ def wakeup_ramp(**kwargs):
     now = datetime.now(_TZ)
     ramp_start = alarm - timedelta(minutes=RAMP_BEFORE_MINUTES)
     if now >= alarm:                       # done: stays at max, no-op
-        log.info("Max reached")
+        log.debug("Max reached")
         return
     if now < ramp_start:                   # not ramping yet
-        log.info("Not yet ramping")
+        log.debug("Not yet ramping")
         return
     progress = (now - ramp_start) / (alarm - ramp_start)          # 0..1
     brightness = MIN_BRIGHTNESS_PCT + (MAX_BRIGHTNESS_PCT - MIN_BRIGHTNESS_PCT) * progress
@@ -43,4 +41,4 @@ def wakeup_ramp(**kwargs):
     light.turn_on(entity_id=LIGHT,
                   brightness_pct=brightness,
                   color_temp_kelvin=kelvin)
-    log.info(f"progress: {progress}, brightness: {brightness}, kelvin: {kelvin}")
+    log.debug(f"progress: {progress}, brightness: {brightness}, kelvin: {kelvin}")
