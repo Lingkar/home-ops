@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from zoneinfo import ZoneInfo
 LIGHT             = "light.bedroom_light_main"
 ALARM_SENSOR      = "sensor.sm_a546b_next_alarm"
@@ -12,6 +12,8 @@ MAX_BRIGHTNESS_PCT  = 100          # brightness at alarm time
 START_KELVIN        = 2200         # warm
 END_KELVIN          = 3800         # cooler at alarm time
 RAMP_INTERVAL_SEC   = 60           # poll interval (matches cron)
+ALARM_WINDOW_START  = time(4, 0)   # 04:00 inclusive
+ALARM_WINDOW_END    = time(9, 30)  # 09:30 exclusive (strictly before)
 _TZ = ZoneInfo("Europe/Amsterdam")
 @time_trigger("once(now)", "cron(* * * * *)")
 def wakeup_ramp(**kwargs):
@@ -28,6 +30,10 @@ def wakeup_ramp(**kwargs):
     except ValueError:
         return
     now = datetime.now(_TZ)
+    alarm_time = alarm.time()
+    if not (ALARM_WINDOW_START <= alarm_time < ALARM_WINDOW_END):
+        log.debug("Alarm outside morning window")
+        return
     ramp_start = alarm - timedelta(minutes=RAMP_BEFORE_MINUTES)
     if now >= alarm:                       # done: stays at max, no-op
         log.debug("Max reached")
