@@ -201,9 +201,9 @@ linstorSatelliteConfigurations:
             resources:
               requests:
                 cpu: 200m
-                memory: 350Mi
+                memory: 512Mi
               limits:
-                memory: 350Mi
+                memory: 512Mi
           - name: drbd-reactor
             resources:
               requests:
@@ -230,9 +230,9 @@ linstorSatelliteConfigurations:
             resources:
               requests:
                 cpu: 200m
-                memory: 400Mi
+                memory: 512Mi
               limits:
-                memory: 400Mi
+                memory: 512Mi
           - name: drbd-reactor
             resources:
               requests:
