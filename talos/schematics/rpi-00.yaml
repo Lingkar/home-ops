@@ -14,9 +14,6 @@ overlay:
   image: siderolabs/sbc-raspberrypi
   name: rpi_generic
 customization:
-  extraKernelArgs:
-    - -lockdown
-    - lockdown=integrity
   systemExtensions:
     officialExtensions:
       - siderolabs/vc4

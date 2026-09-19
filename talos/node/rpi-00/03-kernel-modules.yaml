@@ -1,5 +1,7 @@
-machine:
-  kernel:
-    modules:
-      - name: vc4
-      - name: v3d
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: vc4
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: v3d
