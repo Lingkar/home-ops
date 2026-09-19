@@ -12,7 +12,7 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 
 `task` (go-task). Run `task --list`. Key tasks:
 - `task reconcile` — force Flux to pull changes (precondition: flux-cli + kubeconfig).
-- `task talos:render`, `task talos:talosconfig`, `task talos:apply-node HOST=…`, `task talos:upgrade-node HOST=…`, `task talos:upgrade-k8s`, `task talos:reset`.
+- `task talos:render`, `task talos:talosconfig`, `task talos:apply-dry-run`, `task talos:apply`, `task talos:apply-node HOST=…`, `task talos:upgrade-node HOST=…`, `task talos:upgrade-k8s`, `task talos:nodes`, `task talos:clusterinfo`, `task talos:kubeconfig`, `task talos:reset`.
 - `task bootstrap:talos` / `task bootstrap:apps` — bootstrap only, not for day-to-day.
 
 ## How manifests are wired

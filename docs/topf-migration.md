@@ -369,8 +369,9 @@ to preserve the zero-diff goal or to match actual TOPF v0.6.0 behaviour:
    directory. `upgrade-k8s` now runs `talosctl upgrade-k8s --to <version>` reading `topf.yaml`.
 8. **Render output written to `../home-ops-secrets/talos/rendered/`** (follow-up request)
    instead of `talos/rendered/`, so plaintext machine configs never sit inside the git repo.
-   `talosconfig` stays at `../home-ops-secrets/talos/talosconfig`. `.gitignore` still ignores
-   the in-repo `talos/output/` and `talos/rendered/` defaults as a safety net.
+   `talosconfig` stays at `../home-ops-secrets/talos/talosconfig`. The temporary in-repo
+   `.gitignore` safety net for `talos/output/`/`talos/rendered/` was later removed as
+   unnecessary — render output only ever goes to the secrets dir.
 
 Gate results:
 
@@ -392,3 +393,32 @@ Apply is a separate, human-gated roll-out. Suggested order once approved:
 then `rpi-00` → `c-02` → `c-01`, then the post-apply checks from STEP 0.
 Rollback remains `talosctl apply-config -n <ip> -f /tmp/tlh-baseline/<node>.yaml`, or the
 old `talhelper` config on `main`.
+
+## Phase 2 — topf best-practice refinements (2026-09-19)
+
+Follow-up pass to make the tree idiomatic TOPF. No node was applied.
+
+1. **Network patches now use `machine.network.interfaces`** (`deviceSelector.hardwareAddr`,
+   `addresses`, `routes`, and `vip` for c-01) instead of the hand-written
+   `LinkAliasConfig`/`LinkConfig`/`Layer2VIPConfig` documents that were copied from the
+   talhelper render. This is TOPF's documented idiom and is far easier to author/maintain.
+   Consequence: `topf render` no longer matches the talhelper baseline for those documents
+   (the old deviation #2 is superseded). Talos normalises both forms to the same effective
+   networking; `talosctl validate --mode metal` still passes. Expect `topf apply --dry-run`
+   to report the network documents as changed.
+2. **rpi-00 kernel modules moved from `all/09-kernel-modules-rpi-00.yaml.tpl`** (host-guarded
+   patch in `all/`) to `node/rpi-00/03-kernel-modules.yaml`. The only effect is
+   `machine.kernel.modules` ordering — the shared list is emitted first, then `vc4`/`v3d`.
+   modprobe resolves module dependencies, so order is not significant.
+3. **Added tasks**: `talos:apply`, `talos:apply-dry-run`, `talos:kubeconfig`, `talos:nodes`,
+   `talos:clusterinfo`.
+4. **Cleaned topf task preconditions**: `topf` authenticates from the secrets bundle, so the
+   `talosctl config info` / `TALOSCONFIG` preconditions were dropped from the topf tasks and
+   kept only where `talosctl` is actually used (`upgrade-k8s`).
+5. **Deliberately skipped**: DRY-ing shared values (`vip`, subnets, gateway) into
+   `topf.yaml` `data:` + `.yaml.tpl`. Values remain inline for now.
+
+Because the render now intentionally differs from the talhelper baseline (network
+representation and kernel order), the earlier "G1 = document ordering only" statement no
+longer applies to those documents. Re-review with `task talos:apply-dry-run` before the
+G4 roll-out.

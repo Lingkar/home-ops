@@ -13,6 +13,13 @@ tasks:
       - test -f {{.ROOT_DIR}}/.sops.yaml
       - test -f {{.SOPS_AGE_KEY_FILE}}
       - which topf
+  apply:
+    desc: Apply Talos config to all nodes
+    dir: "{{.TALOS_DIR}}"
+    cmd: topf apply
+    preconditions:
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
   apply-node:
     desc: Apply Talos config to a node [HOST=required]
     dir: "{{.TALOS_DIR}}"
@@ -22,9 +29,29 @@ tasks:
     requires:
       vars: [HOST]
     preconditions:
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which topf talosctl
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
+  apply-dry-run:
+    desc: Show pending Talos config changes without applying them
+    dir: "{{.TALOS_DIR}}"
+    cmd: topf apply --dry-run || [ $? -eq 2 ]
+    preconditions:
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
+  nodes:
+    desc: List nodes and their current state
+    dir: "{{.TALOS_DIR}}"
+    cmd: topf nodes
+    preconditions:
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
+  clusterinfo:
+    desc: Show non-sensitive cluster information
+    dir: "{{.TALOS_DIR}}"
+    cmd: topf clusterinfo
+    preconditions:
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
   upgrade-node:
     desc: Upgrade Talos on a single node [HOST=required]
     dir: "{{.TALOS_DIR}}"
@@ -32,9 +59,8 @@ tasks:
     requires:
       vars: [HOST]
     preconditions:
-      - talosctl config info
-      - test -f {{.TALOSCONFIG}}
-      - which kubectl topf talosctl
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
   upgrade-k8s:
     desc: Upgrade Kubernetes
     dir: "{{.TALOS_DIR}}"
@@ -46,6 +72,16 @@ tasks:
       - talosctl config info
       - test -f {{.TALOSCONFIG}}
       - which talosctl yq
+  kubeconfig:
+    desc: Generate an admin kubeconfig and write it to the secrets dir
+    dir: "{{.TALOS_DIR}}"
+    cmds:
+      - mkdir -p {{.SECRETS_DIR}}
+      - topf kubeconfig > {{.KUBECONFIG}}
+      - chmod 600 {{.KUBECONFIG}}
+    preconditions:
+      - test -f {{.TALOS_DIR}}/secrets.sops.yaml
+      - which topf
   talosconfig:
     desc: Generate a Talos client configuration from the secrets bundle
     dir: "{{.TALOS_DIR}}"

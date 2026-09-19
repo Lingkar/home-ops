@@ -28,9 +28,13 @@ them as patches.
 ## Commands
 
 - `task talos:render` — render all nodes to `../home-ops-secrets/talos/rendered/` (inspect before applying).
-- `task talos:apply-node HOST=<host>` — generate + apply to one node (`MODE=` optional).
+- `task talos:apply-dry-run` — show pending config changes for all nodes (no changes applied).
+- `task talos:apply` — apply config to all nodes (interactive confirm).
+- `task talos:apply-node HOST=<host>` — apply to one node (`MODE=` optional).
 - `task talos:upgrade-node HOST=<host>` — upgrade Talos on one node.
-- `task talos:upgrade-k8s` — upgrade Kubernetes (still `talosctl`).
+- `task talos:upgrade-k8s` — upgrade Kubernetes (still `talosctl`, as topf recommends).
+- `task talos:nodes` / `task talos:clusterinfo` — inspect node state / cluster info.
+- `task talos:kubeconfig` — write an admin kubeconfig to `../home-ops-secrets/kubeconfig`.
 - `task talos:talosconfig` — write the client config to `../home-ops-secrets/talos/talosconfig`.
 - `task talos:reset` — reset nodes to maintenance mode.
 

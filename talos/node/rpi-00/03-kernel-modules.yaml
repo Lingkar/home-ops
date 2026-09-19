@@ -1,0 +1,5 @@
+machine:
+  kernel:
+    modules:
+      - name: vc4
+      - name: v3d

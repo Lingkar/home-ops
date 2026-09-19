@@ -1,13 +1,10 @@
-apiVersion: v1alpha1
-kind: LinkAliasConfig
-name: ethSel0
-selector:
-  match: glob("38:05:25:34:67:7e", mac(link.hardware_addr))
----
-apiVersion: v1alpha1
-kind: LinkConfig
-name: ethSel0
-addresses:
-  - address: 192.168.68.254/22
-routes:
-  - gateway: 192.168.68.1
+machine:
+  network:
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:34:67:7e" # This is the right ethernet port
+        addresses:
+          - 192.168.68.254/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.68.1
