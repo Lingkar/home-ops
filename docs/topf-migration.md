@@ -369,8 +369,9 @@ to preserve the zero-diff goal or to match actual TOPF v0.6.0 behaviour:
    directory. `upgrade-k8s` now runs `talosctl upgrade-k8s --to <version>` reading `topf.yaml`.
 8. **Render output written to `../home-ops-secrets/talos/rendered/`** (follow-up request)
    instead of `talos/rendered/`, so plaintext machine configs never sit inside the git repo.
-   `talosconfig` stays at `../home-ops-secrets/talos/talosconfig`. `.gitignore` still ignores
-   the in-repo `talos/output/` and `talos/rendered/` defaults as a safety net.
+   `talosconfig` stays at `../home-ops-secrets/talos/talosconfig`. The temporary in-repo
+   `.gitignore` safety net for `talos/output/`/`talos/rendered/` was later removed as
+   unnecessary — render output only ever goes to the secrets dir.
 
 Gate results:
 
