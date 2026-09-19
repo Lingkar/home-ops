@@ -1,0 +1,24 @@
+overlay:
+  options:
+    configTxt: |
+      gpu_mem=128
+      kernel=u-boot.bin
+      arm_64bit=1
+      arm_boost=1
+      enable_uart=1
+      dtoverlay=disable-bt
+      dtoverlay=disable-wifi
+      avoid_warnings=2
+      dtoverlay=pwm-gpio-fan,gpiopin=18
+      dtoverlay=vc4-kms-v3d,cma-256,noaudio
+  image: siderolabs/sbc-raspberrypi
+  name: rpi_generic
+customization:
+  extraKernelArgs:
+    - -lockdown
+    - lockdown=integrity
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/vc4
+      - siderolabs/drbd
+      - siderolabs/zfs

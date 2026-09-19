@@ -322,7 +322,7 @@ function sync_gitops_infra() {
 
 function main() {
     check_env KUBECONFIG TALOSCONFIG
-    check_cli helm helmfile kubectl kustomize sops talhelper yq
+    check_cli helm helmfile kubectl kustomize sops topf yq
 
     # Apply resources and Helm releases
     wait_for_nodes

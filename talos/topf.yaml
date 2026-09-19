@@ -1,0 +1,24 @@
+# TOPF cluster configuration (replaces talconfig.yaml + talenv.yaml)
+clusterName: kubernetes
+clusterEndpoint: https://192.168.69.5:6443
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.13.8
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.36.2
+secretsPath: secrets.sops.yaml
+nodes:
+  - host: rpi-00
+    ip: 192.168.68.252
+    role: worker
+    secureboot: false
+    schematicId: "@schematics/rpi-00.yaml"
+  - host: c-01
+    ip: 192.168.68.253
+    role: control-plane
+    secureboot: true
+    schematicId: "@schematics/c-01.yaml"
+  - host: c-02
+    ip: 192.168.68.254
+    role: worker
+    secureboot: true
+    schematicId: "@schematics/c-02.yaml"

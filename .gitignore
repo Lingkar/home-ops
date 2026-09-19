@@ -5,6 +5,8 @@
 # Kubernetes
 kubeconfig
 talosconfig
+# Talos
+talos/rendered/
 # Misc.
 tmp/
 .private/

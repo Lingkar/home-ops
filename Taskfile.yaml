@@ -11,17 +11,15 @@ vars:
   KUBECONFIG: "{{.SECRETS_DIR}}/kubeconfig"
   SOPS_AGE_KEY_FILE: "{{.SECRETS_DIR}}/age.key"
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
-  TALOS_DIR: "{{.SECRETS_DIR}}/talos"
-  TALOS_DIR_OUT: "{{.SECRETS_DIR}}/talos/clusterconfig"
-  TALOSCONFIGYAML: "{{.ROOT_DIR}}/talos/talconfig.yaml"
-  TALOSCONFIGENV: "{{.ROOT_DIR}}/talos/talenv.yaml"
-  TALOSCONFIGSECRET: "{{.ROOT_DIR}}/talos/talsecret.sops.yaml"
-  TALOSCONFIG: "{{.SECRETS_DIR}}/talos/clusterconfig/talosconfig"
+  TALOS_DIR: "{{.ROOT_DIR}}/talos"
+  TOPFCONFIG: "{{.ROOT_DIR}}/talos/topf.yaml"
+  TALOSCONFIG: "{{.SECRETS_DIR}}/talos/talosconfig"
 
 env:
   KUBECONFIG: "{{.SECRETS_DIR}}/kubeconfig"
   SOPS_AGE_KEY_FILE: "{{.SECRETS_DIR}}/age.key"
   TALOSCONFIG: "{{.TALOSCONFIG}}"
+  TOPFCONFIG: "{{.TOPFCONFIG}}"
 
 includes:
   bootstrap: .taskfiles/bootstrap
