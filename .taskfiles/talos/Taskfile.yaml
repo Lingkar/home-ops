@@ -5,7 +5,8 @@ tasks:
     desc: Render Talos configuration
     dir: "{{.TALOS_DIR}}"
     cmds:
-      - topf render -o {{.TALOS_DIR}}/rendered
+      - mkdir -p {{.TALOS_RENDER_DIR}}
+      - topf render -o {{.TALOS_RENDER_DIR}}
     preconditions:
       - test -f {{.TOPFCONFIG}}
       - test -f {{.TALOS_DIR}}/secrets.sops.yaml

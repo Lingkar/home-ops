@@ -15,7 +15,9 @@ the `task talos:*` tasks.
 - `worker/` — patches applied only to worker nodes.
 - `node/<host>/` — per-node patches (`install.disk`, network, labels, volumes, ...).
 - `schematics/` — Talos image-factory schematic definitions referenced by `schematicId`.
-- `rendered/` — `topf render` output (gitignored; contains plaintext secrets).
+
+`topf render` output (plaintext machine configs) is written **outside the repo** to
+`../home-ops-secrets/talos/rendered/`, next to the other credentials.
 
 Patch files are strategic-merge patches applied in `all/` → `<role>/` → `node/<host>/`
 order, lexicographically within each directory. `.yaml.tpl` files are Go templates with
@@ -25,7 +27,7 @@ them as patches.
 
 ## Commands
 
-- `task talos:render` — render all nodes to `talos/rendered/` (inspect before applying).
+- `task talos:render` — render all nodes to `../home-ops-secrets/talos/rendered/` (inspect before applying).
 - `task talos:apply-node HOST=<host>` — generate + apply to one node (`MODE=` optional).
 - `task talos:upgrade-node HOST=<host>` — upgrade Talos on one node.
 - `task talos:upgrade-k8s` — upgrade Kubernetes (still `talosctl`).

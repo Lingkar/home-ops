@@ -12,6 +12,7 @@ vars:
   SOPS_AGE_KEY_FILE: "{{.SECRETS_DIR}}/age.key"
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   TALOS_DIR: "{{.ROOT_DIR}}/talos"
+  TALOS_RENDER_DIR: "{{.SECRETS_DIR}}/talos/rendered"
   TOPFCONFIG: "{{.ROOT_DIR}}/talos/topf.yaml"
   TALOSCONFIG: "{{.SECRETS_DIR}}/talos/talosconfig"
 

@@ -149,7 +149,6 @@ New layout under `talos/`, replacing `patches/`:
 talos/
 ├── topf.yaml
 ├── secrets.sops.yaml               # git mv from talsecret.sops.yaml
-├── rendered/                       # topf render output — gitignored (contains secrets)
 ├── all/
 │   ├── 00-cluster.yaml             # pod/svc subnets, cni.name none, certSANs
 │   ├── 05-hostname.yaml.tpl        # NEW — see below
@@ -187,6 +186,9 @@ talos/
         ├── 05-raw-volume-ssd-0.yaml   # ← c-02/raw-volume-ssd-0.yaml
         └── schematic.yaml
 ```
+
+`topf render` output contains plaintext secrets and is written **outside the repo** to
+`../home-ops-secrets/talos/rendered/` (see the execution record).
 
 Guidelines:
 - Patch content copies the existing files verbatim (they are already strategic-merge patches).
@@ -244,7 +246,7 @@ rm -rf talos/clusterconfig            # untracked leftover
 
 | old task | new command |
 |---|---|
-| `generate-config` | `topf render -o {{.TALOS_DIR}}/rendered` |
+| `generate-config` | `topf render -o {{.SECRETS_DIR}}/talos/rendered` |
 | `apply-node IP=` | `apply-node HOST=` → `topf apply --nodes-filter '^{{.HOST}}$'` |
 | `upgrade-node IP=` | `upgrade-node HOST=` → `topf upgrade --nodes-filter '^{{.HOST}}$'` |
 | `upgrade-k8s` | keep `talosctl upgrade-k8s` (topf does not do K8s upgrades) |
@@ -270,7 +272,8 @@ add `TOPFCONFIG: "{{.ROOT_DIR}}/talos/topf.yaml"`; point `TALOSCONFIG` at
   `matchFileNames: ["talos/talenv.yaml"]` → `["talos/topf.yaml"]`.
 - `AGENTS.md`: update the tool list (line ~7), the talos layout/upgrade descriptions (lines ~33,
   39–41) to the TOPF layout and `task talos:render` / `apply-node HOST=…` flow.
-- `.gitignore`: add `talos/rendered/`.
+- `.gitignore`: ignore `talos/output/` and `talos/rendered/` as a safety net — the real render
+  output is written to `../home-ops-secrets/talos/rendered/`.
 - Delete `talos/patches/README.md` (superseded) and the `talos/patches/` tree (moved in STEP 3);
   optionally add a short `talos/README.md` describing the topf layout.
 - `.mise.toml` `[env]` TALOSCONFIG + TOPFCONFIG (see STEP 1).
@@ -328,7 +331,8 @@ the cluster CA never moves. Keep talhelper files on the branch until G4 review i
 ## Definition of done
 
 1. `.mise.toml` uses topf v0.6.0; talhelper absent.
-2. `talos/topf.yaml` + patch tree present; `rendered/` gitignored.
+2. `talos/topf.yaml` + patch tree present; render output goes to
+   `../home-ops-secrets/talos/rendered/`.
 3. `talos/secrets.sops.yaml` (renamed) + `talos/{talconfig,talenv,talsecret,clusterconfig}` gone.
 4. Tasks, bootstrap, tools-check, renovate, AGENTS.md, gitignore updated consistently.
 5. Gates G0–G3 pass (with G1 hunks all explained).
@@ -363,6 +367,10 @@ to preserve the zero-diff goal or to match actual TOPF v0.6.0 behaviour:
 7. **`TALOS_DIR` is now the repo `talos/` dir** (was the secrets dir). `bootstrap:talos` writes
    the kubeconfig to `{{.KUBECONFIG}}` (secrets dir) because the repo-root `kubeconfig/` is a
    directory. `upgrade-k8s` now runs `talosctl upgrade-k8s --to <version>` reading `topf.yaml`.
+8. **Render output written to `../home-ops-secrets/talos/rendered/`** (follow-up request)
+   instead of `talos/rendered/`, so plaintext machine configs never sit inside the git repo.
+   `talosconfig` stays at `../home-ops-secrets/talos/talosconfig`. `.gitignore` still ignores
+   the in-repo `talos/output/` and `talos/rendered/` defaults as a safety net.
 
 Gate results:
 
