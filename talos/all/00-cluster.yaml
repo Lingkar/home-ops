@@ -1,0 +1,11 @@
+cluster:
+  network:
+    dnsDomain: cluster.local
+    podSubnets: ["10.42.0.0/16"]
+    serviceSubnets: ["10.43.0.0/16"]
+    cni:
+      name: none
+machine:
+  certSANs:
+    - 127.0.0.1
+    - 192.168.69.5

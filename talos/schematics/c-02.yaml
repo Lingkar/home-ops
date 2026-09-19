@@ -1,0 +1,13 @@
+customization:
+  extraKernelArgs:
+    - amd_iommu=off
+    - amdgpu.gttsize=126976
+    - ttm.pages_limit=32505856
+    - -lockdown
+    - lockdown=integrity
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/drbd
+      - siderolabs/zfs
+      - siderolabs/amdgpu
+      - siderolabs/amd-ucode

@@ -1,0 +1,8 @@
+customization:
+  extraKernelArgs:
+    - -lockdown
+    - lockdown=integrity
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/drbd
+      - siderolabs/zfs

@@ -4,7 +4,7 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 
 ## Critical environment setup
 
-- **All CLI tools come from `mise`** (`.mise.toml` pins exact versions of task, flux, sops, age, talhelper, talosctl, helm, helmfile, kubectl, kustomize, kubeconform, yq, jq, cilium-cli, pre-commit). Run `mise` before using tools; do not assume system-installed versions.
+- **All CLI tools come from `mise`** (`.mise.toml` pins exact versions of task, flux, sops, age, topf, talosctl, helm, helmfile, kubectl, kustomize, kubeconform, yq, jq, cilium-cli, pre-commit). Run `mise` before using tools; do not assume system-installed versions.
 - **Credentials/keys live OUTSIDE this repo**, in the sibling directory `../home-ops-secrets/` (`age.key`, `kubeconfig`, `talos` dir only `talosconfig`). `KUBECONFIG`, `SOPS_AGE_KEY_FILE`, `TALOSCONFIG` env vars point there (set by `.mise.toml`). Anything needing cluster access or SOPS decryption silently fails without this dir.
 - The empty `kubeconfig/` directory in the repo root is **not** used; the real kubeconfig comes from the sibling dir.
 
@@ -12,7 +12,7 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 
 `task` (go-task). Run `task --list`. Key tasks:
 - `task reconcile` — force Flux to pull changes (precondition: flux-cli + kubeconfig).
-- `task talos:generate-config`, `task talos:apply-node IP=…`, `task talos:upgrade-node IP=…`, `task talos:upgrade-k8s`, `task talos:reset`.
+- `task talos:render`, `task talos:talosconfig`, `task talos:apply-node HOST=…`, `task talos:upgrade-node HOST=…`, `task talos:upgrade-k8s`, `task talos:reset`.
 - `task bootstrap:talos` / `task bootstrap:apps` — bootstrap only, not for day-to-day.
 
 ## How manifests are wired
@@ -30,15 +30,15 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 
 - Encrypted files end in `.sops.yaml` (rules in `.sops.yaml`: talos files fully encrypted; kubernetes/bootstrap files encrypt only `data|stringData|spec`). Never commit plaintext secrets or the age key.
 - Decrypt for reading with `sops -d <file>` (needs `../home-ops-secrets/age.key`). To add/update a secret, edit as an sops file. Renovate and codespell pre-commit both ignore `*.sops.*`.
-- Version/image updates always come through `renovate:` annotations (see `talos/talenv.yaml`, helm/container comments). Don't hand-bump versions outside the rename convention.
+- Version/image updates always come through `renovate:` annotations (see `talos/topf.yaml`, helm/container comments). Don't hand-bump versions outside the rename convention.
 
 ## Talos cluster
 
 - 3 nodes: `rpi-00` 192.168.68.252 (arm64, worker, Raspberry Pi), `c-01` 192.168.68.253 (amd64, control plane, VIP `192.168.69.5`), `c-02` 192.168.68.254 (amd64, worker). Cluster endpoint `https://192.168.69.5:6443`.
 - Storage (Piraeus/LINSTOR): `c-01` and `c-02` are storage nodes (label `piraeus.io/storage: true`); `rpi-00` is not.
-- Node config = `talos/talconfig.yaml` + `talos/talenv.yaml` (version numbers, renovate-managed) + `talos/talsecret.sops.yaml` (encrypted); per-node patches in `talos/patches/`.
-- Upgrade flow: bump versions in `talos/talenv.yaml`, then `task talos:generate-config`, then `task talos:apply-node IP=…` / `task talos:upgrade-node IP=…`, then `task talos:upgrade-k8s`.
-- Note `.mise.toml` will install a talos CLI that may be newer than the cluster version in `talenv.yaml` — they are independent.
+- Node config = `talos/topf.yaml` (versions, renovate-managed) + `talos/secrets.sops.yaml` (encrypted); patch tree `talos/{all,control-plane,worker,node/<host>}/`; image-factory schematics in `talos/schematics/` referenced via `schematicId: "@schematics/<host>.yaml"`.
+- Upgrade flow: bump versions in `talos/topf.yaml`, then `task talos:render` (optional, offline check), then `task talos:apply-node HOST=…` / `task talos:upgrade-node HOST=…`, then `task talos:upgrade-k8s`.
+- Note `.mise.toml` will install a talos CLI that may be newer than the cluster version in `talos/topf.yaml` — they are independent.
 
 ## Validation
 

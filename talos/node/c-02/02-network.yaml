@@ -1,0 +1,13 @@
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: ethSel0
+selector:
+  match: glob("38:05:25:34:67:7e", mac(link.hardware_addr))
+---
+apiVersion: v1alpha1
+kind: LinkConfig
+name: ethSel0
+addresses:
+  - address: 192.168.68.254/22
+routes:
+  - gateway: 192.168.68.1

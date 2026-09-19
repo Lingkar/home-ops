@@ -2,18 +2,19 @@
 _.python.venv = { path = "{{config_root}}/.venv", create = true }
 KUBECONFIG = "{{config_root}}/../home-ops-secrets/kubeconfig"
 SOPS_AGE_KEY_FILE = "{{config_root}}/../home-ops-secrets/age.key"
-TALOSCONFIG = "{{config_root}}/../home-ops-secrets/talos/clusterconfig/talosconfig"
+TALOSCONFIG = "{{config_root}}/../home-ops-secrets/talos/talosconfig"
+TOPFCONFIG = "{{config_root}}/talos/topf.yaml"
 
 [tools]
 "python" = "3.14.7"
 "pipx:makejinja" = "2.8.3"
-"aqua:budimanjojo/talhelper" = "3.1.17"
 "aqua:cilium/cilium-cli" = "0.20.0"
 "aqua:cloudflare/cloudflared" = "2026.8.3"
 "aqua:FiloSottile/age" = "1.3.2"
 "aqua:fluxcd/flux2" = "2.9.5"
 "aqua:getsops/sops" = "3.13.3"
 "aqua:go-task/task" = "3.53.1"
+"github:postfinance/topf" = "0.6.0"
 "aqua:helm/helm" = "4.2.4"
 "aqua:helmfile/helmfile" = "1.7.4"
 "aqua:jqlang/jq" = "1.8.1"
