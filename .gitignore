@@ -5,9 +5,6 @@
 # Kubernetes
 kubeconfig
 talosconfig
-# Talos (render output lives in ../home-ops-secrets; ignore in-repo topf defaults)
-talos/output/
-talos/rendered/
 # Misc.
 tmp/
 .private/
