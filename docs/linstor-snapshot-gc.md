@@ -161,8 +161,12 @@ For each: confirm no `VolumeSnapshotContent` references it, clear its snapshots
   (all from Velero backups that no longer existed), then the 26 RDs they
   anchored deleted.
 - Result: LINSTOR RDs 73 -> 32, matching the 32 PVs; orphans 41 -> 0.
-- What remained: 463 LINSTOR snapshots on live RDs, with no K8s object
-  reference (452 `Successful`, 8 `Failed`, 3 `DELETING`) - the target of Step 2.
+- What remained after Phases 1-2: 463 LINSTOR snapshots on live RDs with no K8s
+  object reference (452 `Successful`, 8 `Failed`, 3 `DELETING`).
+- Same-day Step-2 backlog run: deleted the 365 `Successful` snapshots older
+  than 24h, plus all 8 `Failed` and 3 `DELETING` ones (376 total). This freed
+  ~130 GiB on c-01 and ~100 GiB on c-02. 87 `Successful` snapshots younger
+  than 24h were left for the next GC run.
 
 ## Step 6 - Monitor
 

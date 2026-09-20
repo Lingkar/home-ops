@@ -261,4 +261,6 @@ object cleanup. Root cause and the running procedure are in
 - Outcome: LINSTOR RDs 73 -> 32 (= PVs), orphan RDs 41 -> 0, VolumeSnapshots
   and VSCs 0, all 32 PVCs stayed `Bound`, no pods disrupted.
 - Leftover: 463 orphaned LINSTOR snapshots on live RDs (452 `Successful`,
-  8 `Failed`, 3 `DELETING`) handled by `docs/linstor-snapshot-gc.md`.
+  8 `Failed`, 3 `DELETING`). 376 older than 24h (incl. all Failed/DELETING)
+  were deleted, freeing ~230 GiB; 87 `Successful` younger than 24h remain for
+  the next run of `docs/linstor-snapshot-gc.md`.
