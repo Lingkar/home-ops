@@ -60,6 +60,10 @@ spec:
     passwordSecret:
       name: cnpg-keycloak-app
       key: password
+  features:
+    enabled:
+      - client-admin-api:v2
+      - parameterized-scopes
   ingress:
     enabled: false
   hostname:
@@ -68,9 +72,6 @@ spec:
     httpEnabled: true
   proxy:
     headers: xforwarded
-  bootstrapAdmin:
-    service:
-      secret: kc-admin-creds
   resources:
     requests:
       cpu: 10m

@@ -53,12 +53,12 @@
       "pinDigests": false
     },
     {
-      "description": "Disable digest pinning for talenv",
+      "description": "Disable digest pinning for topf",
       "matchManagers": [
         "custom.regex"
       ],
       "matchFileNames": [
-        "talos/talenv.yaml"
+        "talos/topf.yaml"
       ],
       "pinDigests": false
     },
@@ -249,6 +249,7 @@
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },
     {
+      "description": "Update remote github resources in kustomization.yaml",
       "customType": "regex",
       "managerFilePatterns": [
         "/(^|/)kustomization\\.ya?ml$/"

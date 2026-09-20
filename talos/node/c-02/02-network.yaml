@@ -1,0 +1,10 @@
+machine:
+  network:
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:34:67:7e" # This is the right ethernet port
+        addresses:
+          - 192.168.68.254/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.68.1

@@ -22,7 +22,7 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-        - image: netbirdio/netbird:0.76.1-rootless@sha256:419a68224f05ad2eb4775227eb571df2c2d2e5e27b5153ab7233e170aa73ff8f
+        - image: netbirdio/netbird:0.78.1-rootless@sha256:5025865661882adc6ef2ea125de5d2b9f1a298fb67da990ab180ef55dddfeadb
           name: netbird
           resources:
             requests:

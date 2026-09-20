@@ -1,0 +1,12 @@
+machine:
+  network:
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d2:90:ed"
+        addresses:
+          - 192.168.68.253/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.68.1
+        vip:
+          ip: "192.168.69.5"

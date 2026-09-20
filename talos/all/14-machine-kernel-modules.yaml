@@ -1,0 +1,17 @@
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: drbd
+parameters:
+  - usermode_helper=disabled
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: drbd_transport_tcp
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: dm-thin-pool
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: zfs

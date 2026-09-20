@@ -147,7 +147,7 @@ spec:
             beta.kubernetes.io/arch: amd64
           initContainers:
             - name: list-repositories
-              image: bitnami/kubectl:latest@sha256:b29d8c1665b70817259ceecaea16ab27aab6368b48daf485d19436c809067492
+              image: bitnami/kubectl:latest@sha256:6e9c5284a0dac06e84de9f4d97852d2e6513442ee7ec3a66d35009eec86e1e62
               command:
                 - /bin/bash
                 - -ec
@@ -241,7 +241,7 @@ spec:
             beta.kubernetes.io/arch: amd64
           initContainers:
             - name: list-repositories
-              image: bitnami/kubectl:latest@sha256:b29d8c1665b70817259ceecaea16ab27aab6368b48daf485d19436c809067492
+              image: bitnami/kubectl:latest@sha256:6e9c5284a0dac06e84de9f4d97852d2e6513442ee7ec3a66d35009eec86e1e62
               command:
                 - /bin/bash
                 - -ec
