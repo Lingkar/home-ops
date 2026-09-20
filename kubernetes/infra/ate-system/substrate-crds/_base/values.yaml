@@ -1,0 +1,29 @@
+crds:
+  enabled: true
+replicaCount: 1
+dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
+dns01RecursiveNameserversOnly: true
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true
+resources:
+  requests:
+    cpu: 10m
+    memory: 200Mi
+  limits:
+    memory: 200Mi
+webhook:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 80Mi
+    limits:
+      memory: 80Mi
+cainjector:
+  resources:
+    requests:
+      cpu: 128m
+      memory: 300Mi
+    limits:
+      memory: 300Mi

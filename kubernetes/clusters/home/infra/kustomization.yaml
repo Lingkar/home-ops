@@ -1,4 +1,5 @@
 resources:
+  - ate-system
   - cert-manager.yaml
   - cnpg-system.yaml
   - crossplane.yaml

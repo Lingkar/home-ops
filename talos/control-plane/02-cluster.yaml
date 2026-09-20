@@ -8,6 +8,13 @@ extraArgs:
   # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
   enable-aggregator-routing: "true"
   default-watch-cache-size: "5"
+  # Enables the certificates.k8s.io/v1beta1 API group, which Kubernetes 1.37
+  # disables by default (genericBetaAPIGroupVersionsDisabledByDefault). Required
+  # by agent-substrate for ClusterTrustBundle/PodCertificateRequest, which are
+  # already served at v1 on this cluster.
+  # TODO:: remove this runtime-config when upgrading to Kubernetes v1.40, where
+  # certificates.k8s.io/v1beta1 is no longer served.
+  runtime-config: certificates.k8s.io/v1beta1=true
 ---
 apiVersion: v1alpha1
 kind: KubeControllerManagerConfig
