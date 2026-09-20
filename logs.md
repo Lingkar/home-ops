@@ -62,8 +62,9 @@
 - [/] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] Set-up Immich
 
-- [ ] Set-up clean-up job for delete PV's with Retain
+- [/] Set-up clean-up job for delete PV's with Retain
         Additionally the linstor resource definition might need to be removed including its snapshots.
+        Manual runbook added for now: docs/linstor-snapshot-gc.md (also covers orphaned LINSTOR snapshots).
 - [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
 - [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
 - [?] Set-up valkey operator
