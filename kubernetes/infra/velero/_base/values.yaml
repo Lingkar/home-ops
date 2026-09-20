@@ -75,6 +75,22 @@ initContainers:
       - mountPath: /target
         name: plugins
 deployNodeAgent: true
+nodeAgent:
+  extraArgs:
+    - --node-agent-configmap=velero-node-agent-config
+configMaps:
+  node-agent-config:
+    data:
+      node-agent-config.json: |
+        {
+          "backupPVC": {
+            "ssd-lvm-thin-2": { "storageClass": "ssd-lvm-thin-1" }
+          },
+          "loadConcurrency": {
+            "globalConfig": 1,
+            "prepareQueueLength": 4
+          }
+        }
 metrics:
   serviceMonitor:
     enabled: true
