@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, time
 from zoneinfo import ZoneInfo
 LIGHT             = "light.bedroom_light_main"
-ALARM_SENSOR      = "sensor.sm_a546b_next_alarm"
+ALARM_SENSOR      = "sensor.fenneke_next_alarm"
 ENABLE_SWITCH     = "input_boolean.wakeup_light"   # kill switch (create in HA UI or config)
 RAMP_BEFORE_MINUTES = 30           # ramp duration
 MIN_BRIGHTNESS_PCT  = 2            # starting brightness
