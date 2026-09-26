@@ -33,9 +33,7 @@ spec:
                 - count: 4
                   paths:
                     - path: /dev/kfd
-                      optional: true
                     - path: /dev/dri/renderD128
-                      optional: true
             - --device
             - |
               name: serial
