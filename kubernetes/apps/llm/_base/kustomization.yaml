@@ -5,4 +5,5 @@ resources:
   - pvc-model.yaml
   - deployment.yaml
   - service.yaml
+  - httproute.yaml
   - secret.sops.yaml
