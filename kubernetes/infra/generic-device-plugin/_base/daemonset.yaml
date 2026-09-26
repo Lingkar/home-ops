@@ -28,8 +28,8 @@ spec:
             - --domain=generic-device
             - --device
             - |
-              name: gpu
-              groups:
+              name: gpu-amd
+              groups
                 - count: 4
                   paths:
                     - path: /dev/kfd
