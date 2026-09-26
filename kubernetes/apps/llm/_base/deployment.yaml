@@ -32,37 +32,45 @@ spec:
             - /bin/sh
             - -ceu
             - |
-              file=/models/Qwen3-32B-Q4_K_M.gguf
-              sha=efd971561896866f0e910cce52761ca77b1b138090c7f15fe284676d57d1f689
-              total=19762149024
-              url=https://huggingface.co/Qwen/Qwen3-32B-GGUF/resolve/938a7432affaec9157f883a87164e2646ae17555/Qwen3-32B-Q4_K_M.gguf
-              if [ -f "$file" ] && [ "$(sha256sum "$file" | cut -d' ' -f1)" = "$sha" ]; then
-                echo "model already present"
-                exit 0
-              fi
-              report() {
-                while :; do
-                  size=$(stat -c %s "$file.part" 2>/dev/null || echo 0)
-                  if [ "$size" -gt 0 ]; then
-                    printf '%s  %s/%s MiB (%s%%)\n' \
-                      "$(date -u +%H:%M:%S)" "$(( size / 1048576 ))" "$(( total / 1048576 ))" "$(( size * 100 / total ))"
-                  fi
-                  sleep 10
-                done
+              base="https://huggingface.co"
+              model_rev="38bb39ee97821de2c9009abb7e93950eec396e66"
+              mtp_rev="896756c9558ea9d5bd621c5e9a2d618f78b364f5"
+              out="/models"
+              fetch() {
+                path="$1"; sha="$2"; total="$3"; url="$4"
+                if [ -f "$path" ] && [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ]; then
+                  echo "$path already present and valid"
+                  return 0
+                fi
+                report() {
+                  while :; do
+                    size=$(stat -c %s "$path.part" 2>/dev/null || echo 0)
+                    if [ "$size" -gt 0 ]; then
+                      printf '%s  %s/%s MiB (%s%%)\n' \
+                        "$(date -u +%H:%M:%S)" "$(( size / 1048576 ))" "$(( total / 1048576 ))" "$(( size * 100 / total ))"
+                    fi
+                    sleep 10
+                  done
+                }
+                report &
+                reporter=$!
+                echo "downloading $url"
+                rc=0
+                curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors \
+                  --connect-timeout 15 --speed-limit 10240 --speed-time 60 \
+                  -C - -o "$path.part" "$url" || rc=$?
+                kill "$reporter" 2>/dev/null || true
+                [ "$rc" -eq 0 ] || { echo "download failed (curl exit $rc)"; exit "$rc"; }
+                echo "verifying sha256 $path"
+                echo "$sha  $path.part" | sha256sum -c -
+                mv "$path.part" "$path"
               }
-              report &
-              reporter=$!
-              echo "downloading $url"
-              rc=0
-              curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors \
-                --connect-timeout 15 --speed-limit 10240 --speed-time 60 \
-                -C - -o "$file.part" "$url" || rc=$?
-              kill "$reporter" 2>/dev/null || true
-              [ "$rc" -eq 0 ] || { echo "download failed (curl exit $rc)"; exit "$rc"; }
-              echo "verifying sha256 ..."
-              echo "$sha  $file.part" | sha256sum -c -
-              mv "$file.part" "$file"
-              echo "model ready"
+              model_base="$base/unsloth/Qwen3.8-Flash-Next-GGUF/resolve/$model_rev/UD-IQ3_XXS"
+              fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf" "268f81fdedf3149a538f252308927a4d5d1f6e062c178568a51e3b519744f8a8" 10946624 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf"
+              fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00002-of-00003.gguf" "cfe600b236b88c7fad1613a5ca5e83b9f2beb63cbd44c32b2be50a44747c695f" 49567921344 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00002-of-00003.gguf"
+              fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00003-of-00003.gguf" "f1912ba34c79427d2295a58dcb2b732b5931af5bef7a373c60557a57d9ee7250" 32382955968 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00003-of-00003.gguf"
+              fetch "$out/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf" "9db03a687670608286e99b563fcc86d0ee76c8dd863f64b2afc0b54eb0b975d" 4137429088 "$base/EasiiX/Qwen3.8-Flash-Next-MTP-Strix-Halo-GGUF/resolve/$mtp_rev/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf"
+              echo "all models ready"
           securityContext:
             runAsUser: 0
             runAsGroup: 0
@@ -77,34 +85,53 @@ spec:
               mountPath: /models
       containers:
         - name: llama-server
-          image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0@sha256:5388eb3ba10a703815476cbe63c7d86d46e815427ec11d258464e1f08539da22
+          image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-engramhalo@sha256:e17da4593e75cd85fe5cb955032fd092e19120930024d363b446c7452b3fceaf
           command:
             - llama-server
           args:
             - -m
-            - /models/Qwen3-32B-Q4_K_M.gguf
+            - /models/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf
+            - -md
+            - /models/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf
+            - --spec-type
+            - draft-mtp,ngram-mod
+            - --spec-draft-n-max
+            - "4"
+            - --spec-draft-p-min
+            - "0.75"
             - -c
-            - "32768"
+            - "163840"
             - -ngl
             - "999"
+            - -fa
+            - "on"
+            - -ctk
+            - q8_0
+            - -ctv
+            - q8_0
+            - -lm
+            - mmap
+            - --lazy-mode
+            - "on"
             - -b
-            - "2048"
+            - "8192"
             - -ub
             - "2048"
+            - -t
+            - "4"
+            - --parallel
+            - "1"
             - --host
             - 0.0.0.0
             - --port
             - "8080"
-            - -fa
-            - "1"
-            - --cache-type-k
-            - f16
-            - --cache-type-v
-            - f16
             - --jinja
+            - --no-webui
             - --alias
-            - qwen3-32b
+            - qwen3.8-flash-next
           env:
+            - name: ROCBLAS_USE_HIPBLASLT
+              value: "1"
             - name: LLAMA_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -116,14 +143,14 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 4Gi
+              memory: 56Gi
             limits:
               generic-device/gpu-amd: 1
           startupProbe:
             httpGet:
               path: /health
               port: http
-            failureThreshold: 60
+            failureThreshold: 120
             periodSeconds: 10
           readinessProbe:
             httpGet:
@@ -142,4 +169,4 @@ spec:
       volumes:
         - name: models
           persistentVolumeClaim:
-            claimName: llm-models
+            claimName: llm-model-qwen38-flash-next-iq3-xxs

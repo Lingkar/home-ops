@@ -207,3 +207,22 @@ time dd if=./testfile bs=1024k of=/dev/null count=1024
 real    0m0.445s
 user    0m0.001s
 sys     0m0.310s
+
+## LLM: Qwen3.8-Flash-Next (UD-IQ3_XXS, SSD-streamed engram)
+
+Switched `llm` from Qwen3-32B-Q4_K_M to Qwen3.8-Flash-Next on
+`rocm-10.0-engramhalo`. This is a 125B/6B-active MoE plus a ~26.8 GiB engram
+(n-gram) table; the EngramHalo build keeps that table SSD-backed via lazy mmap
+(`-lm mmap --lazy-mode on`, ~1 GiB resident) so the ~76 GiB GGUF fits in
+the ~75 GB budget. `--no-mmap` must never be used here: it disables the lazy path.
+
+- [ ] Confirm resident RSS is ~50 GiB, not ~76 GiB (engram actually lazy)
+- [ ] Confirm model loads and `/v1/models` returns alias `qwen3.8-flash-next`
+- [ ] Quality sanity check (code, tool call, prose) — no ROCm wrong-logit mode
+- [ ] Measure decode/prefill at depth; check DRBD/LINSTOR lazy-read latency impact
+      (fork's numbers assume local NVMe; fallback is a node-local PV on c-02)
+- [ ] Remove `pvc-model.yaml` / old `llm-models` PVC once stable
+- [ ] Revisit quant if headroom: UD-IQ4_XS (better quality, ~61 GiB resident)
+
+Images/args live in `kubernetes/apps/llm/_base/deployment.yaml`; per-model PVC in
+`pvc-model-qwen38-flash-next-iq3-xxs.yaml`. Old Qwen3-32B PVC is retained for rollback.
