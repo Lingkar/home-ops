@@ -29,7 +29,7 @@ spec:
             - --device
             - |
               name: gpu-amd
-              groups
+              groups:
                 - count: 4
                   paths:
                     - path: /dev/kfd
