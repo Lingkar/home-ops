@@ -8,8 +8,14 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   interval: 1h
   path: ./generic-device-plugin/_base
+  components:
+    - ../../components/common
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -18,4 +24,3 @@ spec:
     namespace: flux-system
   targetNamespace: generic-device-plugin
   timeout: 5m
-  wait: false
