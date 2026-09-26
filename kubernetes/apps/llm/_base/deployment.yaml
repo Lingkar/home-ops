@@ -38,9 +38,20 @@ spec:
               out="/models"
               fetch() {
                 path="$1"; sha="$2"; total="$3"; url="$4"
-                if [ -f "$path" ] && [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ]; then
-                  echo "$path already present and valid"
-                  return 0
+                ok="$path.ok"
+                if [ -f "$path" ]; then
+                  if [ -f "$ok" ]; then
+                    echo "$path already present (checksummed previously)"
+                    return 0
+                  fi
+                  echo "$path present, verifying once"
+                  if [ "$(sha256sum "$path" | cut -d' ' -f1)" = "$sha" ]; then
+                    : > "$ok"
+                    echo "$path verified"
+                    return 0
+                  fi
+                  echo "$path failed verification, re-downloading"
+                  rm -f "$path"
                 fi
                 report() {
                   while :; do
@@ -64,6 +75,7 @@ spec:
                 echo "verifying sha256 $path"
                 echo "$sha  $path.part" | sha256sum -c -
                 mv "$path.part" "$path"
+                : > "$ok"
               }
               model_base="$base/unsloth/Qwen3.8-Flash-Next-GGUF/resolve/$model_rev/UD-IQ3_XXS"
               fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf" "268f81fdedf3149a538f252308927a4d5d1f6e062c178568a51e3b519744f8a8" 10946624 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf"
