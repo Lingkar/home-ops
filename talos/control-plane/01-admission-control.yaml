@@ -14,6 +14,7 @@ configuration:
   exemptions:
     namespaces:
       - falco
+      - generic-device-plugin
       - monitoring
       - piraeus-datastore
       - scroop
