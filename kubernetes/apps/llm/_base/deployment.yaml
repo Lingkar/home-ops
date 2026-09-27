@@ -69,7 +69,7 @@ spec:
               fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf" "268f81fdedf3149a538f252308927a4d5d1f6e062c178568a51e3b519744f8a8" 10946624 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00001-of-00003.gguf"
               fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00002-of-00003.gguf" "cfe600b236b88c7fad1613a5ca5e83b9f2beb63cbd44c32b2be50a44747c695f" 49567921344 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00002-of-00003.gguf"
               fetch "$out/Qwen3.8-Flash-Next-UD-IQ3_XXS-00003-of-00003.gguf" "f1912ba34c79427d2295a58dcb2b732b5931af5bef7a373c60557a57d9ee7250" 32382955968 "$model_base/Qwen3.8-Flash-Next-UD-IQ3_XXS-00003-of-00003.gguf"
-              fetch "$out/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf" "9db03a687670608286e99b563fcc86d0ee76c8dd863f64b2afc0b54eb0b975d" 4137429088 "$base/EasiiX/Qwen3.8-Flash-Next-MTP-Strix-Halo-GGUF/resolve/$mtp_rev/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf"
+              fetch "$out/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf" "9db03a687670608286e99b563fcc86d0ee76c8dd863f64b2afc0b54eb0eb975d" 4137429088 "$base/EasiiX/Qwen3.8-Flash-Next-MTP-Strix-Halo-GGUF/resolve/$mtp_rev/mtp-Qwen3.8-Flash-Next-hc-Q8_0.gguf"
               echo "all models ready"
           securityContext:
             runAsUser: 0
@@ -77,7 +77,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 128Mi
+              memory: 256Mi
             limits:
               memory: 256Mi
           volumeMounts:
