@@ -1,0 +1,20 @@
+controller:
+  grpc:
+    reflection: true
+  substrate:
+    ateApiEndpoint: dns:///api.ate-system.svc:443
+    atenetRouterURL: http://atenet-router.ate-system.svc:80
+    defaultWorkerPool:
+      name: kagent-default
+    enabled: true
+providers:
+  default: ollama
+  ollama:
+    config:
+      host: https://llm.buijnsters.com
+      apiKeySecretRef: kagent-ollama
+      apiKeySecretKey: API_KEY
+substrateWorkerPool:
+  create: true
+  replicas: 1
+  workerImage: ghcr.io/kagent-dev/substrate/ateom-gvisor:v0.2.0-beta8
