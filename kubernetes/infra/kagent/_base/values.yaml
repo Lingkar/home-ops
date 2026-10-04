@@ -4,8 +4,6 @@ controller:
   substrate:
     ateApiEndpoint: dns:///api.ate-system.svc:443
     atenetRouterURL: http://atenet-router.ate-system.svc:80
-    defaultWorkerPool:
-      name: kagent-default
     enabled: true
 providers:
   default: ollama
@@ -17,4 +15,4 @@ providers:
 substrateWorkerPool:
   create: true
   replicas: 1
-  workerImage: ghcr.io/kagent-dev/substrate/ateom-gvisor:v0.2.0-beta8
+  workerImage: ghcr.io/kagent-dev/substrate/ateom-gvisor:v0.3.0-alpha3
