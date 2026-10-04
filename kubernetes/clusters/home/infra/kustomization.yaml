@@ -10,6 +10,7 @@ resources:
   - generic-device-plugin.yaml
   - grafana-system.yaml
   - harbor-system.yaml
+  - kagent.yaml
   - keycloak-system
   - kube-system
   - monitoring
