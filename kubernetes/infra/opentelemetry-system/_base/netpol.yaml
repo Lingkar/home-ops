@@ -19,8 +19,8 @@ spec:
             - port: "53"
               protocol: ANY
     - toServices:
-        - kubernetesService:
-            name: kubernetes
+        - k8sService:
+            serviceName: kubernetes
             namespace: default
     - toEntities:
         - host
