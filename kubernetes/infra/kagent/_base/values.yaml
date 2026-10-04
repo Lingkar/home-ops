@@ -6,12 +6,14 @@ controller:
     atenetRouterURL: http://atenet-router.ate-system.svc:80
     enabled: true
 providers:
-  default: ollama
-  ollama:
+  default: openAI
+  openAI:
+    provider: OpenAI
+    model: qwen3.8-flash-next
     apiKeySecretRef: kagent-ollama
     apiKeySecretKey: API_KEY
     config:
-      host: https://llm.buijnsters.com
+      baseUrl: https://llm.buijnsters.com/v1
 substrateWorkerPool:
   create: true
   replicas: 1
