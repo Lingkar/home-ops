@@ -1,3 +1,8 @@
 admissionWebhooks:
   certManager:
     enabled: true
+manager:
+  featureGatesMap:
+    # The operator's self-created NetworkPolicy only allows egress to the node IP on 6443,
+    # which blocks in-cluster ClusterIP (10.43.0.1:443) traffic and DNS, causing a crash loop.
+    operator.networkpolicy: false

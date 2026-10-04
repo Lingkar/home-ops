@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: opentelemetry-operator-egress
+spec:
+  description: "Allow the operator egress to DNS and the Kubernetes API server (ClusterIP)"
+  endpointSelector:
+    matchLabels:
+      k8s:app.kubernetes.io/name: opentelemetry-operator
+      k8s:app.kubernetes.io/component: controller-manager
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+    - toServices:
+        - kubernetesService:
+            name: kubernetes
+            namespace: default
+    - toEntities:
+        - host
+    - toCIDR:
+        - 10.43.0.1/32
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
