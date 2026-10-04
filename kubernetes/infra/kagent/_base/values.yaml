@@ -10,9 +10,10 @@ controller:
 providers:
   default: ollama
   ollama:
+    apiKeySecretRef: kagent-ollama
+    apiKeySecretKey: API_KEY
     config:
       host: https://llm.buijnsters.com
-      apiKeySecretRef: kagent-ollama
 substrateWorkerPool:
   create: true
   replicas: 1
