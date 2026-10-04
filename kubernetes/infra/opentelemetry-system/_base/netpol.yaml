@@ -4,7 +4,7 @@ kind: CiliumNetworkPolicy
 metadata:
   name: opentelemetry-operator-egress
 spec:
-  description: "Allow the operator egress to DNS and the Kubernetes API server (ClusterIP)"
+  description: "Allow the operator egress to DNS and the Kubernetes API server (host/remote-node)"
   endpointSelector:
     matchLabels:
       k8s:app.kubernetes.io/name: opentelemetry-operator
@@ -18,15 +18,10 @@ spec:
         - ports:
             - port: "53"
               protocol: ANY
-    - toServices:
-        - k8sService:
-            serviceName: kubernetes
-            namespace: default
     - toEntities:
         - host
-    - toCIDR:
-        - 10.43.0.1/32
+        - remote-node
       toPorts:
         - ports:
-            - port: "443"
+            - port: "6443"
               protocol: TCP
