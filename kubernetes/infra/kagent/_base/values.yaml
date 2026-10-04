@@ -13,7 +13,6 @@ providers:
     config:
       host: https://llm.buijnsters.com
       apiKeySecretRef: kagent-ollama
-      apiKeySecretKey: API_KEY
 substrateWorkerPool:
   create: true
   replicas: 1
