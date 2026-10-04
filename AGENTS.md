@@ -46,6 +46,12 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 - Local checks: `pre-commit run --all-files` (trailing-whitespace, yaml, codespell, semgrep secrets scan). `kubeconform` is available via mise for schema validation.
 - Commit style is conventional (`fix(helm):`, `chore(container):`, `feat(helm):`) — match it.
 
+## Git push policy
+
+- Agents must NEVER push to any remote or merge PRs. Commit locally on a feature branch and stop.
+- The user pushes and merges manually.
+- When work is ready: report the branch name and commit hashes, and let the user push, open the PR, and merge.
+
 ## Doc pointers
 
 - `docs/` has ops runbooks: `velero-restore.md`, `managing-garage.md`, `control-plane-shutdown.md` (drbdadm down before storagenode shutdown), `zfs.md`.
