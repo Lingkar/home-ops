@@ -19,8 +19,6 @@ spec:
       namespace: &namespace ate-system
   interval: 1h
   path: ./ate-system/substrate-crds/_base
-  components:
-    - ../../../components/common
   prune: true
   retryInterval: 2m
   sourceRef:
