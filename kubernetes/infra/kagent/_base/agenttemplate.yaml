@@ -1,0 +1,12 @@
+apiVersion: kagent.dev/v1alpha3
+kind: AgentTemplate
+metadata:
+  name: my-first-template
+  namespace: kagent
+  labels:
+    kagent.dev/harness: kagent
+spec:
+  description: My first kagent agent
+  modelConfig:
+    name: default-model-config
+  systemPrompt: You are a concise, helpful assistant.

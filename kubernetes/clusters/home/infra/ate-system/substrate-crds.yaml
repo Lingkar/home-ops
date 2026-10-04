@@ -21,17 +21,6 @@ spec:
   path: ./ate-system/substrate-crds/_base
   components:
     - ../../../components/common
-  patches:
-    # atelet (privileged, hostPath, hostPorts) and ateom need out-of-baseline privileges
-    - target:
-        kind: Namespace
-      patch: |
-        - op: add
-          path: /metadata/labels
-          value:
-            pod-security.kubernetes.io/enforce: privileged
-            pod-security.kubernetes.io/audit: restricted
-            pod-security.kubernetes.io/warn: restricted
   prune: true
   retryInterval: 2m
   sourceRef:

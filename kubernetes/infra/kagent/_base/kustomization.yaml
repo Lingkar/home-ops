@@ -4,3 +4,5 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - secret.sops.yaml
+  - harness.yaml
+  - agenttemplate.yaml
