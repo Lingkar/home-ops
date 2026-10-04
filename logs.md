@@ -61,6 +61,7 @@
 - [x] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [/] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] Set-up Immich
+- [ ] https://github.com/owncloud/ocis
 
 - [/] Set-up clean-up job for delete PV's with Retain
         Additionally the linstor resource definition might need to be removed including its snapshots.
