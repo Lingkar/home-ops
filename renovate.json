@@ -69,6 +69,16 @@
       ],
       "pinDigests": false
     },
+    {
+      "description": "Harbor is internal-only (NXDOMAIN for GitHub runners), skip lookups for its mirrored images",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "/^harbor\\.buijnsters\\.com\\//"
+      ],
+      "enabled": false
+    },
     // Update policies
     {
       "description": "Flux Operator Group",
@@ -267,7 +277,8 @@
         "/(^|/)kubernetes/.+\\.ya?ml$/"
       ],
       "matchStrings": [
-        "image:\\s+(?<depName>\\S+):(?<currentValue>\\S+)"
+        "image:\\s+(?<depName>[^\\s\"'@]+?):(?<currentValue>[^@\\s\"']+)(?:@(?<currentDigest>sha256:[a-f0-9]{64}))?(?:\\s|$)",
+        "image:\\s+(?<depName>[^:\\s\"'@]+(?:/[^:\\s\"'@]+)*)@(?<currentDigest>sha256:[a-f0-9]{64})(?:\\s|$)"
       ],
       "datasourceTemplate": "docker"
     }
