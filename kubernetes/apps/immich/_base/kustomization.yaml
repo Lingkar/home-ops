@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - database.yaml
+  - helmrelease.yaml
+  - httproute.yaml
+  - pvc-library.yaml
+  - secrets.sops.yaml
+  # Enable alongside the cluster-wide netpol rollout (see zigbee2mqtt for the pattern)
+  # - netpol.yaml
+configMapGenerator:
+  - name: values-immich
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../utils/helm/kustomizeconfig.yaml

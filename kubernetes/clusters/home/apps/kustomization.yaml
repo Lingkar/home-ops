@@ -1,6 +1,7 @@
 resources:
   - home-assistant.yaml
   - home-ops-private.yaml
+  - immich.yaml
   - llm.yaml
   - mysql.yaml
   - ntfy.yaml
