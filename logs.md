@@ -61,6 +61,7 @@
 - [x] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [/] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] Set-up Immich
+    - Implementation plan drafted: docs/immich-rollout.md (branch `immich`, pending review)
 - [ ] https://github.com/owncloud/ocis
 
 - [/] Set-up clean-up job for delete PV's with Retain
