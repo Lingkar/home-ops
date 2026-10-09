@@ -1,0 +1,79 @@
+# Shared overrides (the chart's common library applies `controllers` to every component).
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          # renovate: datasource=docker depName=immich-app/immich-server
+          tag: v3.2.0
+        env:
+          TZ: Europe/Amsterdam
+          DB_HOSTNAME: cnpg-immich-rw
+          DB_PORT: "5432"
+          DB_USERNAME: app
+          DB_DATABASE_NAME: app
+          DB_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: cnpg-immich-app
+                key: password
+          JWT_SECRET:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: JWT_SECRET
+    pod:
+      priorityClassName: platform-high
+
+immich:
+  metrics:
+    enabled: true
+  persistence:
+    library:
+      existingClaim: immich-library
+  configuration: {}
+
+server:
+  controllers:
+    main:
+      containers:
+        main:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+
+machine-learning:
+  controllers:
+    main:
+      containers:
+        main:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 2Gi
+            limits:
+              memory: 2Gi
+  # Optional later: keep ML model cache across restarts (chart default: emptyDir,
+  # i.e. models re-download on every pod restart)
+  # persistence:
+  #   cache:
+  #     type: persistentVolumeClaim
+  #     size: 10Gi
+  #     accessMode: ReadWriteOnce
+  #     storageClass: ssd-lvm-thin-2
+
+valkey:
+  enabled: true
+  controllers:
+    main:
+      containers:
+        main:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 64Mi

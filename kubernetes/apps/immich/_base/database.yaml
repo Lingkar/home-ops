@@ -1,0 +1,53 @@
+# Cluster adapted from the upstream immich-charts CNPG examples
+# (https://github.com/immich-app/immich-charts/tree/main/local).
+# NOTE: Database.spec.cluster.name must match this Cluster; the harbor/keycloak Database
+# CRs in infra point at harbor/keycloak names that don't exist — don't copy that quirk.
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-immich
+spec:
+  instances: 1
+  priorityClassName: platform-low
+  # Upstream-pinned for the vchord extension; not auto-renovated (key is imageName:).
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie
+  storage:
+    size: 8Gi
+    storageClass: ssd-lvm-thin-2
+  postgresql:
+    shared_preload_libraries: ["vchord.so"]
+    # vchord is NOT shipped in the standard CNPG postgres image; inject it from the
+    # tensorchord image. Verify exact field names/casing against the live operator
+    # before applying: kubectl explain cluster.spec.extensions (structural-schema
+    # pruning silently drops unknown keys; upstream examples use snake_case).
+    extensions:
+      - name: vchord
+        image:
+          reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+---
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: cnpg-immich
+spec:
+  name: app
+  owner: app
+  cluster:
+    name: cnpg-immich
+  extensions:
+    - name: vector
+      ensure: present
+    - name: vchord
+      ensure: present
+    - name: earthdistance
+      ensure: present
+    - name: cube
+      ensure: present

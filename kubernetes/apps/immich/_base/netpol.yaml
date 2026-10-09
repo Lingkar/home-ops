@@ -1,0 +1,50 @@
+# Not referenced from kustomization.yaml yet — enable alongside the cluster-wide netpol
+# rollout (see logs.md netpol approach + zigbee2mqtt). Before enabling, verify the
+# pod/label selectors below against live pods:
+#   kubectl -n network get pods --show-labels   (Cilium gateway pods)
+#   kubectl -n immich get pods --show-labels
+# NOTE: ML model downloads need egress to huggingface.co (external); that policy belongs
+# to the cluster-wide egress phase, not to this file.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/networkpolicy.json
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: immich
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: immich
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # From the Cilium gateway in the network namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: network
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Within this namespace: server <-> cnpg-immich (5432), immich-valkey (6379),
+    # immich-machine-learning (3003)
+    - to:
+        - podSelector: {}
+      ports:
+        - port: 5432
+          protocol: TCP
+        - port: 6379
+          protocol: TCP
+        - port: 3003
+          protocol: TCP
