@@ -180,8 +180,6 @@ controllers:
               secretKeyRef:
                 name: immich-secrets
                 key: JWT_SECRET
-    pod:
-      priorityClassName: platform-high
 
 immich:
   metrics:
