@@ -1,7 +1,7 @@
 # Immich — implementation plan
 
-Status: **plan (not yet implemented)** — branch `immich`, pending review before any commit of
-manifests. Tracks `logs.md` TODO "Set-up Immich".
+Status: **approved with change (LAN-only `internal` gateway) — implementation committed**,
+pending secret encryption/fill by the user before push. Tracks `logs.md` TODO "Set-up Immich".
 
 Goal: run Immich (photo/video backup, https://immich.app) on the cluster using the
 official community chart `oci://ghcr.io/immich-app/immich-charts/immich`, wired into the
@@ -54,7 +54,7 @@ existing Flux/Flux-instance GitOps layout exactly like the existing apps
 | Machine learning     | keep `machine-learning.enabled: true` (default), CPU inference, cache = chart-default emptyDir | arm64/amd64 both supported; GPU ML later as an experiment alongside the existing GPU-sharing setup |
 | Library storage      | `pvc-library.yaml`: PVC `immich-library` on **`hdd-raidz-thin-1`**, RWO, start **100Gi** | capacity pool for photo/video data; expansion allowed (`allowVolumeExpansion: true`). RWO is fine at 1 server replica. Tunable — see open questions |
 | DB storage           | 8Gi on `ssd-lvm-thin-2`                                                  | immich docs: DB typically 1–3 GB, wants SSD |
-| Exposed hostname     | `immich.${SECRET_DOMAIN}` via HTTPRoute on **`external`** Gateway (port 2283) | mobile apps need WAN access; Cloudflare tunnel + wildcard cert already cover it (same as ntfy/keycloak) |
+| Exposed hostname     | `immich.${SECRET_DOMAIN}` via HTTPRoute on **`internal`** Gateway (192.168.69.7, port 2283) | review decision: LAN-only. Wildcard listener on the internal Gateway accepts routes from all namespaces. WAN/mobile access is NOT via the Cloudflare tunnel (it targets the external gateway); defer to netbird/VPN later |
 | Chart ingress        | leave `server.ingress.enabled=false`; HTTPRoute owned by this repo       | repo owns routing via Cilium Gateway everywhere |
 | Priority             | controllers: `platform-high`; DB cluster: `platform-low`                  | apps use `platform-high`; infra DBs (harbor/keycloak) use `platform-low` |
 | Metrics              | `immich.metrics.enabled: true`                                           | chart ships ServiceMonitors; prometheus already selects all |
@@ -308,7 +308,7 @@ spec:
 ```
 
 ```yaml
-# httproute.yaml — mobile apps need WAN access; external gateway (as ntfy/keycloak).
+# httproute.yaml — LAN-only per review; internal gateway.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -316,7 +316,7 @@ metadata:
 spec:
   hostnames: ["immich.${SECRET_DOMAIN}"]
   parentRefs:
-    - name: external
+    - name: internal
       namespace: network
   rules:
     - backendRefs:
@@ -351,8 +351,11 @@ and registration `- immich.yaml` in `kubernetes/clusters/home/apps/kustomization
 
 ## 5. Rollout sequence (after plan approval, one PR)
 
-1. `sops` create `secrets.sops.yaml` (needs `../home-ops-secrets/age.key`).
-2. Create all files above.
+1. Secrets are committed with obviously-fake placeholders (`secrets.sops.yaml`); before
+   pushing, fill `JWT_SECRET` with a real value and encrypt the file in place:
+   `sops kubernetes/apps/immich/_base/secrets.sops.yaml` (needs
+   `../home-ops-secrets/age.key`). Do not push unencrypted.
+2. All files below are implemented on the `immich` branch.
 3. Offline checks:
    - `pre-commit run --all-files`
    - `kubeconform -strict` on plain yaml; `kubectl kustomize ./kubernetes/apps/immich/_base` renders.
@@ -374,10 +377,10 @@ and registration `- immich.yaml` in `kubernetes/clusters/home/apps/kustomization
    - `kubectl -n immich get pods` — server/microservices/valkey/ML Ready (server may
      crash-loop briefly until the DB is ready — expected; the HelmRelease converges).
    - `kubectl -n immich get servicemonitor` → scraped (up targets in Prometheus).
-   - Browse `https://immich.${SECRET_DOMAIN}`; create the admin account immediately
-     (first sign-up claims the instance — do this the same day).
-   - Upload a photo + a large video from a phone over WAN (catches gateway body/timeout
-     limits — see risks); check `immich-server` logs for DB/redis connectivity.
+   - Browse `https://immich.${SECRET_DOMAIN}` from the LAN; create the admin account
+     immediately (first sign-up claims the instance — do this the same day).
+   - Upload a photo + a large video from a phone on the LAN/WLAN (catches gateway
+     body/timeout limits — see risks); check `immich-server` logs for DB/redis connectivity.
 6. Then a follow-up commit: enable netpol once validated, mark `logs.md` TODO done.
 
 ## 6. Update strategy (Renovate)
@@ -394,6 +397,9 @@ and registration `- immich.yaml` in `kubernetes/clusters/home/apps/kustomization
 
 ## 7. Risks & mitigations
 
+- **LAN-only exposure**: with the HTTPRoute on the `internal` gateway, phone backup only
+  works on the home network; phones outside the LAN will fail to connect until netbird/VPN
+  lands. Acceptable per review decision.
 - **Large uploads**: Cilium/Envoy may cap request duration (~60s default) — test large
   video upload; if capped, add `spec.rules[].timeouts.request.clientTimeout` on the
   HTTPRoute (Gateway API core `timeouts`) and verify Cilium support
@@ -426,9 +432,8 @@ removing a CNPG `Cluster` CR for real, take a final `pg_dump` if data must survi
    go straight to a larger reservation? (thin-provisioned, expansion allowed)
 2. **Valkey persistence**: keep chart-default emptyDir (queues lost on restart) or add a
    small PVC? Plan defaults to emptyDir.
-3. **External exposure**: `immich.${SECRET_DOMAIN}` on the external gateway via the
-   existing Cloudflare tunnel — confirm the phone apps should reach it from WAN (they
-   must, for backup-on-the-go; just confirming the exposure is intended).
+3. ~~**External exposure**~~ — **resolved in review**: `internal` gateway (LAN-only);
+   remote/mobile access deferred to netbird/VPN (separate open TODO in `logs.md`).
 4. **Velero scope**: include the 100Gi library PVC in remote backups (cost) or label
    `velero.io/exclude-from-backup` and handle library backups separately?
 5. Anything to add to `immich.configuration` (trash days, storage filename template)?
