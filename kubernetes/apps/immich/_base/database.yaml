@@ -18,11 +18,15 @@ spec:
   postgresql:
     shared_preload_libraries: ["vchord.so"]
     # vchord is NOT shipped in the standard CNPG postgres image; inject it from the
-    # tensorchord image. Verify exact field names/casing against the live operator
-    # before applying: kubectl explain cluster.spec.extensions (structural-schema
-    # pruning silently drops unknown keys; upstream examples use snake_case).
+    # tensorchord image. CNPG mounts the extension image but defaults its library/control
+    # paths to /lib and /share, which do NOT match the vchord-scratch layout — without
+    # the explicit paths below PostgreSQL fails with: could not access file "vchord.so"
     extensions:
       - name: vchord
+        dynamic_library_path:
+          - /usr/lib/postgresql/18/lib
+        extension_control_path:
+          - /usr/share/postgresql/18/
         image:
           reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
   resources:
