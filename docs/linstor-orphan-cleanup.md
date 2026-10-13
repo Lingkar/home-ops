@@ -252,6 +252,59 @@ object cleanup. Root cause and the running procedure are in
 - Add an alert when `count(LINSTOR resource-definitions)` diverges from
   `count(PersistentVolumes)`, or when `Failed`/`DELETING` snapshots appear.
 
+## Phase 5 - RD with 0 replicas and kernel-level leftovers
+
+A variant that Phase 1 does not cover: the RD still exists but has **no
+resources** assigned, while the DRBD resource is **still present in the kernel**
+(device-less) and keeps auto-reconnecting. Symptoms:
+
+- Grafana Piraeus dashboard shows "disconnected resources"; the panel query
+  `count(count by (name)(drbd_connection_state{drbd_connection_state!="Connected"} == 1)) or on() vector(0)`
+  is non-zero.
+- `dmesg` on the nodes shows repeated `conn( Connected -> BrokenPipe )` every
+  ~10 s for the same resource (a reconnect loop that never settles).
+
+Diagnosis (all must match before touching anything):
+
+```sh
+linstor advise resource          # "Resource expected to have 2 replicas, got only 0."
+linstor resource list            # no resources for the RD
+linstor snapshot list            # no snapshots for the RD
+kubectl get pv <rd>              # NotFound
+# in the linstor-satellite container on each node:
+drbdsetup status <rd>            # present, role:Secondary, connections StandAlone, no disk
+```
+
+Cause: the RD's DRBD shutdown failed during an earlier cleanup (see
+`linstor error-reports list`, `StorageException: Shutdown of the DRBD resource
+'pvc-…'`), leaving a device-less kernel resource behind. Because it has no
+device it is never cleaned up and its peers retry the connection forever.
+
+Cleanup:
+
+```sh
+# 1) delete the resource-definition; the satellite tears down the kernel
+#    resource as part of it (watch for "[DRBD] deleted" in the output)
+linstor resource-definition delete <rd>
+
+# 2) only if a node still shows the resource after step 1:
+#    in the linstor-satellite container on that node
+drbdsetup down <rd>              # never use "drbdsetup down all"
+```
+
+Verification:
+
+```sh
+linstor advise resource                                   # empty
+drbdsetup status <rd>                                     # "No such resource"
+# in Prometheus:
+drbd_connection_state{drbd_connection_state!="Connected"} == 1   # empty
+# dashboard panel reads 0; linstor resource list unchanged and all Ok
+```
+
+Note: `drbdadm` cannot manage these resources (they are not in the `drbd.d`
+config), so use `drbdsetup` directly.
+
 ## Execution results (2026-09-20)
 
 - Phase 1: 15 orphaned RDs deleted (35 snapshots first), ~405 GiB reclaimed.
@@ -264,3 +317,29 @@ object cleanup. Root cause and the running procedure are in
   8 `Failed`, 3 `DELETING`). 376 older than 24h (incl. all Failed/DELETING)
   were deleted, freeing ~230 GiB; 87 `Successful` younger than 24h remain for
   the next run of `docs/linstor-snapshot-gc.md`.
+
+## Execution results (2026-10-13)
+
+- Recurrence detected via the Grafana Piraeus dashboard: 3 resources reported as
+  disconnected, with `conn( Connected -> BrokenPipe )` looping every ~10 s in
+  node `dmesg`.
+- Phase 5 applied to 3 RDs from a Velero backup-validation PVC
+  (`Aux/csi.storage.k8s.io/pvc/name=validate-backup-1-cvvzz`, ns `velero`):
+  `pvc-0460676e-…`, `pvc-6c5a5964-…`, `pvc-fdea1402-…`.
+  - Preflight matched: `advise` "got only 0", no resources, no snapshots, PVs
+    `NotFound`, kernel `role:Secondary` / `StandAlone`, no disk attached.
+  - `linstor resource-definition delete` tore down the kernel resources on all
+    three nodes by itself ("[DRBD] deleted"); no manual `drbdsetup down` needed.
+- Outcome: RDs 52 -> 49; kernel resources gone on c-01/c-02/rpi-00;
+  `advise resource` empty; `drbd_connection_state{…!="Connected"} == 1` empty;
+  dashboard panel reads 0; `linstor resource list` unchanged at 140 rows `Ok`;
+  no pod restarts and no new error-reports.
+- Same session: piraeus satellite/controller memory limits were right-sized and
+  JVM heaps capped via `JAVA_OPTS` (see commit `881a79c`). The resulting
+  satellite restart ended the reconnect loop; the leftover resources were then
+  removed here.
+- Remaining backlog: 49 RDs vs 39 PVs -> 10 orphan RDs of the Phase 1/2 kind
+  (`pvc-2177ae17`, `pvc-52ee0aee`, `pvc-5502b865`, `pvc-61e61c37`,
+  `pvc-73d4d761`, `pvc-9716f790`, `pvc-ce62374f`, `pvc-ec4ca458`,
+  `pvc-f653f466`, `pvc-f8c0d241`); recompute with the helper before the next
+  pass.
