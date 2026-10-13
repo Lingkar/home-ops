@@ -8,12 +8,17 @@ linstorCluster:
       spec:
         containers:
           - name: linstor-controller
+            env:
+              # Cap heap below the container limit (image default is -Xmx8G).
+              # JAVA_OPTS replaces the operator-set value, so keep its TLS workaround.
+              - name: JAVA_OPTS
+                value: "-Djdk.tls.acknowledgeCloseNotify=true -Xms256M -Xmx3G"
             resources:
               requests:
                 cpu: 256m
                 memory: 2Gi
               limits:
-                memory: 2Gi
+                memory: 4Gi
   affinityController:
     podTemplate:
       spec:
@@ -161,12 +166,17 @@ linstorSatelliteConfigurations:
       spec:
         containers:
           - name: linstor-satellite
+            env:
+              # Cap heap below the container limit (image default is -Xmx2G).
+              # JAVA_OPTS replaces the operator-set value, so keep its TLS workaround.
+              - name: JAVA_OPTS
+                value: "-Djdk.tls.acknowledgeCloseNotify=true -Xms32M -Xmx384M"
             resources:
               requests:
                 cpu: 200m
                 memory: 256Mi
               limits:
-                memory: 256Mi
+                memory: 512Mi
           - name: drbd-reactor
             resources:
               requests:
@@ -191,12 +201,17 @@ linstorSatelliteConfigurations:
       spec:
         containers:
           - name: linstor-satellite
+            env:
+              # Cap heap below the container limit (image default is -Xmx2G).
+              # JAVA_OPTS replaces the operator-set value, so keep its TLS workaround.
+              - name: JAVA_OPTS
+                value: "-Djdk.tls.acknowledgeCloseNotify=true -Xms64M -Xmx768M"
             resources:
               requests:
                 cpu: 200m
                 memory: 512Mi
               limits:
-                memory: 512Mi
+                memory: 1Gi
           - name: drbd-reactor
             resources:
               requests:
@@ -220,12 +235,17 @@ linstorSatelliteConfigurations:
       spec:
         containers:
           - name: linstor-satellite
+            env:
+              # Cap heap below the container limit (image default is -Xmx2G).
+              # JAVA_OPTS replaces the operator-set value, so keep its TLS workaround.
+              - name: JAVA_OPTS
+                value: "-Djdk.tls.acknowledgeCloseNotify=true -Xms64M -Xmx768M"
             resources:
               requests:
                 cpu: 200m
                 memory: 512Mi
               limits:
-                memory: 512Mi
+                memory: 1Gi
           - name: drbd-reactor
             resources:
               requests:
