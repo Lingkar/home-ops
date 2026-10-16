@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 resources:
   # - cluster-netpol.yaml
+  - alertmanager-ntfy.sops.yaml
   - grafana-datasource.yaml
   - helmrelease.yaml
   - prometheus-rule.yaml

@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master-standalone/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alertmanager-ntfy
+stringData:
+  NTFY_TOKEN: ENC[AES256_GCM,data:+Efya1ujWmGnPvklTanJHO4bER2PVmMvyb1G2xpy8L0vWCU=,iv:xIU6iz1nZcin2rybB/fFbCaM6WzkGZcwS9gYbfiCpNc=,tag:vCwuxGVjkTv5254CxoGbyQ==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBUNWFqTnVxSWYrb2xoM2ZW
+        MEVFK0szTzEvVWlqQzRDOEkvejN5M0U4L0JFCkV2TXhSZ0ZZZWxwS3lZUC85ZFMx
+        RldqeDJ3WEo3cXZBUjlaekk4MklUdGsKLS0tIFZEODlmQlMxR1BIZjN1ZHF6Wkk0
+        YVdGWjYwb0JhTmNNY01CVXJvYkxwWlkKVyfkqzgIK1rwD16AGWM4BjLx8QFhVojm
+        2GLIAGRWUg/spQ1pVJqE4ALe0wm9Kb5qDmkX0aO6vgXIwYB0s/ZNGg==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age10gr3hs4ug9z2mhzjxe9gcz5wh2vj9c2rlxzh93l0rkm7cap3rdvsecduzs
+  encrypted_regex: ^(data|stringData|spec)$
+  lastmodified: "2026-10-16T11:04:55Z"
+  mac: ENC[AES256_GCM,data:xorjg9JEO1Qe8A2H6rSU3FrGW+F194I7E2LDBNVk0ojeV5DR+4cBvfHjhxOJRi5aY3L2YsKJWt6c9vMjNRSkFDzofVgrDZlo2zf0h6S4Uz3/I+VBtr51pW1yCWxHLJ9QeFCdcTlPq6nMNWst5yMj7Ul34Lal3SDiGGLCNRFLEwU=,iv:jq3ZbrKGkVmZMa8D7hMz76zBy9tQn6aEVPI8R4ne4Yg=,tag:bDIfNEahnpteqg2dQMbY8A==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
