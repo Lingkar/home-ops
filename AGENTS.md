@@ -54,5 +54,5 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 
 ## Doc pointers
 
-- `docs/` has ops runbooks: `velero-restore.md`, `managing-garage.md`, `control-plane-shutdown.md` (drbdadm down before storagenode shutdown), `zfs.md`.
+- `docs/` has ops runbooks: `velero-restore.md`, `managing-garage.md`, `control-plane-shutdown.md` (drbdadm down before storagenode shutdown), `linstor-recovery.md` (satellite offline, quorum loss / Outdated volumes, stuck `drbdadm down`), `zfs.md`.
 - `logs.md` is a running TODO/notes file (netpol rollout strategy, known issues). `toolkit/` has throwaway debug manifests. `tmp/`, `.private/`, `.venv/` are gitignored local scratch.
