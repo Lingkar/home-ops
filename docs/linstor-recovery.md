@@ -244,3 +244,151 @@ kubectl get events -A | grep -i VolumeWithoutQuorum  # should be old only
 
 A healthy cluster shows, per resource, `c-01` and `c-02` `UpToDate` and
 `rpi-00` `Diskless` (unless a volume is single-replica on a specific pool).
+
+## 6. Kernel-wedged DRBD - forced reboot / physical power cycle
+
+This is the escalation when the DRBD kernel state itself is stuck. A satellite
+restart or `drbdadm` will not help; the tasks are in uninterruptible `D` state.
+
+Symptoms:
+
+- `drbdadm status` shows resources `suspended:quorum` / `blocked:upper`.
+- `drbdadm down <res>` and `conn`/`disconnect` **hang**; connections are stuck in
+  `Disconnecting`.
+- `drbdsetup del-peer` / `forget-peer` / `suspend-io` processes are stuck in
+  `D` state (some may be days old).
+- LVM operations (`lvcreate -s`, `lvs`) hang on the thin-pool lock.
+- Postgres (or other) processes are in `D` state (blocked I/O), and pods can be
+  stuck `Terminating` with `KillPodSandbox ... DeadlineExceeded`.
+- The node may still answer ping and even expose kubelet (`:10250`) and
+  node-exporter (`:9100`), while the **Talos API (`:50000`) is refused**.
+
+Confirm whether the node actually rebooted:
+
+```sh
+# node-exporter may still be reachable even when apid is not
+curl -s http://<node-ip>:9100/metrics | grep node_boot_time_seconds
+talosctl --nodes <node-ip> read /proc/uptime   # fails while apid is down
+kubectl get node <node> -o jsonpath='{.status.nodeInfo.bootID}{"\n"}'
+talosctl --nodes <node-ip> service kubelet
+```
+
+If the boot time is old, the node did not reboot. It is hung in the kernel
+restart path (`kernel_restart` -> `device_shutdown`), and a **physical power
+cycle** is required.
+
+### Pre-reboot checklist
+
+1. **Move the LINSTOR control plane off the node** so it stays available:
+   ```sh
+   kubectl -n piraeus-datastore delete pod \
+     -l app.kubernetes.io/component=linstor-controller \
+     -l app.kubernetes.io/component=linstor-csi-controller \
+     -l app.kubernetes.io/component=linstor-affinity-controller
+   ```
+   (or delete the specific pods). Cordon the target node first so the new pods
+   schedule on the healthy node. The controller/csi-controller are Deployments
+   with no PVC, so this is safe.
+2. **Cordon** the target node.
+3. **Protect volumes whose only UpToDate replica is on the node** (e.g. a
+   single-replica PVC on that node). Take an LVM thin snapshot if LVM responds:
+   ```sh
+   lvcreate -s -n <lv>_prereboot vg1/<lv>
+   ```
+   If `lvcreate` hangs, skip it - the LV data persists across a reboot; ext4
+   journal replay / fsck may be needed.
+4. Do **not** run `drbdadm down all` - it will hang on the same resources.
+
+### Reboot
+
+```sh
+talosctl --nodes <node-ip> reboot --mode force --wait=false
+```
+
+Talos `--mode force` skips `StopAllPods` and the pre-shutdown/unmount phases
+(which is what hangs). Note it still calls the kernel restart, which can hang in
+`device_shutdown` on the wedged DRBD/LVM devices. If the node stays pingable
+with `:50000` refused and the boot time unchanged, **power-cycle it physically**.
+After power-on, wait for `:50000`/kubelet and confirm a new `bootID`/`uptime`.
+
+### Post-reboot
+
+- LINSTOR re-creates resources on the returning node; watch the state counts
+  until there is no `Unknown`/`DELETING`:
+  ```sh
+  LS resource list | ...   # expect only UpToDate / Diskless, maybe a temporary SyncTarget
+  ```
+  Volumes whose other replica was behind resync automatically (e.g. Garage's
+  c-01 replica from c-02). Do not uncordon until resources are healthy.
+- Uncordon the node, then verify workloads. App pods may crash-loop until their
+  dependencies are up (e.g. Immich until its CNPG DB is ready).
+- Check the thin pool and snapshots: `lvs -o lv_name,data_percent,metadata_percent vg1/thin`.
+- Remove the `_prereboot` snapshot after validating the volume.
+
+### Lessons / prevention
+
+- **Never reconnect or reboot a node while another node is already offline.**
+  Most resources use `DrbdOptions/Resource/quorum: majority`; two unavailable
+  nodes drop quorum, force-demote the volume, and the affinity controller evicts
+  pods (`VolumeWithoutQuorum`).
+- **Large data-mover backups can wedge the node.** With
+  `snapshotMoveData: true`, Velero/Kopia reads the whole PVC and uploads it. A
+  100 Gi PVC (Immich library) turned a ~10 min backup into ~2 h, saturated the
+  network, caused DRBD `PingAck did not arrive in time` / `NetworkFailure`, and
+  left stuck `drbdsetup`/LVM operations and leaked data-mover temp PVs.
+  Exclude large PVCs from Velero (`velero.io/exclude-from-backup: "true"` on the
+  PVC) or back them up via a separate, throttled path.
+- **Check for leaked data-mover temp volumes** after failed backups:
+  ```sh
+  kubectl get pv | awk '$5=="Released"'
+  LS resource list | grep DELETING
+  ```
+- The Grafana "out-of-sync" panel uses `drbd_peerdevice_outofsync_bytes`; a
+  constant non-zero value with `replication:Established` / `peer-disk:UpToDate`
+  is a stale bitmap residual (see section 3).
+
+### Case study - 2026-10-21 (Immich backup -> wedged c-02)
+
+- 02:15-04:16 UTC remote daily backup uploaded the 100 Gi Immich library
+  (`snapshotMoveData: true`). DRBD `NetworkFailure` appeared on c-01/c-02 at
+  03:22.
+- From then on the 4-hourly local CSI backups failed 33/72 volumes with
+  `DeadlineExceeded`; 5 resources were stuck `DELETING` and 6 data-mover temp
+  PVs (`Released`, including a 100 Gi one) leaked.
+- `linstor node reconnect`/targeted `drbdadm` could not clear it: `drbdsetup`
+  processes were stuck in `D` state since 03:22 and a `suspend-io 1018` from
+  04:00 blocked I/O (postgres in `D` state).
+- Controllers were moved to c-01, c-02 cordoned, a `_prereboot` LVM snapshot of
+  Garage taken, then `reboot --mode force`. The kernel restart hung in
+  `device_shutdown`; a **physical power cycle** was required.
+- After boot: all satellites Online, resources reconciled to 94 `UpToDate` /
+  46 `Diskless`, Garage's c-01 replica resynced from c-02, and the leaked
+  `DELETING` resources/PVs were cleared by the reboot.
+- Mitigation applied: `immich-library` PVC got
+  `velero.io/exclude-from-backup: "true"` (see `docs/immich-rollout.md`).
+
+## 7. Stale diskless tiebreaker UUID (one resource stuck `Connecting`)
+
+After a reboot/resync, a diskless tiebreaker (usually `rpi-00`) can keep the old
+DRBD UUID while the diskful pair has a new current UUID. LINSTOR shows the
+resource as `UpToDate`/`Diskless`, but the connection column is
+`Connecting(...)` on the tiebreaker, and the kernel log on that node says:
+
+```text
+Current UUID of peer does not match my exposed UUID.
+...: Declined by peer rpi-00 (id: 2), see the kernel log there
+```
+
+Fix (safe - the diskless node has no data):
+
+```sh
+sat rpi-00 drbdadm disconnect <pvc-...>
+sat rpi-00 drbdadm down <pvc-...>
+sat rpi-00 drbdadm up <pvc-...>       # LINSTOR may not auto-recreate after a manual down
+sat rpi-00 drbdadm status <pvc-...>   # expect both peers Connected / peer-disk UpToDate
+```
+
+`connect --discard-my-data` alone may not clear it: the stale UUID lives in the
+in-memory diskless resource, and only `down`/`up` recreates it with the current
+UUID. Only do this on `rpi-00` (or another diskless replica) - never on a
+diskful replica without checking the data/peers.

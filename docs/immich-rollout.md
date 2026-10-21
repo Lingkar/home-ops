@@ -432,7 +432,11 @@ removing a CNPG `Cluster` CR for real, take a final `pg_dump` if data must survi
    small PVC? Plan defaults to emptyDir.
 3. ~~**External exposure**~~ — **resolved in review**: `internal` gateway (LAN-only);
    remote/mobile access deferred to netbird/VPN (separate open TODO in `logs.md`).
-4. **Velero scope**: include the 100Gi library PVC in remote backups (cost) or label
-   `velero.io/exclude-from-backup` and handle library backups separately?
+4. ~~**Velero scope**~~ — **resolved (2026-10-21)**: the 100 Gi `immich-library` PVC is
+   excluded from Velero via `velero.io/exclude-from-backup: "true"` (see
+   `kubernetes/apps/immich/_base/pvc-library.yaml`). Its data-mover upload caused
+   ~2 h backups, DRBD network failures and a wedged storage node; see
+   `docs/linstor-recovery.md` §6. A separate, throttled library backup (or an
+   accepted lower RPO) is still an open follow-up.
 5. Anything to add to `immich.configuration` (trash days, storage filename template)?
    Plan starts empty (`configuration: {}`).
