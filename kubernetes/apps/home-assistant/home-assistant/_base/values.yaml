@@ -5,7 +5,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/home-operations/home-assistant
-          tag: 2026.8.3@sha256:16ca445e58fa71d4f7ff287d4e9793ea690ccae932a5e200852371425cd7abb0
+          tag: 2026.10.2@sha256:a582f4b113e3018517a5ae9727b873e262aa787fa97f07b97b71bfc57f14d470
         env:
           TZ: Europe/Amsterdam
         securityContext:
