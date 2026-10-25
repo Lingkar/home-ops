@@ -39,7 +39,7 @@ tasks:
   c02:shutdown:
     desc: Plan the c-02 shutdown/scale-down (dry run, no changes)
     cmd: |
-      extra="../home-ops-private/scripts/c02-shutdown-extra.yaml"
+      extra="../home-ops-private/c02-shutdown-extra.yaml"
       if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
       ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml
     preconditions:
@@ -50,7 +50,7 @@ tasks:
   c02:shutdown:apply:
     desc: Scale down, drain, drbdadm down and shut down c-02
     cmd: |
-      extra="../home-ops-private/scripts/c02-shutdown-extra.yaml"
+      extra="../home-ops-private/c02-shutdown-extra.yaml"
       if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
       ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --apply
     preconditions:
@@ -61,7 +61,7 @@ tasks:
   c02:remediate:
     desc: Re-apply scale-down while c-02 is already down (no drain/shutdown)
     cmd: |
-      extra="../home-ops-private/scripts/c02-shutdown-extra.yaml"
+      extra="../home-ops-private/c02-shutdown-extra.yaml"
       if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
       ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --apply --existing-outage --scale-only --skip-patches --skip-pin-checks
     preconditions:

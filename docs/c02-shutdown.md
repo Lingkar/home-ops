@@ -135,7 +135,7 @@ shutdown toggles) come from the base config.
   RabbitMQ, Velero, Falco, and portfolio. `phela` is intentionally kept. Add
   out-of-repo namespaces (for example `scroop`) with `--extra-config` or
   `C02_EXTRA_CONFIG`; the Taskfile automatically uses
-  `../home-ops-private/scripts/c02-shutdown-extra.yaml` when it exists.
+  `../home-ops-private/c02-shutdown-extra.yaml` when it exists.
 - `scale.exclude`: `namespace/kind/name` exceptions.
 - `scale.daemonSets`: DaemonSets that cannot be scaled; the script patches
   their nodeSelector to a sentinel and deletes their pods.
