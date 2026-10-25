@@ -38,7 +38,10 @@ tasks:
 
   c02:shutdown:
     desc: Plan the c-02 shutdown/scale-down (dry run, no changes)
-    cmd: ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml
+    cmd: |
+      extra="../home-ops-private/scripts/c02-shutdown-extra.yaml"
+      if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
+      ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml
     preconditions:
       - test -f {{.KUBECONFIG}}
       - test -f {{.TALOSCONFIG}}
@@ -46,11 +49,24 @@ tasks:
 
   c02:shutdown:apply:
     desc: Scale down, drain, drbdadm down and shut down c-02
-    cmd: ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --apply
+    cmd: |
+      extra="../home-ops-private/scripts/c02-shutdown-extra.yaml"
+      if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
+      ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --apply
     preconditions:
       - test -f {{.KUBECONFIG}}
       - test -f {{.TALOSCONFIG}}
       - which kubectl jq yq talosctl
+
+  c02:remediate:
+    desc: Re-apply scale-down while c-02 is already down (no drain/shutdown)
+    cmd: |
+      extra="../home-ops-private/scripts/c02-shutdown-extra.yaml"
+      if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
+      ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --apply --existing-outage --scale-only --skip-patches --skip-pin-checks
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl jq yq
 
   c02:restore:
     desc: Restore Flux/apps after c-02 is powered back on

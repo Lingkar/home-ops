@@ -18,7 +18,6 @@ keep:
   namespaces:
     - kube-system
     - piraeus-datastore
-    - flux-system
     - cert-manager
     - network
     - netbird
@@ -42,6 +41,8 @@ flux:
     - flux-system/flux-system
     - flux-system/infra
     - flux-system/apps
+    - flux-system/mysql
+    - flux-system/harbor-system
     # Add out-of-repo Kustomizations/namespaces with --extra-config or
     # C02_EXTRA_CONFIG. Keep this public config free of private workload names.
     # The LINSTOR controllers stay; only the c-02 disk health CronJobs below
@@ -52,13 +53,20 @@ flux:
   autoSuspendKustomizationsForNamespaces: true
   suspendHelmReleasesInNamespaces: true
   extraKustomizations: []
-  extraHelmReleases: []
+  extraHelmReleases:
+    # Harbor is kept, but its HelmRelease is paused so the live amd64 pins
+    # and its existing pods are not rolled while c-02 is draining.
+    - harbor-system/harbor
 
 scale:
   # Deployments and StatefulSets in these namespaces are scaled to 0.
   # Keep this list to public namespaces. Add out-of-repo namespaces with
   # --extra-config or C02_EXTRA_CONFIG.
   namespaces:
+    # Flux is suspended first and then the controllers are scaled to 0.
+    # This is what makes the pause durable: otherwise the flux-operator can
+    # reset the top-level Kustomization's suspend flag and Flux resumes.
+    - flux-system
     - ate-system
     - kagent
     - crossplane-system
@@ -139,6 +147,9 @@ waitForPodsGone:
 # Only deleted when the pod currently runs on the target node.
 preDrainDeletePods:
   - harbor-system/cnpg-harbor-1
+  # Move MySQL before drain so its PDB cannot stall the drain. The pod is
+  # recreated on c-01 (amd64) by the MySQL operator.
+  - mysql/mysql-0-0
 
 # No static workload patches here. GitOps owns the Harbor amd64
 # nodeSelectors/CNPG affinity and the MySQL CR podSpec. The script verifies
@@ -167,3 +178,4 @@ shutdown:
   waitTimeoutSeconds: 900
   customResourceWaitSeconds: 180
   postShutdownWaitSeconds: 180
+  scaledPodWaitSeconds: 120
