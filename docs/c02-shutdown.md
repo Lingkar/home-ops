@@ -8,10 +8,12 @@ shutdown toggles live in `scripts/c02-shutdown.yaml`.
 
 ## What the script does
 
-1. Preflight: node readiness, LINSTOR satellites Online, storage health,
-   and a check that no kept namespace has a volume with no `c-01` UpToDate
-   replica. The two LLM volumes are single-replica on `c-02`; they are
-   allowed to go offline because `llm` is scaled down.
+1. Preflight: node readiness, `mysql-system` Ready, LINSTOR satellites
+   Online, storage health, Harbor/MySQL amd64 pins applied, the live MySQL
+   CR matching the Git manifest, and a check that no kept namespace has a
+   volume with no `c-01` UpToDate replica. The two LLM volumes are
+   single-replica on `c-02`; they are allowed to go offline because `llm` is
+   scaled down.
 2. Writes a restore state file to `tmp/c02-shutdown-state-*.json`.
 3. Suspends Flux:
    - top-level `flux-system` Kustomization first,
@@ -19,13 +21,14 @@ shutdown toggles live in `scripts/c02-shutdown.yaml`.
    - every Kustomization whose `spec.targetNamespace` is in the scaled
      namespaces,
    - every HelmRelease in those namespaces.
-4. Applies the MySQL live patches:
-   - pins the InnoDBCluster CR + live StatefulSet/router Deployment to
-     `kubernetes.io/arch: amd64`,
-   - sets MySQL memory to `1408Mi` + sidecar `192Mi`.
-   The operator only reads `podSpec` when it builds the StatefulSet, so the
-   live patch is what moves the current pod. The Git CR change covers future
-   rebuilds.
+4. Syncs the MySQL live pod template from the `InnoDBCluster` CR:
+   - copies `spec.podSpec.nodeSelector` and container requests/limits to the
+     live `mysql-0` StatefulSet,
+   - copies the router nodeSelector (and router resources) to the live
+     router Deployment.
+   This is necessary because the MySQL operator only reads `podSpec` when it
+   builds the StatefulSet/Deployment; it does not update existing workloads.
+   The CR itself must already match Git; the preflight aborts otherwise.
 5. Stops operator-managed resources:
    - Keycloak `spec.instances: 0`,
    - Prometheus/Alertmanager `spec.replicas: 0`.
@@ -48,6 +51,14 @@ shutdown toggles live in `scripts/c02-shutdown.yaml`.
 - The right-size commit is merged and reconciled. If it is not live, the
   original (larger) requests remain and kept pods may stay Pending after the
   drain.
+- `mysql-system` is Ready and the `mysql-operator` HelmRelease uses chart
+  `2.3.1` (the upstream repo removed `2.3.0`). `mysql` depends on
+  `mysql-system`; if it is not Ready the CR will not be reconciled.
+- The live `InnoDBCluster mysql/mysql-0` nodeSelector and MySQL/sidecar
+  memory requests match the Git manifest. The preflight checks this.
+- Harbor's amd64 nodeSelectors and CNPG affinity are applied from Git. The
+  preflight verifies the live Harbor workloads and `cnpg-harbor` instead of
+  patching them.
 - `c-02` is Ready and uncordoned.
 - `c-01` and `rpi-00` are Ready, and all three LINSTOR satellites are
   Online.
@@ -117,8 +128,14 @@ shutdown toggles) come from the base config.
   their namespaces.
 - `preDrainDeletePods`: kept, PDB-protected pods moved off `c-02` before
   drain. Currently Harbor's CNPG primary.
-- `patches`: MySQL amd64 pin and live resource requests, plus the CR patch.
+- `patches` (optional): extra static workload patches for an `--extra-config`
+  overlay. The public config has none; Harbor and MySQL come from Git/the CR.
 - `shutdown`: drain/drbd/talos toggles and timeouts.
+
+The script no longer suspends `mysql` or `harbor-system` Kustomizations and
+no longer ships hard-coded MySQL/Harbor patches. Harbor is entirely GitOps
+configured. MySQL's live StatefulSet/router are synced from the CR because
+the operator does not watch `podSpec` after creation.
 
 ### Why `cnpg-system` is scaled
 
@@ -128,6 +145,12 @@ script stops the CNPG operator after the Harbor DB has been moved and the
 CNPG StatefulSets are scaled to 0. The Harbor DB keeps running on `c-01`
 without the operator during the window. On restore the operator is scaled
 back and reconciles the clusters.
+
+### Why the mysql-operator chart was bumped
+
+The upstream Helm repository now serves `mysql-operator` 2.3.1 only; 2.3.0
+was removed. The HelmRelease was pinned to 2.3.0, so `mysql-system` could
+never become Ready and `mysql` stayed blocked by its `dependsOn`.
 
 ### Why Harbor CNPG is deleted before drain
 
