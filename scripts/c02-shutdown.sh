@@ -10,6 +10,7 @@ CONFIG="${SCRIPT_DIR}/c02-shutdown.yaml"
 EXTRA_CONFIG="${C02_EXTRA_CONFIG:-}"
 APPLY=false
 RESTORE=false
+REBALANCE_ONLY=false
 SKIP_DRAIN=false
 SKIP_DRBD=false
 SKIP_SHUTDOWN=false
@@ -35,6 +36,7 @@ Options:
   --plan               Print the plan only (default)
   --apply              Execute the plan
   --restore            Reverse the change using the latest state file
+  --rebalance-only     Re-schedule Pending pods using restore.rebalance
   --state-file FILE    State file to write (apply) or read (restore)
   --write-state-only   Collect and write the state file, but make no changes
   --existing-outage     c-02 is already down; skip target-node checks and
@@ -81,6 +83,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         --restore)
             RESTORE=true
+            shift
+            ;;
+        --rebalance-only)
+            APPLY=true
+            REBALANCE_ONLY=true
             shift
             ;;
         --state-file)
@@ -163,7 +170,7 @@ fi
 
 check_cli kubectl jq yq
 [[ -n "${KUBECONFIG:-}" ]] || log error "KUBECONFIG is not set"
-if [[ "${RESTORE}" == false && "${SKIP_SHUTDOWN}" == false ]]; then
+if [[ "${RESTORE}" == false && "${REBALANCE_ONLY}" == false && "${SKIP_SHUTDOWN}" == false ]]; then
     check_cli talosctl
     [[ -n "${TALOSCONFIG:-}" ]] || log error "TALOSCONFIG is not set"
 fi
@@ -179,6 +186,10 @@ WAIT_TIMEOUT="$(yq -r '.shutdown.waitTimeoutSeconds // 900' "${CONFIG}")"
 CR_WAIT="$(yq -r '.shutdown.customResourceWaitSeconds // 180' "${CONFIG}")"
 POST_SHUTDOWN_WAIT="$(yq -r '.shutdown.postShutdownWaitSeconds // 180' "${CONFIG}")"
 SCALED_POD_WAIT="$(yq -r '.shutdown.scaledPodWaitSeconds // 120' "${CONFIG}")"
+RESTORE_WAIT="$(yq -r '.restore.waitForRunningSeconds // 60' "${CONFIG}")"
+REBALANCE_ENABLED="$(yq -r '.restore.rebalance.enabled // false' "${CONFIG}")"
+REBALANCE_MAX="$(yq -r '.restore.rebalance.maxMoves // 2' "${CONFIG}")"
+REBALANCE_WAIT="$(yq -r '.restore.rebalance.waitSeconds // 300' "${CONFIG}")"
 
 [[ -n "${NODE_NAME}" ]] || log error "node.name is empty in ${CONFIG}"
 [[ -n "${NODE_IP}" ]] || log error "node.ip is empty in ${CONFIG}"
@@ -199,6 +210,7 @@ mapfile -t SCALE_EXCLUDE < <(yq -r '.scale.exclude[]?' "${CONFIG_FILES[@]}" | gr
 mapfile -t STOP_DAEMONSETS < <(yq -r '.scale.daemonSets[]?' "${CONFIG_FILES[@]}" | grep -v '^---$')
 mapfile -t SUSPEND_CRONJOBS < <(yq -r '.scale.cronJobs[]?' "${CONFIG_FILES[@]}" | grep -v '^---$')
 mapfile -t PREDRAIN_DELETE_PODS < <(yq -r '.preDrainDeletePods[]?' "${CONFIG_FILES[@]}" | grep -v '^---$')
+mapfile -t REBALANCE_CANDIDATES < <(yq -r '.restore.rebalance.candidates[]?' "${CONFIG_FILES[@]}" | grep -v '^---$')
 
 declare -a KUSTOMIZATIONS=()
 declare -a HELMRELEASES=()
@@ -1035,6 +1047,97 @@ shutdown_node() {
     done
 }
 
+pending_pods_tsv() {
+    kubectl get pods -A --field-selector status.phase=Pending -o json 2>/dev/null |
+        jq -r '.items[] | [.metadata.namespace, .metadata.name] | @tsv' || true
+}
+
+pod_target_node() {
+    local ns="$1" name="$2" json node
+    json="$(kubectl get pod -n "${ns}" "${name}" -o json 2>/dev/null || true)"
+    [[ -n "${json}" ]] || return 0
+    node="$(jq -r '.spec.nodeName // ""' <<<"${json}")"
+    if [[ -n "${node}" ]]; then
+        echo "${node}"
+        return 0
+    fi
+    node="$(jq -r '.spec.nodeSelector["kubernetes.io/hostname"] // ""' <<<"${json}")"
+    if [[ -n "${node}" ]]; then
+        echo "${node}"
+        return 0
+    fi
+    jq -r '
+        [.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[]?.matchFields[]?
+         | select(.key == "metadata.name") | .values[]?]
+        | unique | if length == 1 then .[0] else "" end
+    ' <<<"${json}"
+}
+
+candidate_pod_on_node() {
+    local spec="$1" target="$2" ns rest kind name
+    ns="${spec%%/*}"
+    rest="${spec#*/}"
+    kind="${rest%%/*}"
+    name="${rest#*/}"
+    [[ -n "${ns}" && -n "${name}" && -n "${target}" ]] || return 0
+    [[ "${kind}" == "Deployment" || "${kind}" == "StatefulSet" ]] || return 0
+    kubectl get pods -n "${ns}" --field-selector "spec.nodeName=${target}" -o json 2>/dev/null |
+        jq -r --arg n "${name}" '.items[] | select(.status.phase == "Running") | select(.metadata.name | startswith($n + "-")) | .metadata.name' |
+        head -n1
+}
+
+attempt_rebalance() {
+    local ns name target cand victim phase deadline
+    while IFS=$'\t' read -r ns name; do
+        [[ -n "${ns}" && -n "${name}" ]] || continue
+        target="$(pod_target_node "${ns}" "${name}")"
+        [[ -n "${target}" ]] || continue
+        for cand in "${REBALANCE_CANDIDATES[@]}"; do
+            [[ -n "${cand}" ]] || continue
+            victim="$(candidate_pod_on_node "${cand}" "${target}")"
+            [[ -n "${victim}" ]] || continue
+            log info "Rebalance: moving ${cand} pod ${victim} off ${target} to unblock ${ns}/${name}"
+            kubectl delete pod -n "${cand%%/*}" "${victim}" --wait=false >/dev/null 2>&1 || true
+            deadline=$((SECONDS + REBALANCE_WAIT))
+            while :; do
+                phase="$(kubectl get pod -n "${ns}" "${name}" -o jsonpath='{.status.phase}' 2>/dev/null || true)"
+                if [[ -n "${phase}" && "${phase}" != "Pending" ]]; then
+                    log info "Pending pod ${ns}/${name} is now ${phase}"
+                    return 0
+                fi
+                if ((SECONDS > deadline)); then
+                    log warn "Pod ${ns}/${name} is still Pending after moving ${cand}"
+                    return 0
+                fi
+                sleep 5
+            done
+        done
+    done < <(pending_pods_tsv)
+    return 1
+}
+
+rebalance_pending_pods() {
+    if [[ "${REBALANCE_ENABLED}" != "true" ]]; then
+        log info "Restore rebalance is disabled"
+        return 0
+    fi
+    local attempt
+    for ((attempt = 1; attempt <= REBALANCE_MAX; attempt++)); do
+        if ! attempt_rebalance; then
+            break
+        fi
+    done
+    log info "Pending pods after restore rebalance:"
+    kubectl get pods -A --field-selector status.phase=Pending -o wide || true
+}
+
+wait_for_restored_pods() {
+    log info "Waiting ${RESTORE_WAIT}s for restored pods to start"
+    sleep "${RESTORE_WAIT}"
+    log info "Pending pods after restore wait:"
+    kubectl get pods -A --field-selector status.phase=Pending -o wide || true
+}
+
 restore_from_state() {
     if [[ -z "${STATE_FILE_OPT}" ]]; then
         STATE_FILE="$(ls -1t "${ROOT_DIR}"/tmp/c02-shutdown-state-*.json 2>/dev/null | head -n1 || true)"
@@ -1157,6 +1260,13 @@ restore_from_state() {
 
 if [[ "${RESTORE}" == true ]]; then
     restore_from_state
+    wait_for_restored_pods
+    rebalance_pending_pods
+    exit 0
+fi
+
+if [[ "${REBALANCE_ONLY}" == true ]]; then
+    rebalance_pending_pods
     exit 0
 fi
 

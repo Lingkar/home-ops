@@ -238,6 +238,39 @@ kubectl get pods -A --field-selector status.phase=Pending
 The LINSTOR `c-02` replicas will resync from `c-01`; do not power-cycle
 `c-01`/`rpi-00` while that is in progress.
 
+### Restore rebalance
+
+After the restore, the script waits `restore.waitForRunningSeconds` and then
+looks for Pending pods. If a Pending pod is pinned to a node (by
+`nodeSelector` or required node affinity), the script can move one of the
+configured movable workloads off that node to free requests:
+
+```yaml
+restore:
+  waitForRunningSeconds: 60
+  rebalance:
+    enabled: true
+    maxMoves: 2
+    waitSeconds: 300
+    candidates:
+      - phela/Deployment/phela
+```
+
+This is what resolved the rpi-00 monitoring DaemonSet pods: rpi-00 was at
+99% requests, so `phela` was moved off it; the node-exporter and
+OpenTelemetry collector pods then scheduled on rpi-00. Keep the candidate
+list limited to non-critical, movable Deployments/StatefulSets. The restore
+script only moves explicit candidates and only when a Pending pod is pinned
+to the same node.
+
+Run the rebalance independently after an already-completed restore:
+
+```sh
+task c02:rebalance
+# or:
+./scripts/c02-shutdown.sh --rebalance-only
+```
+
 ## Troubleshooting
 
 - **Drain blocked**: inspect `kubectl get pdb -A` and the pods on `c-02`.

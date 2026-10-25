@@ -68,6 +68,16 @@ tasks:
       - test -f {{.KUBECONFIG}}
       - which kubectl jq yq
 
+  c02:rebalance:
+    desc: Re-schedule Pending pods after restore (moves movable workloads)
+    cmd: |
+      extra="../home-ops-private/c02-shutdown-extra.yaml"
+      if [ -f "$extra" ]; then export C02_EXTRA_CONFIG="$extra"; fi
+      ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --rebalance-only
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl jq yq
+
   c02:restore:
     desc: Restore Flux/apps after c-02 is powered back on
     cmd: ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --restore

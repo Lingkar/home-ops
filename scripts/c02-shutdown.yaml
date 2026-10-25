@@ -179,3 +179,16 @@ shutdown:
   customResourceWaitSeconds: 180
   postShutdownWaitSeconds: 180
   scaledPodWaitSeconds: 120
+
+restore:
+  # Wait for the restored workloads to start before looking for Pending pods.
+  waitForRunningSeconds: 60
+  rebalance:
+    enabled: true
+    maxMoves: 2
+    waitSeconds: 300
+    # Movable workloads that may be evicted from a full node to make room for
+    # Pending pods that are pinned there (for example the rpi-00 monitoring
+    # DaemonSet pods). Keep this to non-critical Deployments/StatefulSets.
+    candidates:
+      - phela/Deployment/phela
