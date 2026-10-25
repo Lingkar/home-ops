@@ -6,15 +6,24 @@ metadata:
 spec:
   instances: 1
   priorityClassName: platform-low
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
   storage:
     size: 1Gi
     storageClass: ssd-lvm-thin-2
   resources:
     requests:
       cpu: 30m
-      memory: 200Mi
+      memory: 160Mi
     limits:
-      memory: 200Mi
+      memory: 160Mi
 ---
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/database_v1.json
 apiVersion: postgresql.cnpg.io/v1

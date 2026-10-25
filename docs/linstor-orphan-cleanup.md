@@ -1,5 +1,8 @@
 # LINSTOR orphan resource cleanup
 
+Note: workload names for out-of-repo applications are intentionally generic
+in this public runbook. The PVC UUIDs and sizes remain the identifiers.
+
 LINSTOR accumulates `resource-definitions` (RDs) whose PV/PVC no longer exists in
 the API server. These consume storage-pool space and clutter the dashboard.
 
@@ -14,7 +17,7 @@ orphaned RDs (~56%). Two situations:
   and one-off `migrate-*` runs), so they are leaked snapshots rather than
   usable restore points.
 - **True garbage (15 RDs):** no PV/PVC and no `VolumeSnapshotContent` reference.
-  About 405 GiB reclaimable, almost all in the old `scroop/media` SSD volume.
+  About 405 GiB reclaimable, almost all in the old private media SSD volume.
 
 Orphans come from three sources:
 
@@ -106,15 +109,15 @@ done
 
 | RD (UUID) | Original PVC | Notes |
 |---|---|---|
-| `pvc-6b5705c0-22ac-40e5-9ac9-47748ab84698` | scroop/media | ~395 GiB on `ssd-lvm-thin` (c-02) |
+| `pvc-6b5705c0-22ac-40e5-9ac9-47748ab84698` | private media | ~395 GiB on `ssd-lvm-thin` (c-02) |
 | `pvc-4b3ee321-efa2-496e-be78-bb1b6eb7d98a` | mysql/datadir-mysql-1 | ~1 GiB |
 | `pvc-7dfd27a2-0a4e-4bc7-a1ef-37c98ccfbec8` | tgoo/cnpg-tgoo-3 | |
 | `pvc-8f64b386-0eb9-4456-83eb-bd5142cc0728` | tgoo/cnpg-tgoo-2 | |
-| `pvc-93fab1d1-6838-493d-b75d-405e2520f76e` | scroop/kodi-data | |
+| `pvc-93fab1d1-6838-493d-b75d-405e2520f76e` | private media data | |
 | `pvc-089d3997-40fd-46b0-8767-eeb0da3b4d0b` | velero temp snapshot PVC | RD stuck in `DELETE` state |
 
-Before deleting `scroop/media`, confirm the old SSD media library is superseded
-by `nfs-media`/`nfs-media-books` on `hdd-raidz-thin-1`.
+Before deleting the private media volume, confirm the old SSD media library
+is superseded by the current media volumes on `hdd-raidz-thin-1`.
 
 ```sh
 for rd in \
@@ -142,7 +145,7 @@ The 26 anchor RDs and their original PVCs:
 
 | RD (UUID) | Original PVC | Origin |
 |---|---|---|
-| `pvc-0145a2b3-727b-469d-a9e1-c838b9b6ee5f` | scroop/radarr-config | velero-local + migrate-scroop |
+| `pvc-0145a2b3-727b-469d-a9e1-c838b9b6ee5f` | private media config | velero-local + migrate-private-media |
 | `pvc-1a8e21d3-20e7-466d-9957-0a5f42575752` | mysql/datadir-mysql-1 | velero-local + migrate-mysql-0 |
 | `pvc-24e0c6a2-ac76-4afe-a6b6-990408dda438` | keycloak-system/cnpg-keycloak-2 | velero-local |
 | `pvc-2e320fa6-2ae6-4fcf-9430-e4bdb699d6a3` | piraeus-datastore/nfs-test-pvc | velero-local |
@@ -152,21 +155,21 @@ The 26 anchor RDs and their original PVCs:
 | `pvc-3e5f45da-87e4-4c9c-968b-1da14e8b8256` | mysql/datadir-mysql-0 | velero-local + migrate-mysql-0 |
 | `pvc-4a911f67-4907-4510-b4d7-cc173602269f` | home-assistant/home-assistant | velero-local + migrate-ha |
 | `pvc-4de4da91-bf57-47ed-b8e4-65d266f2bf2d` | harbor-system/cnpg-harbor-2 | velero-local + unlabeled |
-| `pvc-5e7a5470-17b3-4085-bed8-37971141579e` | scroop/prowlarr-config | velero-local + migrate-scroop |
-| `pvc-6017f080-ba9a-4044-a1cc-3e2248331914` | scroop/sonarr-config | velero-local + migrate-scroop |
-| `pvc-71373115-d501-4885-93da-68949081274a` | scroop/lazylibrarian-config | velero-local + migrate-scroop |
+| `pvc-5e7a5470-17b3-4085-bed8-37971141579e` | private media config | velero-local + migrate-private-media |
+| `pvc-6017f080-ba9a-4044-a1cc-3e2248331914` | private media config | velero-local + migrate-private-media |
+| `pvc-71373115-d501-4885-93da-68949081274a` | private media config | velero-local + migrate-private-media |
 | `pvc-7792c7c1-2123-4c76-a823-f50fef3600c9` | velero temp snapshot PVC | migrate-monitoring-2 |
 | `pvc-7b5b4c25-c4ec-4e5d-8462-139544a34fbb` | phela/phela | velero-local + migrate-phela |
-| `pvc-82c1be86-04ef-4152-b4f1-be900d9c8c4e` | scroop/media-books | velero-local + migrate-scroop |
+| `pvc-82c1be86-04ef-4152-b4f1-be900d9c8c4e` | private media books | velero-local + migrate-private-media |
 | `pvc-8e3c6d64-0b3e-459c-9242-a62df6b467cc` | keycloak-system/cnpg-keycloak-1 | velero-local |
 | `pvc-915ac854-6607-415f-85b6-1d5d3a76feed` | zigbee2mqtt/data-volume-zigbee2mqtt-0 | velero-local + migrate-zigbee |
 | `pvc-a4801000-5d5e-4a09-a099-455a2d1e8e34` | mysql/mysql-backup | velero-local + migrate-mysql-0 |
-| `pvc-a774e6a0-531e-45f7-91d9-b49f73236cfb` | scroop/calibre-config | velero-local + migrate-scroop |
-| `pvc-bfa18b49-09e7-49dd-a6a9-f1e653f07dd8` | scroop/lidarr-config | velero-local + migrate-scroop |
+| `pvc-a774e6a0-531e-45f7-91d9-b49f73236cfb` | private media config | velero-local + migrate-private-media |
+| `pvc-bfa18b49-09e7-49dd-a6a9-f1e653f07dd8` | private media config | velero-local + migrate-private-media |
 | `pvc-c9d92d57-6534-4ae2-85ba-d4841f4d77cb` | harbor-system/cnpg-harbor-3 | velero-local |
-| `pvc-d3c4b00d-d3e7-4520-9790-cc67d59899cb` | scroop/cross-seed-config | velero-local + migrate-scroop |
+| `pvc-d3c4b00d-d3e7-4520-9790-cc67d59899cb` | private media config | velero-local + migrate-private-media |
 | `pvc-dc88a703-cd2e-4679-a66c-4033e2d9b0b1` | keycloak-system/cnpg-keycloak-6 | velero-local |
-| `pvc-e1fbe144-1ae9-4c89-b45e-a0d95b31ed7f` | scroop/qbittorrent-config | velero-local + migrate-scroop |
+| `pvc-e1fbe144-1ae9-4c89-b45e-a0d95b31ed7f` | private media config | velero-local + migrate-private-media |
 | `pvc-f9f1629e-9033-4b1d-a9f3-75978d99d891` | portfolio/data-volume | velero-local |
 
 ### 2a. Inventory the leaked objects
@@ -184,7 +187,7 @@ Anchoring backups observed (all `GONE` at time of writing):
 
 | Backup | VSCs | Date |
 |---|---|---|
-| `migrate-scroop` | 9 | 2026-05-29 |
+| `migrate-private-media` | 9 | 2026-05-29 |
 | `migrate-mysql-0` | 4 | 2026-05-29/30 |
 | `migrate-ha`, `migrate-zigbee`, `migrate-phela`, `migrate-monitoring-2` | 1 each | 2026-05-29 |
 | `velero-pv-snapshots-local-20260518000027` | 21 | 2026-05-18 |
@@ -213,8 +216,8 @@ Review the printed `delete` commands before running them. The CSI driver removes
 the corresponding LINSTOR snapshot; re-run the Phase 1 RD delete afterwards.
 
 For the dangling `VolumeSnapshotContent`s (4 at time of writing, e.g.
-`scroop/7eff9733…` -> `pvc-5cd75007…`, an RD that no longer exists) delete the
-content and drop its finalizer if needed:
+a private volume (`7eff9733…` -> `pvc-5cd75007…`, an RD that no longer exists),
+delete the content and drop its finalizer if needed:
 
 ```sh
 kubectl delete volumesnapshotcontent snapcontent-<id>
@@ -224,10 +227,10 @@ kubectl delete volumesnapshotcontent snapcontent-<id>
 
 These anomalies sit on live volumes and are worth cleaning separately:
 
-- `DELETING` LINSTOR snapshots: `pvc-0145a2b3`, `pvc-3ec820ea` (radarr),
-  `pvc-73d61467` (nfs-media-books), `pvc-a4801000`, `pvc-ff3e2abd` (mysql).
-- `Failed` LINSTOR snapshots: `pvc-66ca7fb9` (kodi-data), `pvc-e7b7d2d6`
-  (mysql-backup), `pvc-ead28951` (cross-seed-config), `pvc-eed2bfce`
+- `DELETING` LINSTOR snapshots: `pvc-0145a2b3`, `pvc-3ec820ea`, `pvc-73d61467` (private media),
+  `pvc-a4801000`, `pvc-ff3e2abd` (mysql).
+- `Failed` LINSTOR snapshots: `pvc-66ca7fb9`, `pvc-e7b7d2d6`
+  (mysql-backup), `pvc-ead28951` (private media), `pvc-eed2bfce`
   (falcosidekick redis).
 
 Inspect with `linstor snapshot list` and `linstor error-reports list`; delete

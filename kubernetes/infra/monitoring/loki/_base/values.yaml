@@ -52,11 +52,26 @@ singleBinary:
   resources:
     requests:
       cpu: 100m
-      memory: 4Gi
+      memory: 768Mi
     limits:
-      memory: 4Gi
+      memory: 768Mi
   persistence:
     storageClass: ssd-lvm-thin-2
+
+chunksCache:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 8704Mi
+    limits:
+      memory: 8704Mi
+resultsCache:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      memory: 64Mi
 
 # Zero out replica counts of other deployment modes
 backend:

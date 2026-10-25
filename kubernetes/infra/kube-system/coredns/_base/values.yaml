@@ -11,10 +11,10 @@ replicaCount: 2
 resources:
   limits:
     cpu: 2000m
-    memory: 512Mi
+    memory: 128Mi
   requests:
     cpu: 100m
-    memory: 512Mi
+    memory: 128Mi
 servers:
   - zones:
       - zone: .

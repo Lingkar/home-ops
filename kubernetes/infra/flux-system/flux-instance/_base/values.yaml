@@ -48,10 +48,10 @@ instance:
                     resources:
                       requests:
                         cpu: 40m
-                        memory: 512Mi
+                        memory: 256Mi
                       limits:
                         cpu: null
-                        memory: 512Mi
+                        memory: 256Mi
       - target:
           kind: Deployment
           name: image-automation-controller
@@ -68,10 +68,10 @@ instance:
                     resources:
                       requests:
                         cpu: 20m
-                        memory: 256Mi
+                        memory: 128Mi
                       limits:
                         cpu: null
-                        memory: 256Mi
+                        memory: 128Mi
       - target:
           kind: Deployment
           name: image-reflector-controller
@@ -88,10 +88,10 @@ instance:
                     resources:
                       requests:
                         cpu: 20m
-                        memory: 256Mi
+                        memory: 128Mi
                       limits:
                         cpu: null
-                        memory: 256Mi
+                        memory: 128Mi
       - target:
           kind: Deployment
           name: kustomize-controller
@@ -108,10 +108,10 @@ instance:
                     resources:
                       requests:
                         cpu: 55m
-                        memory: 300Mi
+                        memory: 224Mi
                       limits:
                         cpu: null
-                        memory: 300Mi
+                        memory: 224Mi
       - target:
           kind: Deployment
           name: notification-controller
@@ -148,10 +148,10 @@ instance:
                     resources:
                       requests:
                         cpu: 20m
-                        memory: 200Mi
+                        memory: 160Mi
                       limits:
                         cpu: null
-                        memory: 200Mi
+                        memory: 160Mi
       - target:
           kind: Deployment
           name: source-watcher

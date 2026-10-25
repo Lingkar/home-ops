@@ -1,2 +1,21 @@
 resources:
   - https://github.com/keycloak/keycloak-k8s-resources//kubernetes?ref=26.8.0
+patches:
+  - target:
+      kind: Deployment
+      name: keycloak-operator
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: keycloak-operator
+      spec:
+        template:
+          spec:
+            containers:
+              - name: keycloak-operator
+                resources:
+                  requests:
+                    memory: 384Mi
+                  limits:
+                    memory: 384Mi

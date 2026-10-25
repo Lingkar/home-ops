@@ -23,7 +23,7 @@ statefulset:
   resources:
     requests:
       cpu: 10m
-      memory: 256Mi
+      memory: 192Mi
     limits:
       cpu: null
-      memory: 256Mi
+      memory: 192Mi

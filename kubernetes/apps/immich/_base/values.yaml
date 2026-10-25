@@ -51,9 +51,9 @@ machine-learning:
           resources:
             requests:
               cpu: 100m
-              memory: 2Gi
+              memory: 1536Mi
             limits:
-              memory: 2Gi
+              memory: 1536Mi
   # Optional later: keep ML model cache across restarts (chart default: emptyDir,
   # i.e. models re-download on every pod restart)
   # persistence:
