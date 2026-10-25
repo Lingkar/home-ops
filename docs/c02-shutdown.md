@@ -21,6 +21,10 @@ shutdown toggles live in `scripts/c02-shutdown.yaml`.
    - every Kustomization whose `spec.targetNamespace` is in the scaled
      namespaces,
    - every HelmRelease in those namespaces.
+   Then it scales the Flux controllers to 0 (`flux-system` is in
+   `scale.namespaces`). This makes the pause durable: without it, the
+   flux-operator can reset the top-level Kustomization's suspend flag and
+   Flux resumes while c-02 is being drained.
 4. Syncs the MySQL live pod template from the `InnoDBCluster` CR:
    - copies `spec.podSpec.nodeSelector` and container requests/limits to the
      live `mysql-0` StatefulSet,
@@ -36,15 +40,24 @@ shutdown toggles live in `scripts/c02-shutdown.yaml`.
 7. Cordons `c-02` and moves the kept, PDB-protected Harbor CNPG pod
    (`harbor-system/cnpg-harbor-1`) off the node while the CNPG operator is
    still running.
-8. Scales the configured namespaces to 0. `cnpg-system` is scaled after the
-   Harbor DB is safe on `c-01`; this also stops the CNPG operator so the
-   Immich/Keycloak CNPG StatefulSets stay at 0.
-9. Stops selected DaemonSets via a sentinel `nodeSelector` and suspends
-   selected CronJobs.
-10. Drains `c-02` (PDB-aware by default), waits for non-DaemonSet pods to
+8. Scales the configured namespaces to 0. `flux-system` is scaled first,
+   and `cnpg-system` is scaled after the Harbor DB is safe on `c-01`; this
+   stops the CNPG operator so the Immich/Keycloak CNPG StatefulSets stay
+   at 0.
+9. Deletes any pods still left in the scaled namespaces. Normal deletion
+   bypasses PDBs (direct pod delete); if a pod has a finalizer and remains,
+   the script force-deletes it after `scaledPodWaitSeconds`. This is what
+   prevents the CNPG PDBs from stalling the drain.
+10. Pins the Harbor CNPG primary label (`cnpg.io/instanceRole=primary`)
+    after the CNPG operator is scaled away, so the `cnpg-harbor-rw` service
+    keeps an endpoint for the Harbor core/jobservice.
+11. Stops selected DaemonSets via a sentinel `nodeSelector`, suspends
+    selected CronJobs, and verifies the scaled namespaces, DaemonSets and
+    CronJobs before continuing.
+12. Drains `c-02` (PDB-aware by default), waits for non-DaemonSet pods to
     leave, runs `drbdadm down all` in the `c-02` LINSTOR satellite, and then
     runs `talosctl shutdown`.
-11. Leaves a state file for `--restore`.
+13. Leaves a state file for `--restore`.
 
 ## Prerequisites
 
@@ -82,6 +95,9 @@ task c02:shutdown:apply
 # Prepare only: suspend Flux + scale apps, but no cordon/drain/drbd/shutdown
 ./scripts/c02-shutdown.sh --apply --scale-only
 
+# c-02 is already down: re-apply the scale-down and verification only
+task c02:remediate
+
 # Drain + drbdadm down, but do not power off (power it off yourself)
 ./scripts/c02-shutdown.sh --apply --no-shutdown
 
@@ -113,11 +129,13 @@ shutdown toggles) come from the base config.
 - `keep.namespaces`: documentation/preflight only. The current keep set is
   the two-node critical set; `phela` and the Cloudflare tunnel are explicitly
   kept.
-- `scale.namespaces`: Deployments/StatefulSets in these public namespaces
-  are scaled to 0. The default stops Immich, Keycloak, monitoring, LLM, ATE,
-  kagent, Crossplane, RabbitMQ, Velero, Falco, and portfolio. `phela` is
-  intentionally kept. Add out-of-repo namespaces with `--extra-config` or
-  `C02_EXTRA_CONFIG`.
+- `scale.namespaces`: Deployments/StatefulSets in these namespaces are
+  scaled to 0. The default starts with `flux-system` (durable Flux pause),
+  then stops Immich, Keycloak, monitoring, LLM, ATE, kagent, Crossplane,
+  RabbitMQ, Velero, Falco, and portfolio. `phela` is intentionally kept. Add
+  out-of-repo namespaces (for example `scroop`) with `--extra-config` or
+  `C02_EXTRA_CONFIG`; the Taskfile automatically uses
+  `../home-ops-private/c02-shutdown-extra.yaml` when it exists.
 - `scale.exclude`: `namespace/kind/name` exceptions.
 - `scale.daemonSets`: DaemonSets that cannot be scaled; the script patches
   their nodeSelector to a sentinel and deletes their pods.
@@ -127,15 +145,24 @@ shutdown toggles) come from the base config.
 - `waitForPodsGone`: CR-managed pods the script waits for before scaling
   their namespaces.
 - `preDrainDeletePods`: kept, PDB-protected pods moved off `c-02` before
-  drain. Currently Harbor's CNPG primary.
+  drain. Currently Harbor's CNPG primary and MySQL. Moving MySQL before the
+  drain avoids its PDB stalling the drain.
 - `patches` (optional): extra static workload patches for an `--extra-config`
   overlay. The public config has none; Harbor and MySQL come from Git/the CR.
-- `shutdown`: drain/drbd/talos toggles and timeouts.
+- `shutdown`: drain/drbd/talos toggles, timeouts, and
+  `scaledPodWaitSeconds` (normal pod-delete grace before force-delete).
 
-The script no longer suspends `mysql` or `harbor-system` Kustomizations and
-no longer ships hard-coded MySQL/Harbor patches. Harbor is entirely GitOps
-configured. MySQL's live StatefulSet/router are synced from the CR because
+The script suspends `mysql` and `harbor-system` Kustomizations for the
+window but keeps the MySQL operator, Harbor DB and Harbor pods running. It
+scales the Flux controllers so the pause is durable, and it scales the CNPG
+operator after moving Harbor's DB. The Harbor CNPG primary label is then
+pinned so the `cnpg-harbor-rw` service continues to work without the CNPG
+operator. MySQL's live StatefulSet/router are synced from the CR because
 the operator does not watch `podSpec` after creation.
+
+The `--existing-outage --scale-only --skip-patches` combination is for
+re-asserting the scale-down when c-02 is already off. `--skip-pin-checks`
+skips the GitOps MySQL/Harbor pin preflight in that recovery mode.
 
 ### Why `cnpg-system` is scaled
 
@@ -143,8 +170,10 @@ CNPG's `Cluster.spec.instances` has a minimum of 1; it cannot represent
 "stopped". To keep the Immich/Keycloak databases down on two nodes, the
 script stops the CNPG operator after the Harbor DB has been moved and the
 CNPG StatefulSets are scaled to 0. The Harbor DB keeps running on `c-01`
-without the operator during the window. On restore the operator is scaled
-back and reconciles the clusters.
+without the operator during the window; the script pins
+`cnpg.io/instanceRole=primary` on the Harbor instance so the `-rw` service
+keeps an endpoint. On restore the operator is scaled back and reconciles the
+clusters.
 
 ### Why the mysql-operator chart was bumped
 
@@ -157,8 +186,10 @@ never become Ready and `mysql` stayed blocked by its `dependsOn`.
 `cnpg-harbor-primary` has `maxUnavailable: 0` for its single instance, so a
 normal drain blocks. The script cordons `c-02`, deletes the old primary pod,
 and waits for `cnpg-harbor-1` to become Ready on another node while the CNPG
-operator is still running. MySQL's PDB allows one disruption, so it is
-handled by the drain.
+operator is still running. MySQL is moved the same way before drain because
+its single-instance PDB can also report zero allowed disruptions while the
+pod is not Ready. The Immich/Keycloak CNPG pods are in scaled namespaces and
+are removed by the direct/force pod delete, so they cannot stall the drain.
 
 ## DRBD and quorum
 
@@ -217,10 +248,15 @@ The LINSTOR `c-02` replicas will resync from `c-01`; do not power-cycle
 - **MySQL router CrashLoop on rpi**: the live Deployment patch pins it to
   amd64. Verify `kubectl -n mysql get deploy mysql-0-router -o
   jsonpath='{.spec.template.spec.nodeSelector}'`.
-- **Flux root gets un-suspended**: the flux-operator may reconcile the
-  FluxInstance. Check `kubectl -n flux-system get kustomization
-  flux-system -o jsonpath='{.spec.suspend}'`; re-apply the script or
-  suspend the flux-operator if necessary.
+- **Flux resumes / workloads reappear**: verify the Flux controllers are
+  scaled to 0 (`kubectl -n flux-system get deploy`) and the Kustomizations
+  are suspended. The script scales `flux-system` for this reason; if the
+  controllers are recreated, the pause is not durable. Re-run
+  `task c02:remediate` on an already-down node.
+- **Drain stuck on a CNPG PDB**: the script directly deletes remaining pods
+  in scaled namespaces and force-deletes finalizer-stuck pods after
+  `scaledPodWaitSeconds`. If it still blocks, check for a pod in a kept
+  namespace; only Harbor and MySQL are expected there.
 - **Right-size not live**: merge/reconcile the right-size commit before
   running the shutdown, otherwise capacity is tighter than planned.
 - **State file**: `tmp/c02-shutdown-state-*.json` is the source of truth for

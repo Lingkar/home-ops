@@ -15,6 +15,9 @@ SKIP_DRBD=false
 SKIP_SHUTDOWN=false
 FORCE_DRAIN=false
 WRITE_STATE_ONLY=false
+EXISTING_OUTAGE=false
+SKIP_PATCHES=false
+SKIP_PIN_CHECKS=false
 YES=false
 STATE_FILE_OPT=""
 STATE_FILE=""
@@ -34,6 +37,10 @@ Options:
   --restore            Reverse the change using the latest state file
   --state-file FILE    State file to write (apply) or read (restore)
   --write-state-only   Collect and write the state file, but make no changes
+  --existing-outage     c-02 is already down; skip target-node checks and
+                        drain/drbd/shutdown, only suspend/scale/verify
+  --skip-patches        Do not sync the MySQL pod template from the CR
+  --skip-pin-checks     Skip the MySQL/Harbor GitOps pin preflight checks
   --scale-only         Suspend Flux and scale apps, but do not drain/drbd/shutdown
   --no-drain           Do not run kubectl drain
   --no-drbd            Do not run drbdadm down all
@@ -83,6 +90,22 @@ while [[ $# -gt 0 ]]; do
         --write-state-only)
             APPLY=false
             WRITE_STATE_ONLY=true
+            shift
+            ;;
+        --existing-outage)
+            APPLY=true
+            EXISTING_OUTAGE=true
+            SKIP_DRAIN=true
+            SKIP_DRBD=true
+            SKIP_SHUTDOWN=true
+            shift
+            ;;
+        --skip-patches)
+            SKIP_PATCHES=true
+            shift
+            ;;
+        --skip-pin-checks)
+            SKIP_PIN_CHECKS=true
             shift
             ;;
         --scale-only)
@@ -155,6 +178,7 @@ DRAIN_FORCE_CFG="$(yq -r '.shutdown.drainForce // false' "${CONFIG}")"
 WAIT_TIMEOUT="$(yq -r '.shutdown.waitTimeoutSeconds // 900' "${CONFIG}")"
 CR_WAIT="$(yq -r '.shutdown.customResourceWaitSeconds // 180' "${CONFIG}")"
 POST_SHUTDOWN_WAIT="$(yq -r '.shutdown.postShutdownWaitSeconds // 180' "${CONFIG}")"
+SCALED_POD_WAIT="$(yq -r '.shutdown.scaledPodWaitSeconds // 120' "${CONFIG}")"
 
 [[ -n "${NODE_NAME}" ]] || log error "node.name is empty in ${CONFIG}"
 [[ -n "${NODE_IP}" ]] || log error "node.ip is empty in ${CONFIG}"
@@ -308,16 +332,28 @@ preflight() {
     kubectl get node "${NODE_NAME}" >/dev/null 2>&1 || log error "Node ${NODE_NAME} not found"
 
     local n
-    for n in "${REQUIRE_ONLINE[@]}" "${NODE_NAME}"; do
+    local readiness_nodes=("${REQUIRE_ONLINE[@]}")
+    if [[ "${EXISTING_OUTAGE}" == false ]]; then
+        readiness_nodes+=("${NODE_NAME}")
+    fi
+    for n in "${readiness_nodes[@]}"; do
         [[ -n "${n}" ]] || continue
         node_ready "${n}" || log error "Node ${n} is not Ready"
     done
 
-    require_harbor_pins
-    require_mysql_matches_git
+    if [[ "${SKIP_PIN_CHECKS}" == false ]]; then
+        require_harbor_pins
+        require_mysql_matches_git
+    else
+        log warn "Skipping MySQL/Harbor pin checks"
+    fi
 
     linstor_cmd node list >/dev/null 2>&1 || log error "LINSTOR controller is not reachable"
-    for n in "${REQUIRE_ONLINE[@]}" "${NODE_NAME}"; do
+    local linstor_nodes=("${REQUIRE_ONLINE[@]}")
+    if [[ "${EXISTING_OUTAGE}" == false ]]; then
+        linstor_nodes+=("${NODE_NAME}")
+    fi
+    for n in "${linstor_nodes[@]}"; do
         [[ -n "${n}" ]] || continue
         linstor_node_online "${n}" || log error "LINSTOR node ${n} is not Online"
     done
@@ -553,8 +589,16 @@ print_plan() {
     log info "Suspend CronJobs: ${CRONJOBS_DONE[*]:-none}"
     log info "Stop custom resources: ${CUSTOM_RESOURCE_KEYS[*]:-none}"
     log info "Pre-drain delete pods: ${PREDRAIN_DELETE_PODS[*]:-none}"
-    log info "MySQL live pod template: synced from InnoDBCluster CR (operator podSpec is build-time only)"
-    log info "Harbor/MySQL amd64 pins: verified in preflight"
+    if [[ "${SKIP_PATCHES}" == true ]]; then
+        log info "MySQL live pod template: skipped"
+    else
+        log info "MySQL live pod template: synced from InnoDBCluster CR (operator podSpec is build-time only)"
+    fi
+    if [[ "${SKIP_PIN_CHECKS}" == true ]]; then
+        log info "Harbor/MySQL amd64 pins: preflight checks skipped"
+    else
+        log info "Harbor/MySQL amd64 pins: verified in preflight"
+    fi
     if [[ "${SKIP_DRAIN}" == false && "${DRAIN}" == "true" ]]; then
         log info "Cordon + drain: yes (force=${DRAIN_FORCE_CFG})"
     else
@@ -612,6 +656,10 @@ sync_mysql_podspec() {
 }
 
 apply_patches() {
+    if [[ "${SKIP_PATCHES}" == true ]]; then
+        log warn "Skipping patches/MySQL pod template sync"
+        return 0
+    fi
     local entry kind ns name ptype patch_json desc
     while IFS= read -r entry; do
         is_yaml_entry "${entry}" || continue
@@ -704,6 +752,151 @@ scale_namespaces() {
                 jq -r '.items[] | [.metadata.name, (.spec.replicas // 1)] | @tsv' || true)
         done
     done
+}
+
+delete_remaining_scaled_pods() {
+    local ns pod owner_kind owner_name key
+    for ns in "${SCALE_NAMESPACES[@]}"; do
+        [[ -n "${ns}" ]] || continue
+        while IFS=$'\t' read -r pod owner_kind owner_name; do
+            [[ -n "${pod}" ]] || continue
+            [[ "${owner_kind}" == "DaemonSet" ]] && continue
+            key="${ns}/${owner_kind}/${owner_name}"
+            if in_array "${key}" "${SCALE_EXCLUDE[@]}"; then
+                continue
+            fi
+            log info "Deleting remaining pod ${ns}/${pod} directly (bypasses PDB)"
+            kubectl delete pod -n "${ns}" "${pod}" --grace-period=30 --wait=false >/dev/null 2>&1 || true
+        done < <(kubectl get pods -n "${ns}" -o json 2>/dev/null |
+            jq -r '.items[] | [.metadata.name, (.metadata.ownerReferences[0].kind // ""), (.metadata.ownerReferences[0].name // "")] | @tsv' || true)
+    done
+}
+
+force_delete_remaining_scaled_pods() {
+    local ns pod owner_kind owner_name key
+    for ns in "${SCALE_NAMESPACES[@]}"; do
+        [[ -n "${ns}" ]] || continue
+        while IFS=$'\t' read -r pod owner_kind owner_name; do
+            [[ -n "${pod}" ]] || continue
+            [[ "${owner_kind}" == "DaemonSet" ]] && continue
+            key="${ns}/${owner_kind}/${owner_name}"
+            if in_array "${key}" "${SCALE_EXCLUDE[@]}"; then
+                continue
+            fi
+            log warn "Force-deleting remaining pod ${ns}/${pod} (finalizer/PDB bypass)"
+            kubectl delete pod -n "${ns}" "${pod}" --force --grace-period=0 --wait=false >/dev/null 2>&1 || true
+        done < <(kubectl get pods -n "${ns}" -o json 2>/dev/null |
+            jq -r '.items[] | [.metadata.name, (.metadata.ownerReferences[0].kind // ""), (.metadata.ownerReferences[0].name // "")] | @tsv' || true)
+    done
+}
+
+wait_for_scaled_pods_gone() {
+    local deadline=$((SECONDS + SCALED_POD_WAIT)) ns remaining found
+    while :; do
+        remaining=0
+        for ns in "${SCALE_NAMESPACES[@]}"; do
+            [[ -n "${ns}" ]] || continue
+            found="$(kubectl get pods -n "${ns}" -o json 2>/dev/null |
+                jq -r '[.items[] | select((.metadata.ownerReferences[0].kind // "") != "DaemonSet")] | length' || true)"
+            [[ "${found}" =~ ^[0-9]+$ ]] || found=0
+            ((found > 0)) && remaining=$((remaining + found))
+        done
+        if ((remaining == 0)); then
+            return 0
+        fi
+        if ((SECONDS > deadline)); then
+            log warn "${remaining} pod(s) still present in scaled namespaces"
+            return 1
+        fi
+        log info "Waiting for ${remaining} pod(s) in scaled namespaces to terminate"
+        sleep 5
+    done
+}
+
+verify_scaled_namespaces() {
+    local failed=0 ns kind name replicas key pod owner_kind owner_name
+    for ns in "${SCALE_NAMESPACES[@]}"; do
+        [[ -n "${ns}" ]] || continue
+        for kind in Deployment StatefulSet; do
+            while IFS=$'\t' read -r name replicas; do
+                [[ -n "${name}" ]] || continue
+                key="${ns}/${kind}/${name}"
+                if in_array "${key}" "${SCALE_EXCLUDE[@]}"; then
+                    continue
+                fi
+                if (( ${replicas:-0} > 0 )); then
+                    log warn "Still scaled: ${key} replicas=${replicas}"
+                    failed=1
+                fi
+            done < <(kubectl get "${kind}" -n "${ns}" -o json 2>/dev/null |
+                jq -r '.items[] | [.metadata.name, (.spec.replicas // 1)] | @tsv' || true)
+        done
+        while IFS=$'\t' read -r pod owner_kind owner_name; do
+            [[ -n "${pod}" ]] || continue
+            [[ "${owner_kind}" == "DaemonSet" ]] && continue
+            key="${ns}/${owner_kind}/${owner_name}"
+            if in_array "${key}" "${SCALE_EXCLUDE[@]}"; then
+                continue
+            fi
+            log warn "Pod still present in scaled namespace: ${ns}/${pod} owner=${owner_kind}/${owner_name}"
+            failed=1
+        done < <(kubectl get pods -n "${ns}" -o json 2>/dev/null |
+            jq -r '.items[] | [.metadata.name, (.metadata.ownerReferences[0].kind // ""), (.metadata.ownerReferences[0].name // "")] | @tsv' || true)
+    done
+    if ((failed != 0)); then
+        log error "Scaled namespaces are not clean; refusing to continue"
+    fi
+}
+
+pin_harbor_primary_label() {
+    local pod deadline
+    pod="$(kubectl -n harbor-system get pods -l 'cnpg.io/cluster=cnpg-harbor,cnpg.io/podRole=instance' -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+    if [[ -z "${pod}" ]]; then
+        log warn "Harbor CNPG instance pod not found; cannot pin primary label"
+        return 0
+    fi
+    log info "Pinning Harbor CNPG primary label on ${pod}"
+    kubectl -n harbor-system label pod "${pod}" cnpg.io/instanceRole=primary --overwrite >/dev/null
+    deadline=$((SECONDS + 60))
+    while :; do
+        if kubectl -n harbor-system get endpoints cnpg-harbor-rw -o jsonpath='{.subsets[0].addresses[0].ip}' 2>/dev/null | grep -q .; then
+            log info "Harbor CNPG rw service has an endpoint"
+            return 0
+        fi
+        if ((SECONDS > deadline)); then
+            log warn "Harbor CNPG rw service still has no endpoint"
+            return 0
+        fi
+        sleep 5
+    done
+}
+
+verify_daemonsets_and_cronjobs() {
+    local failed=0 spec ns name sentinel suspend
+    for spec in "${DAEMONSETS[@]}"; do
+        [[ -n "${spec}" ]] || continue
+        ns="${spec%%/*}"
+        name="${spec#*/}"
+        sentinel="$(kubectl get daemonset -n "${ns}" "${name}" -o jsonpath='{.spec.template.spec.nodeSelector.maintenance\.c02-shutdown}' 2>/dev/null || true)"
+        if [[ "${sentinel}" != "true" ]]; then
+            log warn "DaemonSet not stopped: ${spec}"
+            failed=1
+        fi
+    done
+    for spec in "${CRONJOBS_DONE[@]}"; do
+        [[ -n "${spec}" ]] || continue
+        ns="${spec%%/*}"
+        name="${spec#*/}"
+        suspend="$(kubectl get cronjob -n "${ns}" "${name}" -o jsonpath='{.spec.suspend}' 2>/dev/null || true)"
+        if [[ "${suspend}" != "true" ]]; then
+            log warn "CronJob not suspended: ${spec}"
+            failed=1
+        fi
+    done
+    if ((failed != 0)); then
+        log error "DaemonSet/CronJob verification failed"
+    fi
+    log info "Verification passed: scaled namespaces, DaemonSets, CronJobs"
 }
 
 stop_daemonsets() {
@@ -1007,8 +1200,16 @@ if [[ "${SKIP_DRAIN}" == false && "${DRAIN}" == "true" ]]; then
 fi
 
 scale_namespaces
+delete_remaining_scaled_pods
+if ! wait_for_scaled_pods_gone; then
+    force_delete_remaining_scaled_pods
+    wait_for_scaled_pods_gone || log error "Pods remain in scaled namespaces after force delete; aborting"
+fi
+verify_scaled_namespaces
+pin_harbor_primary_label
 stop_daemonsets
 suspend_cronjobs
+verify_daemonsets_and_cronjobs
 
 if [[ "${SKIP_DRAIN}" == false && "${DRAIN}" == "true" ]]; then
     drain_node
