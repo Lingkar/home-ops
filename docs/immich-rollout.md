@@ -345,7 +345,7 @@ Copy of `ntfy.yaml` with: `name: immich`, `path: ./immich/_base`,
 ```
 
 and registration `- immich.yaml` in `kubernetes/clusters/home/apps/kustomization.yaml`
-(alphabetical: between `home-ops-private.yaml` and `llm.yaml`).
+(alphabetical: between the out-of-repo overlay and `llm.yaml`).
 
 ## 5. Rollout sequence (after plan approval, one PR)
 

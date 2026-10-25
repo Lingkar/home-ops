@@ -155,7 +155,7 @@ For each: confirm no `VolumeSnapshotContent` references it, clear its snapshots
 ### What was already cleaned (2026-09-20)
 
 - Phase 1: 15 orphaned RDs with no K8s reference deleted, ~405 GiB reclaimed
-  (largest `scroop/media` ~395 GiB). Included keycloak/harbor/tgoo/mysql
+  (largest private media volume ~395 GiB). Included keycloak/harbor/tgoo/mysql
   leftovers and a stuck `velero` temp RD.
 - Phase 2: 82 leaked `VolumeSnapshot`s + 88 `VolumeSnapshotContent`s removed
   (all from Velero backups that no longer existed), then the 26 RDs they

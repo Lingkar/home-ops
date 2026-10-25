@@ -28,10 +28,10 @@ controllers:
               key: PASSWORD
         resources:
           requests:
-            cpu: 300m
-            memory: 1Gi
+            cpu: 64m
+            memory: 832Mi
           limits:
-            memory: 1Gi
+            memory: 832Mi
 service:
   main:
     ports:

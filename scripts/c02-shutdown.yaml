@@ -1,0 +1,313 @@
+# Configuration for scripts/c02-shutdown.sh
+#
+# Review this file before running the script. The defaults keep the
+# two-node critical set alive and stop the workloads that do not fit.
+# See docs/c02-shutdown.md for the full procedure.
+
+node:
+  name: c-02
+  ip: 192.168.68.254
+  # These LINSTOR satellites must be Online before c-02 is drained.
+  requireOnline:
+    - c-01
+    - rpi-00
+  refuseControlPlane: true
+
+keep:
+  # Documentation / preflight only. These namespaces must not be scaled.
+  namespaces:
+    - kube-system
+    - piraeus-datastore
+    - flux-system
+    - cert-manager
+    - network
+    - netbird
+    - mysql
+    - mysql-system
+    - harbor-system
+    - home-assistant
+    - phela
+    - zigbee2mqtt
+    - ntfy
+    - garage
+    - generic-device-plugin
+    - spegel
+    - podcertificate-controller-system
+
+flux:
+  # Suspended first; unsuspended in reverse order on restore.
+  # The top-level Kustomization goes first so the roots cannot reset the
+  # child suspend flags.
+  suspendKustomizations:
+    - flux-system/flux-system
+    - flux-system/infra
+    - flux-system/apps
+    # Add out-of-repo Kustomizations/namespaces with --extra-config or
+    # C02_EXTRA_CONFIG. Keep this public config free of private workload names.
+    # MySQL is kept, but its Kustomization is paused so Flux cannot revert
+    # the live amd64 pin applied by the patches section below.
+    - flux-system/mysql
+    # Harbor is kept, but its Kustomization/HelmRelease are paused so the
+    # live amd64 patches and CNPG affinity are not reverted during the drain.
+    - flux-system/harbor-system
+    # The LINSTOR controllers stay; only the c-02 disk health CronJobs below
+    # need their Kustomization paused so they are not un-suspended.
+    - flux-system/disk-health
+  # Discover and suspend all Kustomizations whose spec.targetNamespace is in
+  # scale.namespaces, plus every HelmRelease in those namespaces.
+  autoSuspendKustomizationsForNamespaces: true
+  suspendHelmReleasesInNamespaces: true
+  extraKustomizations: []
+  # Harbor is kept, but its HelmRelease is paused so Helm cannot remove the
+  # live amd64 nodeSelector patches while c-02 is being drained.
+  extraHelmReleases:
+    - harbor-system/harbor
+
+scale:
+  # Deployments and StatefulSets in these namespaces are scaled to 0.
+  # Keep this list to public namespaces. Add out-of-repo namespaces with
+  # --extra-config or C02_EXTRA_CONFIG.
+  namespaces:
+    - ate-system
+    - kagent
+    - crossplane-system
+    - rabbitmq-system
+    - velero
+    - falco
+    - falco-system
+    - grafana-system
+    - opentelemetry-system
+    - monitoring
+    # cnpg-system is stopped after the Harbor DB has been moved to c-01.
+    # The DB pods keep running; only the controller is paused.
+    - cnpg-system
+    - immich
+    - keycloak-system
+    - llm
+    - portfolio
+  # Optional namespace/kind/name exclusions if a workload in a scaled
+  # namespace must remain.
+  exclude: []
+  # DaemonSets cannot be scaled; patch their nodeSelector to a sentinel no
+  # node matches and delete their pods.
+  daemonSets:
+    - falco/falco
+    - velero/node-agent
+    - monitoring/opentelemetry-kube-stack-daemon-collector
+    - monitoring/loki-canary
+    - monitoring/kube-prometheus-stack-prometheus-node-exporter
+    - ate-system/atelet
+  # CronJobs to suspend while the node is down.
+  cronJobs:
+    - velero/kopia-verify-full
+    - velero/kopia-verify-shallow
+    - piraeus-datastore/disk-health-c-02
+    - piraeus-datastore/smartctl-long-c-02
+    - piraeus-datastore/smartctl-short-c-02
+
+customResources:
+  # Stop these before scaling namespaces. The script waits for the matching
+  # pods to disappear, then scales the remaining workloads (including the
+  # operators that processed the custom resources).
+  - apiVersion: k8s.keycloak.org/v2beta1
+    kind: Keycloak
+    namespace: keycloak-system
+    name: kc-infra
+    restoreField: spec.instances
+    stopPatch:
+      spec:
+        instances: 0
+  - apiVersion: monitoring.coreos.com/v1
+    kind: Prometheus
+    namespace: monitoring
+    name: kube-prometheus-stack-prometheus
+    restoreField: spec.replicas
+    stopPatch:
+      spec:
+        replicas: 0
+  - apiVersion: monitoring.coreos.com/v1
+    kind: Alertmanager
+    namespace: monitoring
+    name: kube-prometheus-stack-alertmanager
+    restoreField: spec.replicas
+    stopPatch:
+      spec:
+        replicas: 0
+
+waitForPodsGone:
+  - namespace: keycloak-system
+    pod: kc-infra-.*
+  - namespace: monitoring
+    pod: prometheus-kube-prometheus-stack-prometheus-.*
+  - namespace: monitoring
+    pod: alertmanager-kube-prometheus-stack-alertmanager-.*
+
+# Pods with a blocking PDB that belong to kept apps are moved off the node
+# explicitly before kubectl drain. The pod is recreated by its controller on
+# an amd64 node because c-02 is already cordoned.
+# Only deleted when the pod currently runs on the target node.
+preDrainDeletePods:
+  - harbor-system/cnpg-harbor-1
+
+patches:
+  # The MySQL operator's podSpec is only used when it builds the StatefulSet,
+  # so the Git CR change alone does not update the live StatefulSet. Patch both
+  # the CR (future builds) and the live workloads (this shutdown / rollout).
+  - description: Pin the MySQL CR to amd64
+    kind: InnoDBCluster
+    apiVersion: mysql.oracle.com/v2
+    namespace: mysql
+    name: mysql-0
+    patchType: merge
+    patch:
+      spec:
+        podSpec:
+          nodeSelector:
+            kubernetes.io/arch: amd64
+        router:
+          podSpec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+  - description: Pin the live MySQL StatefulSet to amd64 and apply the right-sized requests
+    kind: StatefulSet
+    namespace: mysql
+    name: mysql-0
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+            containers:
+              - name: mysql
+                resources:
+                  requests:
+                    cpu: 15m
+                    memory: 1408Mi
+                  limits:
+                    memory: 1408Mi
+              - name: sidecar
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 192Mi
+                  limits:
+                    memory: 192Mi
+  - description: Pin the live MySQL router to amd64
+    kind: Deployment
+    namespace: mysql
+    name: mysql-0-router
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+
+  - description: Pin the kept Harbor CNPG database to amd64
+    kind: Cluster
+    apiVersion: postgresql.cnpg.io/v1
+    namespace: harbor-system
+    name: cnpg-harbor
+    patchType: merge
+    patch:
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/arch
+                      operator: In
+                      values:
+                        - amd64
+  - description: Pin Harbor core to amd64
+    kind: Deployment
+    namespace: harbor-system
+    name: harbor-core
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+  - description: Pin Harbor jobservice to amd64
+    kind: Deployment
+    namespace: harbor-system
+    name: harbor-jobservice
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+  - description: Pin Harbor portal to amd64
+    kind: Deployment
+    namespace: harbor-system
+    name: harbor-portal
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+  - description: Pin Harbor registry to amd64
+    kind: Deployment
+    namespace: harbor-system
+    name: harbor-registry
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+  - description: Pin Harbor trivy to amd64
+    kind: StatefulSet
+    namespace: harbor-system
+    name: harbor-trivy
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+  - description: Pin Harbor redis to amd64
+    kind: StatefulSet
+    namespace: harbor-system
+    name: harbor-redis
+    patchType: strategic
+    patch:
+      spec:
+        template:
+          spec:
+            nodeSelector:
+              kubernetes.io/arch: amd64
+
+# Wait for these rollouts after applying patches. The MySQL operator only
+# reads podSpec when it builds the StatefulSet, so the live patch is what
+# actually moves the server and router before the c-02 drain.
+patchesWait:
+  - kind: StatefulSet
+    namespace: mysql
+    name: mysql-0
+  - kind: Deployment
+    namespace: mysql
+    name: mysql-0-router
+
+shutdown:
+  drain: true
+  # false = PDB-aware drain. Set true or pass --force-drain to add
+  # --disable-eviction (bypasses PDBs; use only if a drain is stuck).
+  drainForce: false
+  drbdDown: true
+  talosShutdown: true
+  waitTimeoutSeconds: 900
+  customResourceWaitSeconds: 180
+  postShutdownWaitSeconds: 180

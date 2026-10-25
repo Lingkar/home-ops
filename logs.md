@@ -4,6 +4,8 @@
 - [x] Set-up monitoring stack
 - [x] Set-up resource requests and limits for all resources
     - [x] Analysis to what extent we can automate this, e.g. krr -> docker run --net host --rm -t --volume ~/.kube/config:/root/.kube/config robustadev/krr:v1.28.0 python krr.py simple --prometheus-url http://localhost:9090 --mem-min 32 --history-duration 240 --use-oomkill-data
+      - Process, automation scope and findings: docs/krr-rightsizing.md
+      - c-02 two-node shutdown/restore runbook: docs/c02-shutdown.md
 - [x] Fix resources in kube-system
 - [x] Remove sops-age from namespaces that don't need it
 - [x] Velero back-up snapshots to Cloud

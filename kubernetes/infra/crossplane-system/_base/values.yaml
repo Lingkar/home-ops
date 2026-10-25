@@ -4,10 +4,10 @@ provider:
 resourcesCrossplane:
   requests:
     cpu: 50m
-    memory: 512Mi
+    memory: 320Mi
   limits:
     cpu: null
-    memory: 512Mi
+    memory: 320Mi
 resourcesRBACManager:
   requests:
     cpu: 10m
@@ -34,6 +34,6 @@ extraObjects:
                   resources:
                     requests:
                       cpu: 30m
-                      memory: 256Mi
+                      memory: 224Mi
                     limits:
-                      memory: 256Mi
+                      memory: 224Mi

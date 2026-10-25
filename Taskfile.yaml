@@ -35,3 +35,26 @@ tasks:
     preconditions:
       - test -f {{.KUBECONFIG}}
       - which flux
+
+  c02:shutdown:
+    desc: Plan the c-02 shutdown/scale-down (dry run, no changes)
+    cmd: ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - test -f {{.TALOSCONFIG}}
+      - which kubectl jq yq talosctl
+
+  c02:shutdown:apply:
+    desc: Scale down, drain, drbdadm down and shut down c-02
+    cmd: ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --apply
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - test -f {{.TALOSCONFIG}}
+      - which kubectl jq yq talosctl
+
+  c02:restore:
+    desc: Restore Flux/apps after c-02 is powered back on
+    cmd: ./scripts/c02-shutdown.sh --config scripts/c02-shutdown.yaml --restore
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl jq yq

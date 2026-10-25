@@ -12,6 +12,8 @@ spec:
     instances: 1
     podSpec:
       priorityClassName: platform-high
+      nodeSelector:
+        kubernetes.io/arch: amd64
       resources:
         requests:
           cpu: 15m
@@ -21,21 +23,23 @@ spec:
   edition: community
   podSpec:
     priorityClassName: platform-high
+    nodeSelector:
+      kubernetes.io/arch: amd64
     containers:
       - name: sidecar
         resources:
           requests:
             cpu: 10m
-            memory: 256Mi
+            memory: 192Mi
           limits:
-            memory: 256Mi
+            memory: 192Mi
       - name: mysql
         resources:
           requests:
             cpu: 15m
-            memory: 1100Mi
+            memory: 1408Mi
           limits:
-            memory: 1100Mi
+            memory: 1408Mi
   datadirVolumeClaimTemplate:
     storageClassName: ssd-lvm-thin-2
     accessModes:

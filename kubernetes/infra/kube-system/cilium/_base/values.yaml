@@ -4,9 +4,9 @@ policyAuditMode: false
 resources:
   requests:
     cpu: 150m
-    memory: 440Mi
+    memory: 550Mi
   limits:
-    memory: 440Mi
+    memory: 550Mi
 autoDirectNodeRoutes: true
 bpf:
   masquerade: true
@@ -106,10 +106,10 @@ localRedirectPolicy: true
 operator:
   resources:
     limits:
-      memory: 512Mi
+      memory: 256Mi
     requests:
       cpu: 10m
-      memory: 512Mi
+      memory: 256Mi
   dashboards:
     enabled: true
   prometheus:
