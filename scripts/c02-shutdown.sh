@@ -253,6 +253,56 @@ wait_for_linstor_online() {
     return 0
 }
 
+require_arch_pin() {
+    local kind="$1" ns="$2" name="$3" arch
+    if ! kubectl get "${kind}" "${name}" -n "${ns}" >/dev/null 2>&1; then
+        log error "Expected ${kind}/${ns}/${name} not found; reconcile the GitOps commit first"
+    fi
+    arch="$(kubectl get "${kind}" "${name}" -n "${ns}" -o json |
+        jq -r '.spec.template.spec.nodeSelector["kubernetes.io/arch"] // ""')"
+    [[ "${arch}" == "amd64" ]] || log error "${kind}/${ns}/${name} is not pinned to amd64 (nodeSelector.kubernetes.io/arch=${arch:-<unset>}); reconcile the GitOps right-size commit first"
+}
+
+require_harbor_pins() {
+    require_arch_pin Deployment harbor-system harbor-core
+    require_arch_pin Deployment harbor-system harbor-jobservice
+    require_arch_pin Deployment harbor-system harbor-portal
+    require_arch_pin Deployment harbor-system harbor-registry
+    require_arch_pin StatefulSet harbor-system harbor-trivy
+    require_arch_pin StatefulSet harbor-system harbor-redis
+
+    local cr
+    cr="$(kubectl get cluster cnpg-harbor -n harbor-system -o json 2>/dev/null || true)"
+    [[ -n "${cr}" ]] || log error "Cluster/harbor-system/cnpg-harbor not found"
+    if ! jq -e '.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[]?.matchExpressions[]? | select(.key == "kubernetes.io/arch") | .values | index("amd64")' <<<"${cr}" >/dev/null; then
+        log error "cnpg-harbor is not pinned to amd64; reconcile the GitOps right-size commit first"
+    fi
+}
+
+require_mysql_matches_git() {
+    local manifest="${ROOT_DIR}/kubernetes/apps/mysql/_base/innodbcluster.yaml"
+    [[ -f "${manifest}" ]] || log error "MySQL manifest not found: ${manifest}"
+    local ms_ready desired live desired_node live_node desired_router live_router desired_mysql live_mysql desired_sidecar live_sidecar
+    ms_ready="$(kubectl get kustomization -n flux-system mysql-system -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null || true)"
+    [[ "${ms_ready}" == "True" ]] || log error "mysql-system is not Ready; fix/reconcile the mysql-operator chart dependency first"
+
+    desired="$(yq -o=json -I=0 '.' "${manifest}")"
+    live="$(kubectl get innodbcluster -n mysql mysql-0 -o json 2>/dev/null || true)"
+    [[ -n "${live}" ]] || log error "InnoDBCluster/mysql/mysql-0 not found"
+
+    desired_node="$(jq -cS '.spec.podSpec.nodeSelector // {}' <<<"${desired}")"
+    live_node="$(jq -cS '.spec.podSpec.nodeSelector // {}' <<<"${live}")"
+    desired_router="$(jq -cS '.spec.router.podSpec.nodeSelector // {}' <<<"${desired}")"
+    live_router="$(jq -cS '.spec.router.podSpec.nodeSelector // {}' <<<"${live}")"
+    desired_mysql="$(jq -r '.spec.podSpec.containers[]? | select(.name == "mysql") | .resources.requests.memory // ""' <<<"${desired}")"
+    live_mysql="$(jq -r '.spec.podSpec.containers[]? | select(.name == "mysql") | .resources.requests.memory // ""' <<<"${live}")"
+    desired_sidecar="$(jq -r '.spec.podSpec.containers[]? | select(.name == "sidecar") | .resources.requests.memory // ""' <<<"${desired}")"
+    live_sidecar="$(jq -r '.spec.podSpec.containers[]? | select(.name == "sidecar") | .resources.requests.memory // ""' <<<"${live}")"
+
+    [[ "${desired_node}" == "${live_node}" && "${desired_router}" == "${live_router}" ]] ||         log error "MySQL CR nodeSelector differs from Git; reconcile the GitOps commit first"
+    [[ "${desired_mysql}" == "${live_mysql}" && "${desired_sidecar}" == "${live_sidecar}" ]] ||         log error "MySQL CR container requests differ from Git (live mysql=${live_mysql:-unset} sidecar=${live_sidecar:-unset}); reconcile the GitOps commit first"
+}
+
 preflight() {
     log info "Preflight node=${NODE_NAME} ip=${NODE_IP}"
     kubectl get node "${NODE_NAME}" >/dev/null 2>&1 || log error "Node ${NODE_NAME} not found"
@@ -262,6 +312,9 @@ preflight() {
         [[ -n "${n}" ]] || continue
         node_ready "${n}" || log error "Node ${n} is not Ready"
     done
+
+    require_harbor_pins
+    require_mysql_matches_git
 
     linstor_cmd node list >/dev/null 2>&1 || log error "LINSTOR controller is not reachable"
     for n in "${REQUIRE_ONLINE[@]}" "${NODE_NAME}"; do
@@ -500,6 +553,8 @@ print_plan() {
     log info "Suspend CronJobs: ${CRONJOBS_DONE[*]:-none}"
     log info "Stop custom resources: ${CUSTOM_RESOURCE_KEYS[*]:-none}"
     log info "Pre-drain delete pods: ${PREDRAIN_DELETE_PODS[*]:-none}"
+    log info "MySQL live pod template: synced from InnoDBCluster CR (operator podSpec is build-time only)"
+    log info "Harbor/MySQL amd64 pins: verified in preflight"
     if [[ "${SKIP_DRAIN}" == false && "${DRAIN}" == "true" ]]; then
         log info "Cordon + drain: yes (force=${DRAIN_FORCE_CFG})"
     else
@@ -535,6 +590,27 @@ suspend_flux() {
     done
 }
 
+sync_mysql_podspec() {
+    local cr node_selector containers router_selector router_resources sts_patch
+    cr="$(kubectl get innodbcluster -n mysql mysql-0 -o json)"
+    node_selector="$(jq -c '.spec.podSpec.nodeSelector // {}' <<<"${cr}")"
+    containers="$(jq -c '[.spec.podSpec.containers[]? | select(.resources != null) | {name, resources}]' <<<"${cr}")"
+    router_selector="$(jq -c '.spec.router.podSpec.nodeSelector // {}' <<<"${cr}")"
+    router_resources="$(jq -c '.spec.router.podSpec.resources // {}' <<<"${cr}")"
+
+    log info "Syncing MySQL StatefulSet pod template from InnoDBCluster CR"
+    sts_patch="$(jq -nc --argjson ns "${node_selector}" --argjson c "${containers}"         '{spec:{template:{spec:{nodeSelector:$ns,containers:$c}}}}')"
+    kubectl patch statefulset -n mysql mysql-0 --type=strategic -p "${sts_patch}" >/dev/null
+
+    log info "Syncing MySQL router nodeSelector from InnoDBCluster CR"
+    kubectl patch deployment -n mysql mysql-0-router --type=strategic         -p "$(jq -nc --argjson ns "${router_selector}" '{spec:{template:{spec:{nodeSelector:$ns}}}}')" >/dev/null
+
+    if [[ "${router_resources}" != "{}" ]]; then
+        log info "Syncing MySQL router resources from InnoDBCluster CR"
+        kubectl patch deployment -n mysql mysql-0-router --type=strategic             -p "$(jq -nc --argjson r "${router_resources}"                 '{spec:{template:{spec:{containers:[{name:"router",resources:$r}]}}}}')" >/dev/null
+    fi
+}
+
 apply_patches() {
     local entry kind ns name ptype patch_json desc
     while IFS= read -r entry; do
@@ -548,6 +624,8 @@ apply_patches() {
         log info "Patching ${kind}/${ns}/${name}" "type=${ptype}" "description=${desc}"
         kubectl patch "${kind}" "${name}" -n "${ns}" --type="${ptype}" -p "${patch_json}" >/dev/null
     done < <(yq -o=json -I=0 '.patches[]?' "${CONFIG_FILES[@]}")
+
+    sync_mysql_podspec
 
     local wait_entry wait_kind wait_ns wait_name
     while IFS= read -r wait_entry; do

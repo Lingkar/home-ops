@@ -44,12 +44,6 @@ flux:
     - flux-system/apps
     # Add out-of-repo Kustomizations/namespaces with --extra-config or
     # C02_EXTRA_CONFIG. Keep this public config free of private workload names.
-    # MySQL is kept, but its Kustomization is paused so Flux cannot revert
-    # the live amd64 pin applied by the patches section below.
-    - flux-system/mysql
-    # Harbor is kept, but its Kustomization/HelmRelease are paused so the
-    # live amd64 patches and CNPG affinity are not reverted during the drain.
-    - flux-system/harbor-system
     # The LINSTOR controllers stay; only the c-02 disk health CronJobs below
     # need their Kustomization paused so they are not un-suspended.
     - flux-system/disk-health
@@ -58,10 +52,7 @@ flux:
   autoSuspendKustomizationsForNamespaces: true
   suspendHelmReleasesInNamespaces: true
   extraKustomizations: []
-  # Harbor is kept, but its HelmRelease is paused so Helm cannot remove the
-  # live amd64 nodeSelector patches while c-02 is being drained.
-  extraHelmReleases:
-    - harbor-system/harbor
+  extraHelmReleases: []
 
 scale:
   # Deployments and StatefulSets in these namespaces are scaled to 0.
@@ -149,150 +140,15 @@ waitForPodsGone:
 preDrainDeletePods:
   - harbor-system/cnpg-harbor-1
 
-patches:
-  # The MySQL operator's podSpec is only used when it builds the StatefulSet,
-  # so the Git CR change alone does not update the live StatefulSet. Patch both
-  # the CR (future builds) and the live workloads (this shutdown / rollout).
-  - description: Pin the MySQL CR to amd64
-    kind: InnoDBCluster
-    apiVersion: mysql.oracle.com/v2
-    namespace: mysql
-    name: mysql-0
-    patchType: merge
-    patch:
-      spec:
-        podSpec:
-          nodeSelector:
-            kubernetes.io/arch: amd64
-        router:
-          podSpec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-  - description: Pin the live MySQL StatefulSet to amd64 and apply the right-sized requests
-    kind: StatefulSet
-    namespace: mysql
-    name: mysql-0
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-            containers:
-              - name: mysql
-                resources:
-                  requests:
-                    cpu: 15m
-                    memory: 1408Mi
-                  limits:
-                    memory: 1408Mi
-              - name: sidecar
-                resources:
-                  requests:
-                    cpu: 10m
-                    memory: 192Mi
-                  limits:
-                    memory: 192Mi
-  - description: Pin the live MySQL router to amd64
-    kind: Deployment
-    namespace: mysql
-    name: mysql-0-router
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
+# No static workload patches here. GitOps owns the Harbor amd64
+# nodeSelectors/CNPG affinity and the MySQL CR podSpec. The script verifies
+# those in preflight and syncs the MySQL CR podSpec to the live StatefulSet/
+# router, because the MySQL operator only reads podSpec at build time.
 
-  - description: Pin the kept Harbor CNPG database to amd64
-    kind: Cluster
-    apiVersion: postgresql.cnpg.io/v1
-    namespace: harbor-system
-    name: cnpg-harbor
-    patchType: merge
-    patch:
-      spec:
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-                - matchExpressions:
-                    - key: kubernetes.io/arch
-                      operator: In
-                      values:
-                        - amd64
-  - description: Pin Harbor core to amd64
-    kind: Deployment
-    namespace: harbor-system
-    name: harbor-core
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-  - description: Pin Harbor jobservice to amd64
-    kind: Deployment
-    namespace: harbor-system
-    name: harbor-jobservice
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-  - description: Pin Harbor portal to amd64
-    kind: Deployment
-    namespace: harbor-system
-    name: harbor-portal
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-  - description: Pin Harbor registry to amd64
-    kind: Deployment
-    namespace: harbor-system
-    name: harbor-registry
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-  - description: Pin Harbor trivy to amd64
-    kind: StatefulSet
-    namespace: harbor-system
-    name: harbor-trivy
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-  - description: Pin Harbor redis to amd64
-    kind: StatefulSet
-    namespace: harbor-system
-    name: harbor-redis
-    patchType: strategic
-    patch:
-      spec:
-        template:
-          spec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-
-# Wait for these rollouts after applying patches. The MySQL operator only
-# reads podSpec when it builds the StatefulSet, so the live patch is what
-# actually moves the server and router before the c-02 drain.
+# Wait for the MySQL StatefulSet/router rollouts after the sync from the
+# InnoDBCluster CR. The operator only reads podSpec when it builds the
+# StatefulSet, so the script applies the CR's pod template to the live
+# workloads before the c-02 drain.
 patchesWait:
   - kind: StatefulSet
     namespace: mysql
