@@ -6,7 +6,7 @@ TALOSCONFIG = "{{config_root}}/../home-ops-secrets/talos/talosconfig"
 TOPFCONFIG = "{{config_root}}/talos/topf.yaml"
 
 [tools]
-"python" = "3.15.0"
+"python" = "3.15.1"
 "pipx:makejinja" = "2.9.1"
 "aqua:cilium/cilium-cli" = "0.20.1"
 "aqua:cloudflare/cloudflared" = "2026.10.3"
