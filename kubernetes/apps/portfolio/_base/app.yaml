@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: docker.io/nginx:1.31.4-alpine@sha256:db35bfc6b2951e7f8a72db5db120288c127ffaeeb4a6d4b95a26fead017d5913
+          image: docker.io/nginx:1.31.8-alpine@sha256:785835ea65db4bba6f021acc0f3be91b0fef76a53fe41f8588c6698d2aed0606
           ports:
             - containerPort: 80
           volumeMounts:
