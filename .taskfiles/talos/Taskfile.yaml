@@ -64,10 +64,12 @@ tasks:
   upgrade-k8s:
     desc: Upgrade Kubernetes
     dir: "{{.TALOS_DIR}}"
-    cmd: talosctl upgrade-k8s --to {{.KUBERNETES_VERSION}}
+    cmd: talosctl upgrade-k8s --to {{.KUBERNETES_VERSION}} --nodes {{.CONTROL_PLANE}}
     vars:
       KUBERNETES_VERSION:
         sh: yq '.kubernetesVersion' {{.TOPFCONFIG}}
+      CONTROL_PLANE:
+        sh: yq '.nodes[] | select(.role=="control-plane") | .ip' {{.TOPFCONFIG}}
     preconditions:
       - talosctl config info
       - test -f {{.TALOSCONFIG}}
