@@ -9,9 +9,6 @@ spec:
   podTemplateSpec:
     spec:
       priorityClassName: platform-low
-      containers:
-        - name: falco
-          tty: true
 ---
 # Container plugin - required by official rules for container metadata fields
 # (container.id, container.image.repository, etc.)
