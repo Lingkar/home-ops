@@ -70,16 +70,6 @@
       "pinDigests": false
     },
     {
-      "description": "Disable digest pinning for the Falco CR version pin (operator uses it as an image tag)",
-      "matchManagers": [
-        "custom.regex"
-      ],
-      "matchPackageNames": [
-        "falcosecurity/falco"
-      ],
-      "pinDigests": false
-    },
-    {
       "description": "Harbor is internal-only (NXDOMAIN for GitHub runners), skip lookups for its mirrored images",
       "matchDatasources": [
         "docker"
