@@ -4,6 +4,8 @@ kind: Falco
 metadata:
   name: falco
 spec:
+  # renovate: datasource=docker depName=falcosecurity/falco
+  version: 0.45.2
   podTemplateSpec:
     spec:
       priorityClassName: platform-low
