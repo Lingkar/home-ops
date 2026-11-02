@@ -48,9 +48,9 @@ GitOps homelab: Kubernetes (Talos Linux) + Flux CD. `main` branch is live; Flux 
 
 ## Git push policy
 
-- Agents must NEVER push to any remote or merge PRs. Commit locally on a feature branch and stop.
-- The user pushes and merges manually.
-- When work is ready: report the branch name and commit hashes, and let the user push, open the PR, and merge.
+- Agents must NEVER push to any remote or merge PRs. Commit locally directly on `main` (do not create feature branches); the user reviews the commits and pushes.
+- When work is ready: report the commit hashes and stop; the user reviews and pushes.
+- NEVER apply changes directly to the cluster (no `kubectl apply/patch/edit`, `kubectl set image`, etc.). All cluster changes must go through commits reconciled by Flux. Read-only `kubectl` and `task reconcile` (forces Flux to pull repo state) are fine.
 
 ## Doc pointers
 
