@@ -52,6 +52,7 @@ spec:
         - matchName: codeload.github.com
         - matchName: raw.githubusercontent.com
         - matchName: wheels.home-assistant.io
+        - matchName: vector.openstreetmap.org
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
