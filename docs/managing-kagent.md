@@ -30,8 +30,9 @@ kagent-database
      -> kagent-resources (Agent/AgentTemplate/Harness)
 ```
 
-All HelmReleases explicitly set `install.atomic: false` and `upgrade.atomic: false`;
-Flux must not pass `--atomic` for these charts.
+The HelmReleases carry explicit `install`/`upgrade` timeouts and remediation. Flux
+does not pass Helm's `--atomic` flag; `atomic` is a Helm CLI option, not a
+HelmRelease field.
 
 ## One-time bootstrap (not managed by Git)
 
@@ -58,7 +59,8 @@ teardown, the actor/JWT/egress pools are reused; only
 `podcertificate-controller-cas` needs to recreate the deleted
 `podcertificate-controller-system` pools.
 
-`ate-api-authentication` is still a manual ConfigMap. The issuer must equal the
+`ate-api-authentication` is managed by Flux in
+`kubernetes/infra/ate-system/bootstrap/_base/configmap.yaml`. Its issuer must equal the
 cluster's advertised issuer:
 
 ```sh
@@ -66,8 +68,11 @@ kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
 # -> https://192.168.69.5:6443
 ```
 
-Create it after the API server exists, or run
-`go run ./cmd/ate-setup create api-authentication-config` from the same checkout.
+That issuer is the API VIP, which is not publicly trusted, so the provider keeps
+`certificateAuthorityFile` and `discoveryTokenFile` pointing at the pod's projected
+ServiceAccount credentials. Update the file and reconcile `substrate-bootstrap`;
+`ate-api-server` reads the config only at startup, so restart the deployment if it is
+already running.
 
 ### Database
 
@@ -214,8 +219,10 @@ Model calls fail with `401 Invalid API Key`:
    `kubectl -n ate-system logs deploy/atenet-egress -c agentgateway | grep "upstream request"`.
    A healthy call is `POST ... http.path=/v1/chat/completions http.status=200`.
 
-`kubectl ate` returns `token issuer ... not trusted`: fix the `ate-api-authentication`
-ConfigMap issuer above.
+`kubectl ate` returns `token issuer ... not trusted`: the `ate-api-authentication`
+issuer does not match the cluster's advertised issuer. Fix
+`kubernetes/infra/ate-system/bootstrap/_base/configmap.yaml` and reconcile
+`substrate-bootstrap`.
 
 Substrate pods stuck `ContainerCreating` with `credential bundle is not issued yet`:
 the CA pools are missing or the podcertificate-controller cannot mount them; see
