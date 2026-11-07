@@ -219,6 +219,12 @@ Model calls fail with `401 Invalid API Key`:
    `kubectl -n ate-system logs deploy/atenet-egress -c agentgateway | grep "upstream request"`.
    A healthy call is `POST ... http.path=/v1/chat/completions http.status=200`.
 
+`kagent` Helm install fails with `metadata.labels: Invalid value: "1.0.0-rc3+<digest>"`:
+Flux appends the OCI artifact digest to the chart version when a HelmRelease
+references an `OCIRepository`, and the kagent chart copies `.Chart.Version` into
+labels, where `+` is invalid. The release therefore uses an OCI `HelmRepository`
+with `chart.spec` (HelmChart) instead of `chartRef`.
+
 `kubectl ate` returns `token issuer ... not trusted`: the `ate-api-authentication`
 issuer does not match the cluster's advertised issuer. Fix
 `kubernetes/infra/ate-system/bootstrap/_base/configmap.yaml` and reconcile
