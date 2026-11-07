@@ -12,14 +12,28 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  dependsOn:
+    - name: substrate
+      namespace: flux-system
+    - name: kagent-database
+      namespace: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: kagent-crds
+      namespace: &namespace kagent
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: kagent
+      namespace: *namespace
   interval: 1h
-  path: ./kagent/_base
+  path: ./kagent/operator/_base
   prune: true
   retryInterval: 2m
   sourceRef:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: kagent
-  timeout: 5m
+  targetNamespace: *namespace
+  timeout: 15m
   wait: false

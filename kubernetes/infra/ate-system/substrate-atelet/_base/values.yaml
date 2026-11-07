@@ -1,0 +1,10 @@
+substrateReleaseName: substrate
+preview:
+  - PerTemplateSnapshotLocation
+  - GoldenEgressPolicy
+objectStore:
+  backend: s3
+  endpoint: http://garage-headless.garage.svc.cluster.local:3900
+  region: garage
+  pathStyle: true
+  credentialsSecret: substrate-garage-credentials

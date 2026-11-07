@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kagent
+spec:
+  interval: 1h
+  dependsOn:
+    - name: kagent-crds
+  chartRef:
+    kind: OCIRepository
+    name: kagent
+  install:
+    atomic: false
+    wait: true
+    timeout: 15m
+    remediation:
+      retries: -1
+  upgrade:
+    atomic: false
+    wait: true
+    timeout: 15m
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-kagent
+    - kind: ConfigMap
+      name: values-kagent
+      valuesKey: env-values.yaml

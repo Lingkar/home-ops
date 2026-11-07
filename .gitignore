@@ -10,3 +10,4 @@ tmp/
 .private/
 .task/
 .venv/
+.opencode

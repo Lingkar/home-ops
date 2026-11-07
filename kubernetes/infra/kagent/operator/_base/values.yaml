@@ -1,0 +1,44 @@
+database:
+  postgres:
+    ownerConnectionStringSecretRef:
+      name: kagent-postgres-owner
+      key: ownerConnectionString
+    readWriteConnectionStringSecretRef:
+      name: kagent-postgres-readwrite
+      key: readWriteConnectionString
+    clientCertificate:
+      enabled: false
+config:
+  database:
+    owner:
+      role: kagent_owner
+    readWrite:
+      role: kagent_readwrite
+    schema: kagent
+    vectorEnabled: false
+  server:
+    auth:
+      mode: insecure
+    grpcReflection: true
+  substrate:
+    apiEndpoint: dns:///api.ate-system.svc:443
+    routerUrl: https://atenet-router.ate-system.svc:443
+    actorJwtIssuer: https://idp.ate-system.svc
+controller:
+  substrateClientCertificate:
+    enabled: true
+providers:
+  default: openAI
+  openAI:
+    provider: OpenAI
+    model: qwen3.8-flash-next
+    apiKeySecretRef: kagent-ollama
+    apiKeySecretKey: API_KEY
+    config:
+      baseUrl: https://llm.buijnsters.com/v1
+substrateWorkerPool:
+  create: true
+  name: kagent-default
+  replicas: 1
+  sandboxClass: gvisor
+  workerImage: ghcr.io/kagent-dev/substrate/ateworker-gvisor:v1.0.0

@@ -13,8 +13,15 @@ spec:
     secretRef:
       name: sops-age
   dependsOn:
-    - name: substrate-crds
+    - name: substrate-atelet
       namespace: flux-system
+    - name: kagent-database
+      namespace: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: &namespace ate-system
   interval: 1h
   path: ./ate-system/substrate/_base
   prune: true
@@ -23,6 +30,6 @@ spec:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: ate-system
-  timeout: 5m
+  targetNamespace: *namespace
+  timeout: 15m
   wait: false

@@ -6,99 +6,155 @@ kagent 1.0 runs agents on Agent Substrate (ATE). Reads as one system, installed 
 
 | Component | Namespace | Version | Managed by |
 | --- | --- | --- | --- |
-| `substrate-crds` | ate-system | 0.3.0-alpha3 | GitOps (`kubernetes/infra/ate-system/substrate-crds`) |
-| `substrate` | ate-system | 0.3.0-alpha3 | manual `helm` |
-| `kagent-crds` | kagent | 1.0.0-alpha7 | manual `helm` |
-| `kagent` | kagent | 1.0.0-alpha7 | manual `helm` (`-f kubernetes/infra/kagent/_base/values.yaml`) |
+| `substrate-crds` | ate-system | 1.0.0 | Flux (`kubernetes/infra/ate-system/substrate-crds`) |
+| `substrate-podcert` | podcertificate-controller-system | 1.0.0 | Flux (`kubernetes/infra/ate-system/substrate-podcert`) |
+| `substrate-atelet` | ate-system | 1.0.0 | Flux (`kubernetes/infra/ate-system/substrate-atelet`) |
+| `substrate` | ate-system | 1.0.0 | Flux (`kubernetes/infra/ate-system/substrate`) |
+| `kagent-crds` | kagent | 1.0.0-rc3 | Flux (`kubernetes/infra/kagent/operator`) |
+| `kagent` | kagent | 1.0.0-rc3 | Flux (`kubernetes/infra/kagent/operator`) |
 
-The kagent and substrate versions are coupled: a kagent release pins one substrate
-version, and substrate must not be upgraded on its own (schema/DB changes). To bump,
-move both substrate charts and both kagent charts together and recreate the CRs under
-the new API group (1.0 moved the kagent group from `kagent.dev` to `api.kagent.dev`).
+kagent `1.0.0-rc3` pins Substrate `v1.0.0`. The 0.3.0-alpha3 → 1.0.0 path is a
+reinstall, not an in-place upgrade: Substrate does not support pre-1.0 minor
+upgrades, and its Postgres migrations were squashed at 0.7.0-alpha2.
 
-`kubectl-ate` (the substrate CLI plugin) is versioned with substrate:
+Flux ordering:
 
 ```
+substrate-bootstrap
+  -> substrate-crds
+     -> substrate-podcert
+        -> substrate-atelet
+           -> substrate
+kagent-database
+  -> kagent (kagent-crds, then kagent)
+     -> kagent-resources (Agent/AgentTemplate/Harness)
+```
+
+All HelmReleases explicitly set `install.atomic: false` and `upgrade.atomic: false`;
+Flux must not pass `--atomic` for these charts.
+
+## One-time bootstrap (not managed by Git)
+
+These steps generate secrets that cannot be committed:
+
+```sh
+# New client for Substrate 1.0.0
 curl -fsSL -o kubectl-ate \
-  "https://github.com/kagent-dev/substrate/releases/download/v0.3.0-alpha3/kubectl-ate-linux-$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/')"
+  "https://github.com/kagent-dev/substrate/releases/download/v1.0.0/kubectl-ate-linux-$(uname -m | sed 's/x86_64/amd64/; s/aarch64/arm64/')"
 chmod +x kubectl-ate && sudo mv kubectl-ate /usr/local/bin/
+
+# CA/JWT pools, from a v1.0.0 checkout
+git clone --depth 1 --branch v1.0.0 https://github.com/kagent-dev/substrate /tmp/substrate-v1.0.0
+cd /tmp/substrate-v1.0.0
+go run ./cmd/ate-setup create podcertificate-controller-cas
+go run ./cmd/ate-setup create actor-id-ca-pool
+go run ./cmd/ate-setup create actor-id-ca-certs
+go run ./cmd/ate-setup create egress-mitm-ca-pool
+go run ./cmd/ate-setup create jwt-authority-pool
 ```
 
-## Identity bootstrap (required, no chart does it)
+`ate-setup create` preserves existing pools. If `ate-system` survived a partial
+teardown, the actor/JWT/egress pools are reused; only
+`podcertificate-controller-cas` needs to recreate the deleted
+`podcertificate-controller-system` pools.
 
-Agent Substrate authenticates its components with mTLS and kagent with JWT. The CA and
-JWT pools must be generated out-of-band with `kubectl-ate`. A reinstall that wipes these
-secrets leaves every substrate pod stuck on `credential bundle is not issued yet`.
+`ate-api-authentication` is still a manual ConfigMap. The issuer must equal the
+cluster's advertised issuer:
 
-The `ate-system` pools (`actor-id-*`, `egress-mitm-ca-pool`) persist from the original
-install. The `podcertificate-controller-system` pools are new in substrate 0.3.0 and are
-the usual thing missing:
-
-```
-kubectl ate admin make-ca-pool --ca-id=1 --name=service-dns-ca-pool \
-  --secret-namespace=podcertificate-controller-system
-kubectl ate admin make-ca-pool --ca-id=1 --name=pod-identity-ca-pool \
-  --secret-namespace=podcertificate-controller-system
-```
-
-Full bootstrap from scratch (order matters):
-
-```
-kubectl ate admin make-ca-pool --ca-id=1 --name=actor-id-ca-pool  --secret-namespace=ate-system
-kubectl ate admin make-jwt-pool --key-id=1 --name=actor-id-jwt-pool --secret-namespace=ate-system
-kubectl ate admin make-ca-pool --ca-id=1 --name=egress-mitm-ca-pool --secret-namespace=ate-system \
-  --key-type=ECDSAP256
-
-# ate-api-server reads the actor CA root from this secret
-actor_id_ca_root="$(kubectl get secret actor-id-ca-pool -n ate-system \
-  -o jsonpath='{.data.pool}' | base64 --decode \
-  | jq -r '.CAs[0].RootCertificateDER' | base64 --decode \
-  | openssl x509 -inform der -outform pem)"
-kubectl create secret generic actor-id-ca-certs -n ate-system \
-  --from-literal=ca.crt="${actor_id_ca_root}"
-```
-
-Then re-roll substrate so pods mount the material:
-
-```
-helm upgrade substrate oci://ghcr.io/kagent-dev/substrate/helm/substrate \
-  --version 0.3.0-alpha3 -n ate-system --reuse-values --wait --timeout 10m
-```
-
-## ate-api authentication (issuer)
-
-`ate-api-authentication` in `ate-system` tells ate-api-server which JWT issuers to trust.
-The `issuer` must equal the cluster's advertised issuer, otherwise every `kubectl ate`
-call fails with `token issuer "..." not trusted`:
-
-```
+```sh
 kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
 # -> https://192.168.69.5:6443
 ```
 
-ConfigMap content (the issuer is the Talos VIP endpoint; update it if that changes):
+Create it after the API server exists, or run
+`go run ./cmd/ate-setup create api-authentication-config` from the same checkout.
 
+### Database
+
+Flux creates the CNPG cluster `cnpg-kagent` in the `kagent` namespace. It does not
+create the application roles or the connection Secrets. Run the upstream setup
+scripts as the CNPG superuser (`cnpg-kagent-superuser`):
+
+- kagent: `go/core/pkg/postgressetup/setup.sql` at `v1.0.0-rc3`
+  (`kagent_schema=kagent`, roles `kagent_owner`/`kagent_readwrite`)
+- substrate: `pkg/postgressetup/setup.sql` at `v1.0.0`
+  (`substrate_schema=substrate`, roles `substrate_owner`/`substrate_readwrite`)
+
+Then create the connection Secrets (SOPS-encrypt them before committing):
+
+```sh
+# kagent namespace
+kagent-postgres-owner       key: ownerConnectionString
+kagent-postgres-readwrite   key: readWriteConnectionString
+# ate-system namespace
+substrate-postgres-owner    key: ownerConnectionString
+substrate-postgres-readwrite key: readWriteConnectionString
 ```
-kubectl -n ate-system create configmap ate-api-authentication \
-  --from-literal=authentication.yaml="actorIdentityJWTProvider: kubernetes
-jwtProviders:
-- name: kubernetes
-  issuer: https://192.168.69.5:6443
-  audiences: [api.ate-system.svc]
-  certificateAuthorityFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-  discoveryTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-" --dry-run=client -o yaml | kubectl apply -f -
 
-kubectl -n ate-system rollout restart deploy/ate-api-server
+The RustFS credentials are not used: Substrate is configured for the existing
+Garage S3 service, so `rustfs.enabled: false`. The Garage endpoint is
+`http://garage-headless.garage.svc.cluster.local:3900`, region `garage`,
+path-style `true`.
+
+Create a dedicated bucket and key once:
+
+```sh
+kubectl exec -n garage garage-0 -- ./garage bucket create ate-snapshots
+kubectl exec -n garage garage-0 -- ./garage key create substrate
+kubectl exec -n garage garage-0 -- ./garage bucket allow \
+  --read --write --owner ate-snapshots --key substrate
+kubectl exec -n garage garage-0 -- ./garage key show substrate
 ```
 
-This ConfigMap is not managed by Helm or GitOps.
+Store the key ID/secret in a dedicated, namespaced SOPS Secret (not
+`cluster-secrets`):
+
+```sh
+cp kubernetes/infra/ate-system/bootstrap/_base/secret.sops.yaml.example \
+   kubernetes/infra/ate-system/bootstrap/_base/secret.sops.yaml
+# fill AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY from `garage key show substrate`
+sops -e -i kubernetes/infra/ate-system/bootstrap/_base/secret.sops.yaml
+```
+
+Then uncomment `secret.sops.yaml` in
+`kubernetes/infra/ate-system/bootstrap/_base/kustomization.yaml`. The
+`substrate` object-store sidecars and the `substrate-atelet` node plugin both
+reference this Secret by name. Garage's data PVC is 20 GiB and shared with
+Loki/Velero; monitor it and expand `data-garage-0` when needed.
+
+The connection strings point at
+`cnpg-kagent-rw.kagent.svc.cluster.local:5432/kagent`; leave the role out of the
+DSN because both charts run `SET ROLE` after connecting.
+
+### Required values
+
+Substrate's `values.yaml` carries the 1.0.0 gates and identities:
+
+```yaml
+preview:
+  - PerTemplateSnapshotLocation
+  - GoldenEgressPolicy
+atelet:
+  enabled: false
+ateApi:
+  actorJWTIssuer: https://idp.ate-system.svc
+  authorization:
+    bootstrapOwners:
+      - spiffe://cluster.local/ns/kagent/sa/kagent-controller
+      - system:serviceaccount:ate-system:ate-client
+atenetRouter:
+  ingressAllowedSPIFFEIDs:
+    - spiffe://cluster.local/ns/kagent/sa/kagent-controller
+```
+
+The `kagent` namespace is labeled `ate.dev/api-access=true`; without it the
+controller cannot reach `ate-api-server`.
 
 ## Model provider
 
 The `default-model-config` ModelConfig is generated from the `providers` block in
-`kubernetes/infra/kagent/_base/values.yaml`. `providers.<default>.config` is passed
-straight through to the provider's block in the ModelConfig.
+`kubernetes/infra/kagent/operator/_base/values.yaml`. `providers.<default>.config`
+is passed straight through to the provider's block in the ModelConfig.
 
 `llm.buijnsters.com` is a llama.cpp (`llama-server`) with `LLAMA_API_KEY` set, so it
 speaks the OpenAI API on `/v1`, not Ollama's `/api/chat`. Point kagent at it as an
@@ -121,8 +177,28 @@ providers:
 `llm-api-key/API_KEY`. The agent never holds the key; the substrate egress gateway
 fetches it and sets `authorization: Bearer <key>`.
 
-Apply changes with `helm upgrade kagent ... -f kubernetes/infra/kagent/_base/values.yaml`,
-then create a **new** Session (existing sessions pin the old compiled revision).
+After changing values, Flux reconciles `kagent`; create a **new** Session
+(existing sessions pin the old compiled revision).
+
+## Snapshots and workers
+
+The kagent chart creates the WorkerPool `kagent-default` with
+`ateworker-gvisor:v1.0.0` and `sandboxClass: gvisor`. The Harness uses
+`gs://ate-snapshots/kagent/`; Substrate 1.0.0 uses `gs://` URIs for the S3/Garage
+snapshot backend.
+
+The node-local image cache lives at `/var/lib/ate/image-cache` and uses layout
+version 3. Before the new atelet starts, clear the old node state (no actors must
+be running):
+
+```sh
+for n in rpi-00 c-01 c-02; do
+  kubectl debug node/$n -it --image=busybox -- rm -rf /host/var/lib/ate
+done
+```
+
+`c-01` is a control-plane node; if the debug pod does not schedule, use a
+temporary privileged DaemonSet with `tolerations: [{operator: Exists}]`.
 
 ## Troubleshooting
 
@@ -138,8 +214,9 @@ Model calls fail with `401 Invalid API Key`:
    `kubectl -n ate-system logs deploy/atenet-egress -c agentgateway | grep "upstream request"`.
    A healthy call is `POST ... http.path=/v1/chat/completions http.status=200`.
 
-`kubectl ate` returns `token issuer ... not trusted`: fix the ConfigMap issuer above.
+`kubectl ate` returns `token issuer ... not trusted`: fix the `ate-api-authentication`
+ConfigMap issuer above.
 
 Substrate pods stuck `ContainerCreating` with `credential bundle is not issued yet`:
 the CA pools are missing or the podcertificate-controller cannot mount them; see
-identity bootstrap above.
+the bootstrap section.
