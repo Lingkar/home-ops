@@ -20,6 +20,5 @@ spec:
     kind: ExternalArtifact
     name: infra
     namespace: flux-system
-  targetNamespace: ate-system
   timeout: 5m
   wait: true
