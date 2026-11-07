@@ -53,6 +53,11 @@ go run ./cmd/ate-setup create egress-mitm-ca-pool
 go run ./cmd/ate-setup create jwt-authority-pool
 ```
 
+`ate-setup create` preserves existing pools. If `ate-system` survived a partial
+teardown, the actor/JWT/egress pools are reused; only
+`podcertificate-controller-cas` needs to recreate the deleted
+`podcertificate-controller-system` pools.
+
 `ate-api-authentication` is still a manual ConfigMap. The issuer must equal the
 cluster's advertised issuer:
 
