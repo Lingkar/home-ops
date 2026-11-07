@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - helmrelease-crds.yaml
+  - helmrelease.yaml
+  - secret.sops.yaml
+  - source.yaml
+configMapGenerator:
+  - name: values-kagent
+    behavior: create
+    files:
+      - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+configurations:
+  - ../../../utils/helm/kustomizeconfig.yaml

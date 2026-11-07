@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-kagent
+spec:
+  instances: 1
+  priorityClassName: platform-low
+  enableSuperuserAccess: true
+  bootstrap:
+    initdb:
+      database: kagent
+  storage:
+    size: 5Gi
+    storageClass: ssd-lvm-thin-2
+  resources:
+    requests:
+      cpu: 30m
+      memory: 256Mi
+    limits:
+      memory: 512Mi

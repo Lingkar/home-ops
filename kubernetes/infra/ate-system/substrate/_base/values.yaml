@@ -1,5 +1,38 @@
+createNamespace: false
+preview:
+  - PerTemplateSnapshotLocation
+  - GoldenEgressPolicy
+postgres:
+  clientCertificates:
+    enabled: false
+  readWriteConnectionStringSecretRef:
+    name: substrate-postgres-readwrite
+    key: readWriteConnectionString
+  ownerConnectionStringSecretRef:
+    name: substrate-postgres-owner
+    key: ownerConnectionString
+  readWriteRole: substrate_readwrite
+  ownerRole: substrate_owner
+  schema: substrate
+atelet:
+  enabled: false
+  storageBackend: s3
+ateApi:
+  actorJWTIssuer: https://idp.ate-system.svc
+  authorization:
+    bootstrapOwners:
+      - spiffe://cluster.local/ns/kagent/sa/kagent-controller
+      - system:serviceaccount:ate-system:ate-client
+atenetRouter:
+  ingressAllowedSPIFFEIDs:
+    - spiffe://cluster.local/ns/kagent/sa/kagent-controller
 credentialProvider:
   namespacePolicies:
     - atespace: kagent
       allowedNamespaces:
         - kagent
+rustfs:
+  enabled: true
+  bucket: ate-snapshots
+  accessKey: rustfsadmin
+  secretKey: rustfsadmin

@@ -4,7 +4,8 @@ metadata:
   name: my-first-agent
   namespace: kagent
 spec:
-  templateRef:
-    name: my-first-template
   harnessRef:
     name: kagent
+  template:
+    ref:
+      name: my-first-template

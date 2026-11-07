@@ -1,0 +1,3 @@
+createNamespace: false
+postgresClientNamespace: ate-system
+postgresClientServiceAccount: ate-api-server

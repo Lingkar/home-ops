@@ -5,13 +5,21 @@ metadata:
   name: substrate
 spec:
   interval: 1h
+  dependsOn:
+    - name: substrate-atelet
   chartRef:
     kind: OCIRepository
     name: substrate
   install:
+    atomic: false
+    wait: true
+    timeout: 15m
     remediation:
       retries: -1
   upgrade:
+    atomic: false
+    wait: true
+    timeout: 15m
     cleanupOnFail: true
     remediation:
       retries: 3
