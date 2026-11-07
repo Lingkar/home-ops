@@ -6,9 +6,12 @@ satellite went `OFFLINE` and never reconnected. Covers:
 1. satellite pod `Running` but LINSTOR node `OFFLINE` / controller holds a stale connection
 2. `VolumeWithoutQuorum` force-demotion + disks stuck `Outdated`
 3. `drbdadm down all` blocked by a stale kubelet mount
-4. verification checklist
+4. kernel-wedged DRBD / stuck `drbdsetup suspend-io` (§6, §8)
+5. verification checklist (§5)
 
 See also:
+- `docs/linstor-suspend-io-deadlock.md` - deep-dive on §8: evidence, root-cause
+  analysis, recurrence checklist, and upstream issue template
 - `docs/linstor-orphan-cleanup.md` - deleting orphaned resource definitions / kernel leftovers
 - `docs/linstor-snapshot-gc.md` - snapshot garbage collection
 - `docs/control-plane-shutdown.md` - `drbdadm down` before shutdown
@@ -392,3 +395,104 @@ sat rpi-00 drbdadm status <pvc-...>   # expect both peers Connected / peer-disk 
 in-memory diskless resource, and only `down`/`up` recreates it with the current
 UUID. Only do this on `rpi-00` (or another diskless replica) - never on a
 diskful replica without checking the data/peers.
+
+## 8. Stuck `drbdsetup suspend-io` -> satellite `OFFLINE` + quorum-taint flapping
+
+This is the kernel-wedged variant where one DRBD resource deadlocks against its
+mounted filesystem during a snapshot/`suspend-io`. Unlike §6 it can hide for
+days: the node answers ping/kubelet and the satellite pod stays `Running`, but
+the first controller (re)connect after a restart cannot authenticate it.
+
+Full evidence, root-cause analysis, a recurrence checklist, and a ready-to-fill
+upstream report are in `docs/linstor-suspend-io-deadlock.md`.
+
+Symptoms:
+
+- `LS node list` shows the node `OFFLINE` with an **empty `Platform`** while the
+  satellite pod is `2/2 Running`.
+- Controller log repeats `ACR: No active connection to satellite '<node>'`
+  every 10s, but `ss -tnp` in the controller shows an `ESTAB` socket to the
+  satellite pod IP on `:3366`.
+- Satellite log stops after the `Checking support for ...` lines; there is no
+  `Satellite '<node>' authenticated`.
+- `drbdadm status` on that node fails fast with:
+  ```text
+  Command 'drbdsetup status' did not terminate within 5 seconds
+  ```
+- On the host (privileged pod with `hostPID`), several processes are in `D`:
+  ```text
+  drbdsetup super_lock                 # e.g. `drbdsetup suspend-io 1017`
+  jbd2/drbd1017-8 __drbd_make_request
+  lvm __drbd_make_request
+  drbd_r_pvc-<uuid> drbd_suspend_io
+  ```
+  `/proc/<pid>/stack` for `drbdsetup`:
+  ```text
+  super_lock
+  bdev_super_lock
+  fs_bdev_freeze
+  bdev_freeze
+  drbd_nl_suspend_io_doit [drbd]
+  ```
+- The affected resource is suspended `disk:Outdated quorum:no blocked:upper`
+  on the peer(s), and typically `Connecting(<offline-node>)`.
+- `linstor.linbit.com/HighAvailabilityController` taints nodes with
+  `drbd.linbit.com/lost-quorum:NoSchedule`. On the diskless tiebreaker the taint
+  may **flap every ~10s** (`NodeStorageQuorumLost` / `NodeStorageQuorumRegained`),
+  repeatedly evicting pods mounted on volumes that momentarily lose quorum.
+  Workloads without that toleration stay `Pending`.
+- Snapshots of the affected PVC fail (`VolumeSnapshot.status.readyToUse: false`,
+  `SnapshotDeleteError` events); Velero backups including it go
+  `PartiallyFailed` for as long as the wedge lasts.
+
+Diagnose the minor -> resource mapping:
+
+```sh
+LS resource list -r <pvc-...>        # state + DRBD minor
+# On the host, list interrupted processes (privileged pod, hostPID=true):
+for d in /proc/[0-9]*; do
+  [ "$(awk '{print $3}' "$d/stat" 2>/dev/null)" = D ] && \
+    echo "${d#/proc/} $(cat "$d/comm") $(cat "$d/wchan")"
+done
+cat /proc/<drbdsetup-pid>/stack
+```
+
+Fix (same escalation as §6):
+
+1. Move the LINSTOR control plane off the node and cordon it first (the
+   controller/CSI/affinity pods tolerate `lost-quorum`).
+2. Do **not** try `node reconnect`, `drbdadm down`, or killing the `D`-state
+   `drbdsetup`; they hang on the same lock. `drbdadm down all` will not return.
+3. `talosctl --nodes <node-ip> reboot --mode force --wait=false`. Expect the
+   kernel restart to hang in `device_shutdown`; a **physical power cycle** was
+   required in the 2026-11-06 case. Confirm with `node_boot_time_seconds` /
+   `bootID`, not just ping.
+4. After power-on LINSTOR re-creates the resource. In 2026-11-06 both diskful
+   replicas came back `UpToDate` automatically (no `primary --force`, no data
+   loss); check `drbdadm status <pvc-...>` on all three nodes.
+5. The controller then works through a **backlog of snapshot deletions**
+   (hundreds of `ACR: Deleted snapshot ...` lines, high CPU). During this,
+   `ControllerPublishVolume` can return `DeadlineExceeded` and pods stay
+   `ContainerCreating`. Let it drain; CPU drops and attaches succeed. Do not
+   restart the CSI controller.
+6. HA controller removes `drbd.linbit.com/lost-quorum` automatically once all
+   resources have quorum. Only remove it manually if it persists after a clean
+   `LS resource list`; then `kubectl uncordon`.
+7. Verify with the §5 checklist and confirm there are no `D`-state processes.
+
+Case study - 2026-11-06 (`scroop/lidarr-config`, 256 Mi):
+
+- A `drbdsetup suspend-io 1017` was stuck in `D` since 2026-11-01, deadlocked
+  with the mounted ext4 journal; the satellite stayed connected until the
+  controller moved/restarted at 05:52 on 2026-11-06, then went `OFFLINE` for
+  good.
+- c-01 was quorum-tainted since 11-02, c-02 since 11-03, and `rpi-00` flapped
+  the taint every ~10s. Most workloads were `Pending`/evicted.
+- Forced reboot hung in `device_shutdown`; physical power cycle brought c-02
+  back, all 48 resources reconciled, and both `lidarr-config` replicas were
+  `UpToDate` without intervention.
+- Prevention/follow-ups: treat repeated snapshot failures on one PVC as an
+  early warning (the wedge predates the visible outage by days). The `rpi-00`
+  tiebreaker satellite has 80+ liveness restarts (exit 143) and the node runs at
+  ~99% memory requests, so its flapping can drop quorum on its own; stabilise
+  it (liveness tolerance / memory headroom) before any storage-node reboot.
