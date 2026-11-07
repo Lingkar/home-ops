@@ -7,11 +7,7 @@ spec:
   interval: 1h
   dependsOn:
     - name: kagent-crds
-  # HelmChart (not chartRef/OCIRepository): Flux appends the OCI digest as
-  # build metadata to the chart version, and this chart puts the version in
-  # labels, where "+" is invalid.
   chart:
-    kind: HelmChart
     spec:
       chart: kagent
       version: 1.0.0-rc3
