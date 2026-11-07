@@ -9,12 +9,10 @@ spec:
     kind: OCIRepository
     name: substrate-atelet
   install:
-    atomic: false
     timeout: 15m
     remediation:
       retries: -1
   upgrade:
-    atomic: false
     timeout: 15m
     cleanupOnFail: true
     remediation:

@@ -9,12 +9,10 @@ spec:
     kind: OCIRepository
     name: substrate-podcert
   install:
-    atomic: false
     timeout: 5m
     remediation:
       retries: -1
   upgrade:
-    atomic: false
     timeout: 5m
     cleanupOnFail: true
     remediation:
