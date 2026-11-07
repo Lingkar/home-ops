@@ -12,13 +12,11 @@ spec:
     name: substrate
   install:
     atomic: false
-    wait: true
     timeout: 15m
     remediation:
       retries: -1
   upgrade:
     atomic: false
-    wait: true
     timeout: 15m
     cleanupOnFail: true
     remediation:

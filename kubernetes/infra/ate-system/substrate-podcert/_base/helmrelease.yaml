@@ -10,13 +10,11 @@ spec:
     name: substrate-podcert
   install:
     atomic: false
-    wait: true
     timeout: 5m
     remediation:
       retries: -1
   upgrade:
     atomic: false
-    wait: true
     timeout: 5m
     cleanupOnFail: true
     remediation:
