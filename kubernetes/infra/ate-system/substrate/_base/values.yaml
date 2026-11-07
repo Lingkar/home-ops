@@ -18,6 +18,7 @@ atelet:
   enabled: false
   storageBackend: s3
 ateApi:
+  snapshotLocation: gs://ate-snapshots/
   actorJWTIssuer: https://idp.ate-system.svc
   authorization:
     bootstrapOwners:
@@ -31,8 +32,23 @@ credentialProvider:
     - atespace: kagent
       allowedNamespaces:
         - kagent
+objectStorePlugin:
+  extraEnv:
+    - name: AWS_REGION
+      value: garage
+    - name: AWS_ENDPOINT_URL
+      value: http://garage-headless.garage.svc.cluster.local:3900
+    - name: AWS_S3_USE_PATH_STYLE
+      value: "true"
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: substrate-garage-credentials
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: substrate-garage-credentials
+          key: AWS_SECRET_ACCESS_KEY
 rustfs:
-  enabled: true
-  bucket: ate-snapshots
-  accessKey: rustfsadmin
-  secretKey: rustfsadmin
+  enabled: false

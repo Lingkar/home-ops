@@ -4,7 +4,7 @@ preview:
   - GoldenEgressPolicy
 objectStore:
   backend: s3
-  endpoint: http://rustfs.ate-system.svc:9000
-  region: us-east-1
+  endpoint: http://garage-headless.garage.svc.cluster.local:3900
+  region: garage
   pathStyle: true
-  credentialsSecret: substrate-rustfs-credentials
+  credentialsSecret: substrate-garage-credentials

@@ -89,11 +89,38 @@ kagent-postgres-readwrite   key: readWriteConnectionString
 # ate-system namespace
 substrate-postgres-owner    key: ownerConnectionString
 substrate-postgres-readwrite key: readWriteConnectionString
-# ate-system namespace: must match rustfs.accessKey/secretKey
-substrate-rustfs-credentials
-  AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY
 ```
+
+The RustFS credentials are not used: Substrate is configured for the existing
+Garage S3 service, so `rustfs.enabled: false`. The Garage endpoint is
+`http://garage-headless.garage.svc.cluster.local:3900`, region `garage`,
+path-style `true`.
+
+Create a dedicated bucket and key once:
+
+```sh
+kubectl exec -n garage garage-0 -- ./garage bucket create ate-snapshots
+kubectl exec -n garage garage-0 -- ./garage key create substrate
+kubectl exec -n garage garage-0 -- ./garage bucket allow \
+  --read --write --owner ate-snapshots --key substrate
+kubectl exec -n garage garage-0 -- ./garage key show substrate
+```
+
+Store the key ID/secret in a dedicated, namespaced SOPS Secret (not
+`cluster-secrets`):
+
+```sh
+cp kubernetes/infra/ate-system/bootstrap/_base/secret.sops.yaml.example \
+   kubernetes/infra/ate-system/bootstrap/_base/secret.sops.yaml
+# fill AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY from `garage key show substrate`
+sops -e -i kubernetes/infra/ate-system/bootstrap/_base/secret.sops.yaml
+```
+
+Then uncomment `secret.sops.yaml` in
+`kubernetes/infra/ate-system/bootstrap/_base/kustomization.yaml`. The
+`substrate` object-store sidecars and the `substrate-atelet` node plugin both
+reference this Secret by name. Garage's data PVC is 20 GiB and shared with
+Loki/Velero; monitor it and expand `data-garage-0` when needed.
 
 The connection strings point at
 `cnpg-kagent-rw.kagent.svc.cluster.local:5432/kagent`; leave the role out of the
@@ -157,7 +184,7 @@ After changing values, Flux reconciles `kagent`; create a **new** Session
 
 The kagent chart creates the WorkerPool `kagent-default` with
 `ateworker-gvisor:v1.0.0` and `sandboxClass: gvisor`. The Harness uses
-`gs://ate-snapshots/kagent/`; Substrate 1.0.0 uses `gs://` URIs for the S3/RustFS
+`gs://ate-snapshots/kagent/`; Substrate 1.0.0 uses `gs://` URIs for the S3/Garage
 snapshot backend.
 
 The node-local image cache lives at `/var/lib/ate/image-cache` and uses layout
