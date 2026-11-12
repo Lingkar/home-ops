@@ -10,7 +10,9 @@
     ":prHourlyLimitNone",
     ":prConcurrentLimitNone"
   ],
-  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "dependencyDashboard": {
+    "title": "Renovate Dashboard 🤖"
+  },
   "platformAutomerge": true,
   "ignorePaths": [
     "**/*.sops.*"
