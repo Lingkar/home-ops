@@ -41,4 +41,4 @@ substrateWorkerPool:
   name: kagent-default
   replicas: 1
   sandboxClass: gvisor
-  workerImage: ghcr.io/kagent-dev/substrate/ateworker-gvisor:v1.0.0
+  workerImage: ghcr.io/kagent-dev/substrate/ateworker-gvisor:v1.0.1@sha256:97ca74cd2cabc3fd28ac67790ed3b1f25b7b4247709a316ff374a428822c420e
