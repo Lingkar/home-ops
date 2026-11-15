@@ -206,6 +206,26 @@ While `c-02` is down:
   study in `docs/linstor-recovery.md`.
 - The two LLM single-replica volumes on `c-02` are offline by design.
 
+### NFS exports used by c-02
+
+If a namespace in `scale.namespaces` contains NFS servers whose exports are
+mounted by pods on `c-02`, keep those servers running through the drain. Add
+them to `scale.exclude` (for private workloads, put the exclusions in the
+`--extra-config` overlay).
+
+The NFS client mounts are hard mounts. If the server is scaled down before
+`c-02` unmounts, Talos' shutdown gets stuck in `task unmountPodMounts` after
+`preShutdown` and the node never powers off. The preflight now verifies that
+every excluded Deployment/StatefulSet has at least one ready replica. If the
+surviving node is at its memory-request limit, free a movable workload first
+(for example one of the `restore.rebalance.candidates`) so the NFS servers can
+schedule.
+
+If `c-02` is already stuck in `task unmountPodMounts` and still answers ping
+and the Talos API, restore the NFS servers before the node's network/runtime
+is torn down. Once it is past that point, a physical power cycle is the
+reliable fallback.
+
 ## Restore
 
 1. Power `c-02` back on.

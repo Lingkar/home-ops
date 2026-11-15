@@ -63,7 +63,7 @@
 - [x] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [x] Set-up Immich
 - [/] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
-- [ ] https://github.com/owncloud/ocis
+- [ ] https://github.com/owncloud/ocis -> opencloud ?
 
 - [/] Set-up clean-up job for delete PV's with Retain
         Additionally the linstor resource definition might need to be removed including its snapshots.
@@ -119,3 +119,86 @@ the ~75 GB budget. `--no-mmap` must never be used here: it disables the lazy pat
 
 Images/args live in `kubernetes/apps/llm/_base/deployment.yaml`; per-model PVC in
 `pvc-model-qwen38-flash-next-iq3-xxs.yaml`. Old Qwen3-32B PVC is retained for rollback.
+
+
+# drbd volume check c-02
+[2026-11-10T21:18:50Z] DRBD verify starting: node=c-02 peer=c-01 satellite=linstor-satellite.c-02-rzsqx
+[2026-11-10T21:18:50Z] Resources to verify: 44
+pvc-06af87a9-f49c-4699-bce1-ab4b97d7699c
+pvc-0be0e149-8c24-41bb-9cd7-e2194217387f
+pvc-13b662cd-f4a8-4e45-883f-790ae0bacc8b
+pvc-13eb405b-ae52-49f2-974d-79f3c3d9e1a2
+pvc-2177ae17-7492-4d5b-af7a-8bc929e1832f
+pvc-2980fe5b-0512-401f-b475-fd3d3a77ffa9
+pvc-2a0f9a6d-c101-405b-938e-f41015e8db15
+pvc-3ccf9ad4-07b3-4472-b3db-cc4628b93300
+pvc-3ec820ea-8b34-42d0-9e8a-344e90ed1b6c
+pvc-4bb30f70-1d1f-4f3c-bf74-3ef233c9b10a
+pvc-52ee0aee-2ad5-4a99-99fc-05686629cc82
+pvc-5502b865-feae-434d-8a26-c0b9fc4e0556
+pvc-5c5f4d81-cdfe-4e99-915b-d53c78d3a963
+pvc-61e61c37-e760-412a-b6bf-8ce7f79ebd2b
+pvc-65516952-90d0-4b43-bb52-b40d090499e7
+pvc-66ca7fb9-1b01-47f5-bb27-d3bfea611cf3
+pvc-6801d6f5-7d54-4cc4-b81e-656276a6cd09
+pvc-6d2bdb60-0bd8-4177-85b4-ff5a28bf6539
+pvc-73d4d761-0f70-43ae-adce-69801c8b32fa
+pvc-73d61467-ea20-4676-87ba-de4a2e3f7922
+pvc-766775f5-576a-4556-a209-0997d14b679c
+pvc-84fecc17-75f5-42c9-aacc-67e2389e60b9
+pvc-8585c129-7845-465c-9bcc-04b6187fe667
+pvc-92194fd9-a826-4016-9ce5-93172c80f8b5
+pvc-9716f790-7c42-4544-876a-61ed276abb6f
+pvc-abd24bdf-4114-423e-b087-d02d4dee2d40
+pvc-b0a075e6-2ab2-492c-b3bc-d5c2e6c8bda4
+pvc-b1d56e2b-4c7e-41d3-bba9-52f010511316
+pvc-bbbb39c6-f642-4915-88f3-e3c6638a9198
+pvc-c22c27b4-bf8e-49c2-b1d5-c0a15f8e2e45
+pvc-c98a5e7e-5259-4185-9931-7c4e206ed481
+pvc-cd34c5f1-f813-48bc-aaeb-1bee2b785592
+pvc-ce62374f-1cf5-42f1-b935-7778cd610a84
+pvc-cee6c130-ebd2-46f8-bbee-ff8804f4baee
+pvc-d292289c-0839-419b-bd66-92ae088eb42f
+pvc-e7b7d2d6-67a5-4e71-8b5d-8bbea3b67e36
+pvc-e8da8701-ca81-4216-a906-c2699034e4b2
+pvc-ead28951-31cc-498c-8d63-769cc16e1c11
+pvc-ec4ca458-e9c2-4a81-9c85-ceb6bc15e897
+pvc-eed2bfce-fbd0-405a-9687-20f8db2b54cc
+pvc-f653f466-d065-4891-9c97-97a0e4275dd7
+pvc-f8466a74-1582-48ab-ba64-e9362c62202c
+pvc-f8c0d241-96ed-477b-99bb-d9dd50daba35
+pvc-ff3e2abd-6111-4cb8-9365-0cfc8f19a1a2
+[2026-11-10T21:18:50Z] === verify pvc-06af87a9-f49c-4699-bce1-ab4b97d7699c ===
+[2026-11-10T21:20:21Z] PASS: pvc-06af87a9-f49c-4699-bce1-ab4b97d7699c out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:20:51Z] === verify pvc-0be0e149-8c24-41bb-9cd7-e2194217387f ===
+[2026-11-10T21:21:21Z] PASS: pvc-0be0e149-8c24-41bb-9cd7-e2194217387f out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:21:51Z] === verify pvc-13b662cd-f4a8-4e45-883f-790ae0bacc8b ===
+[2026-11-10T21:22:22Z] PASS: pvc-13b662cd-f4a8-4e45-883f-790ae0bacc8b out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:22:52Z] === verify pvc-13eb405b-ae52-49f2-974d-79f3c3d9e1a2 ===
+[2026-11-10T21:24:52Z] PASS: pvc-13eb405b-ae52-49f2-974d-79f3c3d9e1a2 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:25:22Z] === verify pvc-2177ae17-7492-4d5b-af7a-8bc929e1832f ===
+[2026-11-10T21:25:53Z] PASS: pvc-2177ae17-7492-4d5b-af7a-8bc929e1832f out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:26:23Z] === verify pvc-2980fe5b-0512-401f-b475-fd3d3a77ffa9 ===
+[2026-11-10T21:26:53Z] PASS: pvc-2980fe5b-0512-401f-b475-fd3d3a77ffa9 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:27:23Z] === verify pvc-2a0f9a6d-c101-405b-938e-f41015e8db15 ===
+[2026-11-10T21:27:53Z] PASS: pvc-2a0f9a6d-c101-405b-938e-f41015e8db15 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:28:23Z] === verify pvc-3ccf9ad4-07b3-4472-b3db-cc4628b93300 ===
+[2026-11-10T21:29:24Z] PASS: pvc-3ccf9ad4-07b3-4472-b3db-cc4628b93300 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:29:54Z] === verify pvc-3ec820ea-8b34-42d0-9e8a-344e90ed1b6c ===
+[2026-11-10T21:30:24Z] PASS: pvc-3ec820ea-8b34-42d0-9e8a-344e90ed1b6c out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:30:54Z] === verify pvc-4bb30f70-1d1f-4f3c-bf74-3ef233c9b10a ===
+[2026-11-10T21:31:25Z] PASS: pvc-4bb30f70-1d1f-4f3c-bf74-3ef233c9b10a out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:31:55Z] === verify pvc-52ee0aee-2ad5-4a99-99fc-05686629cc82 ===
+[2026-11-10T21:32:25Z] PASS: pvc-52ee0aee-2ad5-4a99-99fc-05686629cc82 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:32:55Z] === verify pvc-5502b865-feae-434d-8a26-c0b9fc4e0556 ===
+[2026-11-10T21:33:26Z] PASS: pvc-5502b865-feae-434d-8a26-c0b9fc4e0556 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:33:56Z] === verify pvc-5c5f4d81-cdfe-4e99-915b-d53c78d3a963 ===
+[2026-11-10T21:34:26Z] PASS: pvc-5c5f4d81-cdfe-4e99-915b-d53c78d3a963 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:34:56Z] === verify pvc-61e61c37-e760-412a-b6bf-8ce7f79ebd2b ===
+[2026-11-10T21:35:27Z] PASS: pvc-61e61c37-e760-412a-b6bf-8ce7f79ebd2b out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:35:57Z] === verify pvc-65516952-90d0-4b43-bb52-b40d090499e7 ===
+[2026-11-10T21:36:27Z] PASS: pvc-65516952-90d0-4b43-bb52-b40d090499e7 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:36:57Z] === verify pvc-66ca7fb9-1b01-47f5-bb27-d3bfea611cf3 ===
+[2026-11-10T21:37:27Z] PASS: pvc-66ca7fb9-1b01-47f5-bb27-d3bfea611cf3 out-of-sync=0 percent-in-sync=100.00
+[2026-11-10T21:37:57Z] === verify pvc-6801d6f5-7d54-4cc4-b81e-656276a6cd09 ===
+[2026-11-10T21:38:28Z] PASS: pvc-6801d6f5-7d54-4cc4-b81e-656276a6cd09 out-of-sync=0 percent-in-sync=100.00

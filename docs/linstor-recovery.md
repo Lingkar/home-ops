@@ -112,6 +112,10 @@ Rules to avoid it:
   restart. Watch `rpi-00`: it was the node that blipped and dropped quorum.
 - Reconnect one node at a time and re-check `LS node list` between nodes.
 - Do not reboot/drain two storage nodes together.
+- Satellite **pod** restarts are not harmless either: DRBD connections live in
+  the satellite pod's network namespace and are addressed by pod IP, so every
+  resource reconnects and short write gaps can leave KiB-scale divergence
+  (§3.4). Restart one storage satellite at a time.
 
 ## 3. All diskful replicas `Outdated` (no UpToDate source)
 
@@ -169,9 +173,9 @@ sat c-02 drbdadm status <pvc-...>   # expect peer-disk:UpToDate, no replication:
 
 The Grafana "out-of-sync" panel is `drbd_peerdevice_outofsync_bytes > 0`. A
 **constant** non-zero value while `replication:Established` and
-`peer-disk:UpToDate` (e.g. 48 KiB on the Garage meta volume) is a stale bitmap
-residual, not an active resync. It is safe to ignore; `drbdadm verify <pvc-...>`
-(online verify) can reconcile/clear it if you want the panel at zero.
+`peer-disk:UpToDate` (e.g. 48 KiB on the Garage meta volume) may be a stale
+bitmap residual - **but it can also be real divergence** (see §3.4). Confirm
+with an online verify before ignoring it.
 
 Only if the other side stays divergent (`Outdated`/`Inconsistent`) and will not
 resync, discard the **loser's** data - never the source:
@@ -182,7 +186,70 @@ sat c-01 drbdadm disconnect <pvc-...>
 sat c-01 drbdadm connect --discard-my-data <pvc-...>
 ```
 
-### 3.4 Verify and clean up
+### 3.4 Small `out-of-sync` with both replicas `UpToDate`: verify before ignoring
+
+A non-zero `drbd_peerdevice_outofsync_bytes` can persist while LINSTOR and
+`drbdadm status` show both diskful replicas `UpToDate` and the connection
+`Established`. **Do not assume this is a stale bitmap.** On 2026-11-10 a
+constant 12 KiB on `netbird-var` proved to be 3 genuinely different 4 KiB
+blocks.
+
+The metric mirrors the kernel counter (`drbd-reactor` relays
+`drbdsetup events2`); `drbdsetup status --json` reports it in **KiB** under
+`.connections[].peer_devices[].out-of-sync`. It is not a Prometheus artifact,
+so restarting the exporter cannot change it. LINSTOR resources have no
+`/etc/drbd.d` config, so `drbdadm` prints
+`Don't know which config file belongs to resource ...`; it still works for
+status/verify, but `drbdsetup` is the unambiguous tool. Node ids are cluster
+wide (currently `c-01=1`, `c-02=0`, `rpi-00=2`); the minor
+(`.devices[0].minor`) is per node and may change after reconnects - fetch it
+fresh.
+
+1. Kernel truth:
+   ```sh
+   sat c-02 drbdsetup status <pvc-...> --json |
+     jq '.[0] | {disk: .devices[0]["disk-state"], minor: .devices[0].minor,
+                peers: [.connections[] | {name, pd: .peer_devices}]}'
+   ```
+2. Verify (online; run it on the replica under suspicion, preferably the
+   unmounted secondary, naming the authoritative node's peer id and volume):
+   ```sh
+   sat c-02 drbdsetup verify <pvc-...> 1 0    # peer 1 = c-01, volume 0
+   sat c-02 sh -c 'dmesg | grep <pvc-...> | grep -i verify | tail -3'
+   ```
+   Look for `Starting Online Verify from sector 0` followed by either
+   `Online verify done (...)`, or `Online verify found N 4k blocks out of
+   sync!`. **Verify only detects/marks mismatches - it does not resync them.**
+   A run that reports no mismatch is a true PASS; one that reports blocks
+   needs the repair below.
+3. Repair by resyncing the **stale** copy from the data-serving node (never
+   the reverse). On the secondary's satellite, using its current minor:
+   ```sh
+   sat c-02 drbdsetup invalidate <minor> --sync-from-peer-node-id=1
+   ```
+   Expect `disk(... -> Outdated) [invalidate]` and `SyncTarget`, then a
+   **full-device** resync (`Began resync as SyncTarget (will sync ... KB)`) and
+   `disk(Inconsistent -> UpToDate)`. 256 MiB took 6 s; 10 GiB ~80 s at
+   ~130 MB/s. The invalidated volume must not be mounted.
+4. Confirm parity and resolution: `out-of-sync = 0`,
+   `replication-state: Established`, `peer-disk-state: UpToDate`; re-run the
+   verify (no "found ... out of sync" line); `LS resource list` shows
+   `UpToDate`; the alert resolves once the metric is 0.
+
+Case study 2026-11-10: `netbird-var` (256 Mi, Primary on c-01) reported a
+constant 12 KiB with both disks `UpToDate`; verify found exactly 3 mismatched
+blocks; `invalidate` + full resync from c-01 finished in 6 s and a re-verify
+was clean.
+
+`scripts/drbd-verify-c02.sh` runs verify over every c-02 resource sequentially
+(logs under `tmp/`, no automatic resync). It reports PASS based on the kernel
+counters, so confirm a run really started via the `Starting Online Verify`
+dmesg line when in doubt.
+
+Do **not** use `drbdadm connect --discard-my-data` for this; `invalidate` is
+the direct, direction-safe tool for a small known divergence.
+
+### 3.5 Verify and clean up
 
 ```sh
 LS resource list -r <pvc-...>      # expect UpToDate on the source, InUse when pod mounts
@@ -239,6 +306,8 @@ draining a node, so mounts are released cleanly.
 ```sh
 LS node list                  # all 3 Online, Platform=LINUX
 LS resource list              # expect only UpToDate / Diskless, no Outdated/Unknown/Connecting
+sat c-01 drbdsetup status all --json \
+  | jq -r '.[] | .name as $n | [ .connections[]? | .peer_devices[]? | (.["out-of-sync"] // 0) ] | select(max > 0) | "\($n) max-oos=\(max) KiB"'   # should be empty
 kubectl -n piraeus-datastore get pods | grep -E 'satellite|csi-node'
 kubectl get pods -A | grep -vE 'Running|Completed'   # only known-unrelated failures
 kubectl get nodes              # all Ready, not SchedulingDisabled
@@ -348,7 +417,9 @@ After power-on, wait for `:50000`/kubelet and confirm a new `bootID`/`uptime`.
   ```
 - The Grafana "out-of-sync" panel uses `drbd_peerdevice_outofsync_bytes`; a
   constant non-zero value with `replication:Established` / `peer-disk:UpToDate`
-  is a stale bitmap residual (see section 3).
+  can be a stale bitmap residual **or real divergence** - verify it (§3.4)
+  instead of assuming it is harmless. Satellite pod restarts alone can produce
+  such divergence (the pod-IP change severs the DRBD connections).
 
 ### Case study - 2026-10-21 (Immich backup -> wedged c-02)
 

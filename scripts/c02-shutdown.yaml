@@ -85,7 +85,9 @@ scale:
     - llm
     - portfolio
   # Optional namespace/kind/name exclusions if a workload in a scaled
-  # namespace must remain.
+  # namespace must remain. Keep NFS servers whose exports are mounted by
+  # c-02 workloads here: scaling them down first leaves hard NFS client
+  # mounts and hangs the c-02 unmount phase during shutdown.
   exclude: []
   # DaemonSets cannot be scaled; patch their nodeSelector to a sentinel no
   # node matches and delete their pods.

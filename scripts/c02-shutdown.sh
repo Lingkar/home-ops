@@ -397,6 +397,36 @@ preflight() {
         fi
         log warn "LINSTOR resource has no c-01 UpToDate replica (will be offline on c-02): ${r} namespace=${ns:-unknown}"
     done
+
+    # Excluded workloads are expected to stay running during the shutdown.
+    # This matters for NFS servers: c-02 can hold hard NFS client mounts, and
+    # stopping the server before c-02 unmounts leaves the Talos shutdown
+    # stuck in the umount phase.
+    local key kind excluded_ns excluded_name replicas ready
+    for key in "${SCALE_EXCLUDE[@]}"; do
+        [[ -n "${key}" ]] || continue
+        IFS='/' read -r excluded_ns kind excluded_name <<<"${key}"
+        if [[ -z "${excluded_ns}" || -z "${kind}" || -z "${excluded_name}" ]]; then
+            log warn "Invalid scale.exclude entry, expected namespace/kind/name: ${key}"
+            continue
+        fi
+        case "${kind}" in
+            Deployment | StatefulSet) ;;
+            *) continue ;;
+        esac
+        if ! kubectl get "${kind}" -n "${excluded_ns}" "${excluded_name}" >/dev/null 2>&1; then
+            log warn "Excluded workload not found, skipping: ${key}"
+            continue
+        fi
+        replicas="$(kubectl get "${kind}" -n "${excluded_ns}" "${excluded_name}" -o jsonpath='{.spec.replicas}' 2>/dev/null || echo 0)"
+        ready="$(kubectl get "${kind}" -n "${excluded_ns}" "${excluded_name}" -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo 0)"
+        if (( ${replicas:-0} < 1 )); then
+            log error "Excluded workload ${key} has replicas=${replicas}; it must stay running for c-02 shutdown dependencies"
+        fi
+        if (( ${ready:-0} < 1 )); then
+            log error "Excluded workload ${key} has no ready replica; start it before draining ${NODE_NAME}"
+        fi
+    done
 }
 
 add_kustomization() {
@@ -803,15 +833,23 @@ force_delete_remaining_scaled_pods() {
 }
 
 wait_for_scaled_pods_gone() {
-    local deadline=$((SECONDS + SCALED_POD_WAIT)) ns remaining found
+    local deadline=$((SECONDS + SCALED_POD_WAIT)) ns remaining pod owner_kind owner_name key
     while :; do
         remaining=0
         for ns in "${SCALE_NAMESPACES[@]}"; do
             [[ -n "${ns}" ]] || continue
-            found="$(kubectl get pods -n "${ns}" -o json 2>/dev/null |
-                jq -r '[.items[] | select((.metadata.ownerReferences[0].kind // "") != "DaemonSet")] | length' || true)"
-            [[ "${found}" =~ ^[0-9]+$ ]] || found=0
-            ((found > 0)) && remaining=$((remaining + found))
+            while IFS=$'\t' read -r pod owner_kind owner_name; do
+                [[ -n "${pod}" ]] || continue
+                [[ "${owner_kind}" == "DaemonSet" ]] && continue
+                key="${ns}/${owner_kind}/${owner_name}"
+                # Excluded workloads (e.g. NFS servers) intentionally stay
+                # running and must not keep this wait from completing.
+                if in_array "${key}" "${SCALE_EXCLUDE[@]}"; then
+                    continue
+                fi
+                remaining=$((remaining + 1))
+            done < <(kubectl get pods -n "${ns}" -o json 2>/dev/null |
+                jq -r '.items[] | select(.status.phase != "Succeeded" and .status.phase != "Failed") | [.metadata.name, (.metadata.ownerReferences[0].kind // ""), (.metadata.ownerReferences[0].name // "")] | @tsv' || true)
         done
         if ((remaining == 0)); then
             return 0
