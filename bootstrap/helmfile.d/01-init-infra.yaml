@@ -58,7 +58,7 @@ releases:
   - name: piraeus-datastore
     namespace: piraeus-datastore
     chart: oci://ghcr.io/piraeusdatastore/helm-charts/linstor-cluster
-    version: 1.2.0
+    version: 1.2.1
     values:
       - "../../kubernetes/infra/piraeus-datastore/piraeus-datastore/_base/values.yaml"
     needs: ["piraeus-datastore/piraeus-operator"]
