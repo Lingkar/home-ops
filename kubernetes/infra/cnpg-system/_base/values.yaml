@@ -5,3 +5,5 @@ resources:
     memory: 200Mi
   limits:
     memory: 200Mi
+monitoring:
+  podMonitorEnabled: true

@@ -1,0 +1,117 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cnpg-backup
+spec:
+  groups:
+    - name: cnpg-backup.rules
+      rules:
+        - alert: CNPGBackupFailing
+          annotations:
+            summary: "CNPG backup failed ({{ $labels.namespace }})"
+            description: "The most recent CNPG backup attempt in {{ $labels.namespace }} failed at {{ $value | humanizeTimestamp }}."
+          expr: |
+            (
+              max by (namespace) (barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp)
+              >
+              max by (namespace) (barman_cloud_cloudnative_pg_io_last_available_backup_timestamp)
+            )
+            and
+            (max by (namespace) (barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp) > 0)
+          for: 15m
+          labels:
+            severity: warning
+        - alert: CNPGBackupFailing
+          annotations:
+            summary: "CNPG has no successful backup ({{ $labels.namespace }})"
+            description: "No successful CNPG backup has ever been recorded for {{ $labels.namespace }}."
+          expr: |
+            max by (namespace) (barman_cloud_cloudnative_pg_io_last_available_backup_timestamp) == 0
+          for: 1h
+          labels:
+            severity: critical
+        - alert: CNPGBackupFailing
+          annotations:
+            summary: "CNPG backup is stale ({{ $labels.namespace }})"
+            description: "No successful CNPG backup in {{ $labels.namespace }} for {{ $value | humanizeDuration }}."
+          expr: |
+            (
+              time() - max by (namespace) (barman_cloud_cloudnative_pg_io_last_available_backup_timestamp) > 8 * 24 * 3600
+            )
+            and
+            (max by (namespace) (barman_cloud_cloudnative_pg_io_last_available_backup_timestamp) > 0)
+          for: 1h
+          labels:
+            severity: critical
+        - alert: CNPGBackupMetricsAbsent
+          annotations:
+            summary: "CNPG backup metrics are missing"
+            description: "No barman-cloud backup metrics have been scraped for over an hour; check the PodMonitor and the plugin sidecar."
+          expr: |
+            absent_over_time(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp[1h])
+          for: 15m
+          labels:
+            severity: warning
+    - name: cnpg-wal.rules
+      rules:
+        - alert: CNPGWALArchiveFailing
+          annotations:
+            summary: "CNPG WAL archiving is failing ({{ $labels.namespace }})"
+            description: "WAL archiving failed after the last successful archive in {{ $labels.namespace }} ({{ $value | humanizeDuration }} gap)."
+          expr: |
+            (
+              max by (namespace) (cnpg_pg_stat_archiver_last_failed_time)
+              -
+              max by (namespace) (cnpg_pg_stat_archiver_last_archived_time)
+            ) > 1
+          for: 15m
+          labels:
+            severity: warning
+        - alert: CNPGWALArchiveBacklog
+          annotations:
+            summary: "CNPG WAL archive backlog ({{ $labels.namespace }})"
+            description: "{{ $value }} WAL segments are waiting to be archived in {{ $labels.namespace }}."
+          expr: |
+            max by (namespace) (cnpg_collector_pg_wal_archive_status{value="ready"}) > 5
+          for: 30m
+          labels:
+            severity: warning
+        - alert: CNPGWALArchiveBacklog
+          annotations:
+            summary: "CNPG WAL archive backlog is critical ({{ $labels.namespace }})"
+            description: "{{ $value }} WAL segments are waiting to be archived in {{ $labels.namespace }}."
+          expr: |
+            max by (namespace) (cnpg_collector_pg_wal_archive_status{value="ready"}) > 20
+          for: 30m
+          labels:
+            severity: critical
+    - name: cnpg-cluster.rules
+      rules:
+        - alert: CNPGClusterNotReady
+          annotations:
+            summary: "CNPG instance is not up ({{ $labels.namespace }})"
+            description: "The CNPG instance manager reports PostgreSQL is not up in {{ $labels.namespace }}."
+          expr: |
+            max by (namespace) (cnpg_collector_up) == 0
+          for: 5m
+          labels:
+            severity: warning
+        - alert: CNPGMetricsAbsent
+          annotations:
+            summary: "CNPG instance metrics are missing"
+            description: "No CNPG instance metrics have been scraped for 15m; check the PodMonitor and the CNPG instances."
+          expr: |
+            absent_over_time(cnpg_collector_up[15m])
+          for: 5m
+          labels:
+            severity: warning
+        - alert: CNPGOperatorDown
+          annotations:
+            summary: "CNPG operator is down"
+            description: "The CloudNativePG operator metrics target has been down for 5m."
+          expr: |
+            up{job=~".*cnpg-cloudnative-pg.*"} == 0
+          for: 5m
+          labels:
+            severity: critical

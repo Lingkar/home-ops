@@ -123,6 +123,31 @@ Notes:
   (or a named `targetName`) referencing a backup/WAL timestamp within the
   30-day window.
 
+## Monitoring / alerting
+
+All CNPG clusters are scraped on the instance-manager `metrics` port (`9187`):
+
+- Operator metrics: the CNPG chart's own PodMonitor, enabled with
+  `monitoring.podMonitorEnabled: true` in `kubernetes/infra/cnpg-system`.
+- Instance/backup/WAL metrics: `PodMonitor/cnpg-instances` in
+  `kubernetes/infra/monitoring/kube-prometheus-stack`.
+
+Alerts (`PrometheusRule/cnpg-backup`, routed to ntfy via the existing
+`severity` Alertmanager route):
+
+- `CNPGBackupFailing` - warning after 15m when the last backup failed; critical
+  when no backup exists or the last successful backup is older than 8 days.
+- `CNPGBackupMetricsAbsent` - no barman-cloud backup metrics for 1h.
+- `CNPGWALArchiveFailing` - WAL archiving failed after the last success (15m).
+- `CNPGWALArchiveBacklog` - warning at >5, critical at >20 WAL segments waiting
+  to be archived for 30m.
+- `CNPGClusterNotReady` - instance manager reports PostgreSQL is not up (5m).
+- `CNPGMetricsAbsent` - CNPG instance metrics have disappeared (15m).
+- `CNPGOperatorDown` - the CNPG operator metrics target is down (5m).
+
+Grafana: `GrafanaDashboard/cnpg` imports the official CloudNativePG dashboard
+(pinned URL, folder `cnpg`) via the Grafana Operator.
+
 ## Rollback / disable
 
 Remove the `cnpg-backup` component from the namespace's Flux `Kustomization`

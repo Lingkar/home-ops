@@ -2,6 +2,8 @@
 resources:
   # - cluster-netpol.yaml
   - alertmanager-ntfy.sops.yaml
+  - cnpg-podmonitor.yaml
+  - cnpg-prometheusrule.yaml
   - grafana-datasource.yaml
   - helmrelease.yaml
   - prometheus-rule.yaml
