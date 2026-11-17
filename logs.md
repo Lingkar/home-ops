@@ -86,7 +86,7 @@
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
 - [x] Set-up barmancloud cnpg backup/restore plugin (needs S3 object storage)
     - [x] Wire `keycloak-system` (`weekly` full + continuous WAL to Hetzner S3): docs/cnpg-backup-restore.md
-    - [ ] Wire remaining CNPG clusters (`immich`, `harbor-system`, `kagent`) via the shared component
+    - [x] Wire remaining CNPG clusters (`immich`, `harbor-system`, `kagent`) via the shared component
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
 - [ ] Make the node shutdown with piraeus compatible with Talos by performing the missing `drbdadm down all` command
 - [ ] Add more k8s resources to the otel collector: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver

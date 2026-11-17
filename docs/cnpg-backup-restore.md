@@ -6,7 +6,7 @@ existing Hetzner Object Storage bucket used by Velero.
 
 - Plugin install: `kubernetes/infra/cnpg-system/_base/plugin-*.yaml`
 - Reusable backup component: `kubernetes/components/cnpg-backup/`
-- First wired database: `keycloak-system` (`cnpg-keycloak`)
+- Wired databases: `keycloak-system`, `immich`, `harbor-system`, `kagent`
 
 ## Architecture
 
@@ -33,15 +33,12 @@ Per-cluster separation is automatic: Barman writes to
 
 ## Scope
 
-Wired today:
+All CNPG clusters are wired via the shared components:
 
 - `keycloak-system` → `cnpg-keycloak`
-
-Still to wire (same component):
-
-- `immich` (`cnpg-immich`)
-- `harbor-system` (`cnpg-harbor`)
-- `kagent` (`cnpg-kagent`)
+- `immich` → `cnpg-immich`
+- `harbor-system` → `cnpg-harbor`
+- `kagent` → `cnpg-kagent`
 
 ## Verify
 
@@ -152,3 +149,6 @@ archiving; **existing backups remain in Hetzner Object Storage**.
   `ObjectStore.spec.instanceSidecarConfiguration.env` if uploads fail.
 - Adding `spec.plugins` injects the sidecar and triggers one rolling restart of
   the database instance.
+- `Database.spec.cluster.name` is **immutable**. To correct a wrong reference,
+  delete the `Database` CR (its `databaseReclaimPolicy: retain` keeps the data)
+  and let Flux recreate it with the corrected value.
