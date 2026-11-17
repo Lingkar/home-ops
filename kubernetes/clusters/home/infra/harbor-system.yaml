@@ -20,6 +20,7 @@ spec:
   components:
     - ../../components/common
     - ../../components/cnpg-backup
+    - ../../components/cnpg-backup-schedule
   prune: true
   sourceRef:
     kind: ExternalArtifact

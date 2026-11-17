@@ -27,6 +27,7 @@ spec:
       namespace: &namespace kagent
   components:
     - ../../../components/cnpg-backup
+    - ../../../components/cnpg-backup-schedule
   interval: 1h
   path: ./kagent/database/_base
   prune: true
