@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: hetzner
+spec:
+  retentionPolicy: "30d"
+  configuration:
+    destinationPath: s3://buijnsters-home-backup/cnpg/
+    endpointURL: https://fsn1.your-objectstorage.com
+    s3Credentials:
+      accessKeyId:
+        name: cnpg-backup-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: cnpg-backup-s3
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  instanceSidecarConfiguration:
+    env:
+      - name: AWS_DEFAULT_REGION
+        value: fsn1
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 128Mi

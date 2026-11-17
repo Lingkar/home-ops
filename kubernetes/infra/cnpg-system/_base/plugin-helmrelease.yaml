@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: plugin-barman-cloud
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: plugin-barman-cloud
+  dependsOn:
+    - name: cnpg
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: values-plugin-barman-cloud
+    - kind: ConfigMap
+      name: values-plugin-barman-cloud
+      valuesKey: env-values.yaml

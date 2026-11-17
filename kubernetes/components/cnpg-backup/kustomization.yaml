@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+  - objectstore.yaml
+  - scheduled-backup.yaml
+  - s3-credentials.sops.yaml
+patches:
+  - target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+    patch: |-
+      - op: add
+        path: /spec/plugins
+        value:
+          - name: barman-cloud.cloudnative-pg.io
+            isWALArchiver: true
+            parameters:
+              barmanObjectName: hetzner
+replacements:
+  - source:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+      fieldPath: metadata.name
+    targets:
+      - select:
+          group: postgresql.cnpg.io
+          version: v1
+          kind: ScheduledBackup
+        fieldPaths:
+          - spec.cluster.name

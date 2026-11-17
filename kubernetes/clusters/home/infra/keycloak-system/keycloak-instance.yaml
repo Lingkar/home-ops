@@ -13,10 +13,14 @@ spec:
     secretRef:
       name: sops-age
   dependsOn:
+    - name: cnpg-system
+      namespace: flux-system
     - name: keycloak-operator
       namespace: flux-system
   interval: 1h
   path: ./keycloak-system/keycloak-instance/_base
+  components:
+    - ../../../components/cnpg-backup
   prune: true
   retryInterval: 2m
   sourceRef:

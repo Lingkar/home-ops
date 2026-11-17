@@ -3,12 +3,20 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - helmrelease.yaml
+  - plugin-helmrelease.yaml
+  - plugin-source.yaml
   - source.yaml
 configMapGenerator:
   - name: values-cnpg
     behavior: create
     files:
       - values.yaml=values.yaml
+    literals:
+      - env-values.yaml=''
+  - name: values-plugin-barman-cloud
+    behavior: create
+    files:
+      - values.yaml=plugin-values.yaml
     literals:
       - env-values.yaml=''
 configurations:
