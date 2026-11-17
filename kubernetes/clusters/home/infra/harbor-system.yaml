@@ -8,14 +8,18 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  # decryption:
-  #   provider: sops
-  #   secretRef:
-  #     name: sops-age
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  dependsOn:
+    - name: cnpg-system
+      namespace: flux-system
   interval: 1h
   path: ./harbor-system/_base
   components:
     - ../../components/common
+    - ../../components/cnpg-backup
   prune: true
   sourceRef:
     kind: ExternalArtifact

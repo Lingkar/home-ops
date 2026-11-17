@@ -25,6 +25,8 @@ spec:
       kind: Cluster
       name: cnpg-kagent
       namespace: &namespace kagent
+  components:
+    - ../../../components/cnpg-backup
   interval: 1h
   path: ./kagent/database/_base
   prune: true

@@ -21,6 +21,7 @@ spec:
   path: ./keycloak-system/keycloak-instance/_base
   components:
     - ../../../components/cnpg-backup
+    - ../../../components/cnpg-backup-schedule
   prune: true
   retryInterval: 2m
   sourceRef:

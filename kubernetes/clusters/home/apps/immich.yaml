@@ -19,6 +19,7 @@ spec:
   path: ./immich/_base
   components:
     - ../../components/common
+    - ../../components/cnpg-backup
   postBuild:
     substituteFrom:
       - name: cluster-secrets
