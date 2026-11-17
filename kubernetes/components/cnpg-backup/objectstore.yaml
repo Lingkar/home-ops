@@ -15,6 +15,9 @@ spec:
       secretAccessKey:
         name: cnpg-backup-s3
         key: ACCESS_SECRET_KEY
+      sseCustomerKey:
+        name: cnpg-backup-sse-c
+        key: key
     wal:
       compression: gzip
     data:

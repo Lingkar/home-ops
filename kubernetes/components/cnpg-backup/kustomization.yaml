@@ -5,6 +5,7 @@ resources:
   - objectstore.yaml
   - scheduled-backup.yaml
   - s3-credentials.sops.yaml
+  - sse-c.sops.yaml
 patches:
   - target:
       group: postgresql.cnpg.io

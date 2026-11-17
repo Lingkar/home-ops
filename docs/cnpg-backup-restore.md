@@ -13,8 +13,9 @@ existing Hetzner Object Storage bucket used by Velero.
 | Piece | Location | Notes |
 | --- | --- | --- |
 | `plugin-barman-cloud` | `cnpg-system` | Must run in the operator namespace; injects a sidecar into DB pods. |
-| `ObjectStore` `hetzner` | one per DB namespace | `s3://buijnsters-home-backup/cnpg/`, `fsn1`, retention `30d`. |
+| `ObjectStore` `hetzner` | one per DB namespace | `s3://buijnsters-home-backup/cnpg/`, `fsn1`, retention `30d`, SSE-C encrypted. |
 | Secret `cnpg-backup-s3` | one per DB namespace | `ACCESS_KEY_ID` / `ACCESS_SECRET_KEY` (SOPS); reuses the Velero Hetzner key. |
+| Secret `cnpg-backup-sse-c` | one per DB namespace | base64-encoded 256-bit SSE-C key (SOPS); **must be backed up outside the repo/cluster**. |
 | `ScheduledBackup` `weekly` | one per DB namespace | `0 30 2 * * 0` (Sunday 02:30), `immediate: true`. |
 | Cluster `spec.plugins` | each CNPG `Cluster` | `barman-cloud.cloudnative-pg.io`, `isWALArchiver: true`. |
 
@@ -135,8 +136,16 @@ archiving; **existing backups remain in Hetzner Object Storage**.
 
 - `ObjectStore` and its credential Secret are namespaced; the component
   instantiates a copy per database namespace from one source of truth.
-- The Hetzner key is shared with Velero (`kubernetes/infra/velero/_base/s3-credentials.sops.yaml`);
-  optional hardening is a dedicated key and/or SSE-C (Hetzner only supports SSE-C).
+- The Hetzner S3 access key is shared with Velero (`kubernetes/infra/velero/_base/s3-credentials.sops.yaml`).
+- SSE-C is enabled via `s3Credentials.sseCustomerKey` (Hetzner does not support
+  bucket-managed SSE). The key lives in `cnpg-backup-sse-c`; keep a copy outside
+  the repo/cluster. Losing it makes the backups unrecoverable. Changing it in
+  place breaks existing objects - use a new `destinationPath`/`serverName`.
+  SSE-C cannot be combined with `data.encryption`/`wal.encryption`, and restore
+  automatically uses the same key.
+- When SSE-C was enabled, the previous unencrypted `cnpg/` objects had to be
+  deleted first (Barman sends SSE-C headers on read, which Hetzner rejects for
+  non-SSE-C objects).
 - S3-compatible backends occasionally need
   `AWS_REQUEST_CHECKSUM_CALCULATION=when_required` /
   `AWS_RESPONSE_CHECKSUM_VALIDATION=when_required`; add them under
