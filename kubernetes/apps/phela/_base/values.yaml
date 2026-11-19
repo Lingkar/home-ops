@@ -14,7 +14,7 @@ controllers:
       main:
         image:
           repository: docker.io/wordpress
-          tag: 7.1.4@sha256:074f9ef5429025dab76a4242f5b796f64ae76a49dd19b6708ad29e1893a8d383
+          tag: 7.1.5@sha256:637eaaa925da5a794756ba1c04e429e1e3ec9dafa9c6b281e793d454b6e61908
         env:
           - name: WORDPRESS_DB_HOST
             value: mysql-0.mysql.svc.cluster.local
