@@ -31,7 +31,7 @@ spec:
                 - name: NODE
                   value: c-01
                 - name: TEMP_WARN
-                  value: "60"
+                  value: "75"
                 - name: NTFY_URL
                   value: "https://ntfy.${SECRET_DOMAIN}/home-disk-health"
                 - name: NTFY_TOKEN
