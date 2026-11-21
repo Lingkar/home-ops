@@ -171,6 +171,24 @@ linstorSatelliteConfigurations:
               # JAVA_OPTS replaces the operator-set value, so keep its TLS workaround.
               - name: JAVA_OPTS
                 value: "-Djdk.tls.acknowledgeCloseNotify=true -Xms32M -Xmx384M"
+            # The operator defaults (3 probes x 10s, 1s timeout) give the JVM ~20s to
+            # listen on :3366. Java 25 on this Pi needs ~25s to reach
+            # "NetComService started on port ...:3366", so kubelet SIGTERM'd the
+            # container (exit 143) in a 95-restart loop. Give startup 5min and let
+            # liveness survive long GC pauses. tcpSocket is spelled out so the probe
+            # stays valid even if the patch strategy changes.
+            startupProbe:
+              tcpSocket:
+                port: linstor
+              periodSeconds: 10
+              failureThreshold: 30
+              timeoutSeconds: 5
+            livenessProbe:
+              tcpSocket:
+                port: linstor
+              periodSeconds: 30
+              failureThreshold: 6
+              timeoutSeconds: 5
             resources:
               requests:
                 cpu: 200m

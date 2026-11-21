@@ -62,14 +62,18 @@
     For now will run a recurring smartctl check with a ntfy alert when problems arise.
 - [x] Set-up alerts for Piraeus, e.g. when a drbdadm resource is out-of-sync
 - [x] Set-up Immich
+- [x] Set-up barmancloud cnpg backup/restore plugin (needs S3 object storage)
+    - [x] Wire `keycloak-system` (`weekly` full + continuous WAL to Hetzner S3): docs/cnpg-backup-restore.md
+    - [x] Wire remaining CNPG clusters (`immich`, `harbor-system`, `kagent`) via the shared component
+
 - [/] Go through namespaces and add all missing netpol's, final goal is clusterwide netpol disallowing all traffic.
 - [ ] https://github.com/owncloud/ocis -> opencloud ?
 
+- [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
 - [/] Set-up clean-up job for delete PV's with Retain
         Additionally the linstor resource definition might need to be removed including its snapshots.
         Manual runbook added for now: docs/linstor-snapshot-gc.md (also covers orphaned LINSTOR snapshots).
 - [ ] FluxCD diffing -> fix pipelines -> flate or konflate: awaiting https://github.com/home-operations/flate/issues/848
-- [ ] Set-up own git https://code.forgejo.org/forgejo-helm/forgejo-helm
 - [?] Set-up valkey operator
 - [ ] Enable hubble exporting of network traffic to be able visualized in monitoring tools
 - [ ] Adding netpol for prometheus target scraping (flux-operator triggers alert atm for being down due to this)
@@ -84,9 +88,6 @@
 - [ ] Set-up Windows on Kubernetes: https://github.com/dockur/windows
 - [?] Add interactive Velero bootstrap step to restore from latest found S3 back-up
 - [ ] Velero perform new full cluster restore, remote back-ups are now controlled by Velero data-mover and not by Linstor
-- [x] Set-up barmancloud cnpg backup/restore plugin (needs S3 object storage)
-    - [x] Wire `keycloak-system` (`weekly` full + continuous WAL to Hetzner S3): docs/cnpg-backup-restore.md
-    - [x] Wire remaining CNPG clusters (`immich`, `harbor-system`, `kagent`) via the shared component
 - [ ] https://github.com/miniflux/v2/tree/main -> rss feed viewer
 - [ ] Make the node shutdown with piraeus compatible with Talos by performing the missing `drbdadm down all` command
 - [ ] Add more k8s resources to the otel collector: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/k8sobjectsreceiver
@@ -204,3 +205,36 @@ pvc-ff3e2abd-6111-4cb8-9365-0cfc8f19a1a2
 [2026-11-10T21:37:27Z] PASS: pvc-66ca7fb9-1b01-47f5-bb27-d3bfea611cf3 out-of-sync=0 percent-in-sync=100.00
 [2026-11-10T21:37:57Z] === verify pvc-6801d6f5-7d54-4cc4-b81e-656276a6cd09 ===
 [2026-11-10T21:38:28Z] PASS: pvc-6801d6f5-7d54-4cc4-b81e-656276a6cd09 out-of-sync=0 percent-in-sync=100.00
+
+# linstor-satellite.rpi-00 restart loop (fixed 2026-11-21)
+
+`linstor-satellite.rpi-00` accumulated 95 container restarts between 2026-10-13 and
+2026-11-07 02:57Z (stable since; exit code 143 = kubelet SIGTERM). Prometheus could not
+show it (`retention: 14d`, the loop ended right at the retention edge); Loki's event stream
+(`k8s_resource_type="events"`) did:
+
+```
+Unhealthy | Startup probe failed: dial tcp <pod-ip>:3366: connect: connection refused  (x268)
+Killing   | Container linstor-satellite failed liveness probe, will be restarted
+```
+
+Cause: operator default probes (tcp :3366, `periodSeconds: 10`, `failureThreshold: 3`,
+`timeoutSeconds: 1`) allow ~20s, but Java 25 needs ~25s to log
+`NetComService started on port ...:3366` on this Pi (~81% CPU avg, load1 ~1.9). Kubelet
+SIGTERM'd the container, backoff made the next start colder, loop sustained itself.
+
+Fix: probe overrides in the rpi-00 `LinstorSatelliteConfiguration`
+(`kubernetes/infra/piraeus-datastore/piraeus-datastore/_base/values.yaml`) - startup
+5min (30x10s, 5s timeout), liveness 6x30s with 5s timeout. Memory limit untouched
+(~260Mi of 512Mi in use).
+
+- [ ] Decide whether to widen the same probes for c-01/c-02 via `talos-loader-override`
+      (safe, but it rolls the storage satellites one at a time and severs DRBD connections -
+      check `drbdsetup status` in a satellite pod afterwards)
+- [ ] Verify after Flux reconciles: the pod must show the new probes and no new
+      `Startup probe failed` events; restart counter must stay 0
+
+Related noise, not the cause: rpi-00 logs `Could not determine block device information for
+storage pool 'ssd-lvm-thin': Failed to create lvm volume` every ~3min. It is FullSync
+applying c-01/c-02's pool definitions (c-01 logs the same for c-02's pools; LINSTOR only
+knows `DfltDisklessStorPool` on rpi-00). Noise, but it keeps the Pi doing LVM work.
