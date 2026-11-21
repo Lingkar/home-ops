@@ -38,7 +38,7 @@ prometheus:
           storageClassName: ssd-lvm-thin-2
           resources:
             requests:
-              storage: 30Gi
+              storage: 60Gi
 nodeExporter:
   operatingSystems:
     aix:
