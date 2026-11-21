@@ -9,6 +9,6 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.3.1
-    digest: sha256:2e5026052b24562238ee2fa0e192f1288e75d1817a32b2e156bd5ebc89b3b78f
+    tag: 0.4.0
+    digest: sha256:e746e116d655411071b6df90dab480bda5dfb9592aca1ee7b7ba0edfcebe6d2f
   url: oci://ghcr.io/falcosecurity/charts/falco-operator
