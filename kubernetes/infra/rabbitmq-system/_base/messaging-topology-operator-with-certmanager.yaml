@@ -2455,7 +2455,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          image: rabbitmqoperator/messaging-topology-operator:1.20.6@sha256:81a514ceff7eb4cf02cd7aacacdfcde7585599e646814db6676e7316e88c8b31
+          image: rabbitmqoperator/messaging-topology-operator:1.21.0@sha256:37af134da683da47c7fb858ed9c742432593c7959cabdcb9d38c287b8cce61a7
           imagePullPolicy: Always
           name: manager
           ports:
