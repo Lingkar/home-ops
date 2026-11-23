@@ -12,7 +12,7 @@ persistence:
     size: 2Gi
   data:
     storageClass: ssd-lvm-thin-2
-    size: 20Gi
+    size: 40Gi
 monitoring:
   metrics:
     enabled: true
